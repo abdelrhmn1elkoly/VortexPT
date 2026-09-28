@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.0.2",
+  "release_date": "2026-09-28",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.0.2/VortexPT-Setup-1.0.2.exe",
+  "release_notes": "Vortex PT v1.0.2 Release - Full CAD Dimension Style Fidelity (preserves exact 0.18 text height and native template properties without alteration), automatic background update check upon startup with GitHub cloud notifications, and resilient DWG template synchronization."
+}
