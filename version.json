@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.0.5",
+  "release_date": "2026-09-29",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.0.5/VortexPT-Setup-1.0.5.exe",
+  "release_notes": "Vortex PT v1.0.5:\n• End Anchor Chairs in Tables Always Bottom-Referenced: Regardless of whether drawing annotation is calculated from top or bottom cover datum, all chair schedules (Excel, in-app Schedules tab, DXF sheet table) strictly measure anchor chair heights from the bottom soffit.\n• ADAPT Cover Warning Fix: Eliminated false positive concrete cover violation warnings on ADAPT models by evaluating tendon profile elevations against true absolute formwork soffit and TOC.\n• 1:1 Custom End Block Scale: Custom DWG/DXF blocks inserted at true 1:1 scale in all directions (X=1, Y=1, Z=1).\n• Expanded CAD Viewport & Controlled Properties Width: Dominant CAD canvas layout with constrained inspector panel width on full screen.\n• Compact Section Viewer & Invisible Scrollbar: Cross-section viewer with invisible scrollbar, smooth click-and-drag panning, and plan-aligned orientation.\n• Fluent/WinUI 3 Dark Scrollbars: Native Windows classic scrollbars replaced with modern styled dark scrollbars across the application."
+}
