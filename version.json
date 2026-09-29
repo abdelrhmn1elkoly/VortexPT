@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.0.6",
+  "release_date": "2026-09-29",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.0.6/VortexPT-Setup-1.0.6.exe",
+  "release_notes": "Vortex PT v1.0.6:\n• Control Points Protected from Rounding: Profile control points (anchors, high crests over supports, and low sags) are never rounded by chair height increment (round_inc). They retain their exact engineering deductions, while rounding strictly applies to in-between intermediate chairs.\n• RAM Concept Edge Beam Deduction: When a slab tendon terminates at or crosses an edge or middle beam, the beam depth exceeding slab thickness (beam_depth - slab_th) is deducted, measuring the profile and chair directly from the slab soffit (as if the beam is not there).\n• ADAPT Anchor Drawing vs Table Datum: In ADAPT models, drawing annotations dynamically reflect top cover (CL {cov}*) or bottom height (CL {h}) without asterisks based on user datum preference, while schedules and tables always calculate chair heights strictly from the bottom soffit."
+}
