@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.0.8",
+  "release_date": "2026-09-30",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.0.8/VortexPT-Setup-1.0.8.exe",
+  "release_notes": "Vortex PT v1.0.8:\n• Exact Net Floor Slab Area: Geometric union calculation for ADAPT and RAM Concept accurately eliminates double-counting of sunken slabs, up-panels, and drop panels (e.g. 1443.31 m² matching ADAPT report).\n• ADAPT-Builder Soffit Chair Heights: End anchor chair heights in schedules, tables, and cross-section profiles are strictly measured from bottom soffit (100mm on 300mm slab with 200mm top cover), with top-cover asterisk annotations reserved for CAD drawing plan.\n• Collinear Aligned Interior Tendon Spacing Dimensions: 2-3 clean, aligned straight dimension lines perpendicular across tendons with zero collision with chair callouts, ray-cast extensions touching slab edges, and support for short tendons."
+}
