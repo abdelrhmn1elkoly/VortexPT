@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vortex PT — Post-Tensioned Concrete CAD & Detailing Suite</title>
+<meta name="description" content="Turn Bentley RAM Concept and ADAPT-Builder models into site-ready AutoCAD DWG shop drawings, true 3D parabolic drape profiles, and fabrication schedules. 100% offline. Free 7-day trial.">
+<meta name="keywords" content="post-tension, shop drawings, RAM Concept, ADAPT-Builder, DXF export, DWG export, tendon detailing, Vortex PT">
+<meta name="author" content="Vortex PT">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 20'%3E%3Cpath d='M1 4 Q13 22 25 4' stroke='%2300a2ed' stroke-width='2.2' fill='none'/%3E%3Cpath d='M1 4 H25' stroke='%2338bdf8' stroke-width='1'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Cairo:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============ DESIGN TOKENS (WINDOWS 11 FLUENT DARK MICA) ============ */
+:root {
+  --bg-desktop: #070b14;
+  --bg-app: #0b101b;
+  --bg-card: #0e1526;
+  --bg-card-hover: #152035;
+  --bg-card-active: #1a2742;
+  
+  --line: #162035;
+  --line-strong: #233352;
+  --line-focus: #00a2ed;
+  
+  /* Brand Accents (Exact matches to Vortex PT desktop app) */
+  --cyan: #00a2ed;
+  --cyan-bright: #38bdf8;
+  --cyan-dim: #0284c7;
+  --cyan-glow: rgba(0, 162, 237, 0.28);
+  
+  --amber: #f59e0b;
+  --amber-dim: #d97706;
+  --amber-glow: rgba(245, 158, 11, 0.25);
+  
+  --green: #10b981;
+  --red: #ef4444;
+  --purple: #8b5cf6;
+  
+  /* CAD Layers */
+  --cad-slab: #475569;
+  --cad-drop: #f59e0b;
+  --cad-opening: #f43f5e;
+  --cad-col: #fbbf24;
+  --cad-beam: #06b6d4;
+  --cad-lat: #d946ef;
+  --cad-long: #14b8a6;
+  
+  /* Typography */
+  --txt: #f8fafc;
+  --txt-dim: #94a3b8;
+  --txt-muted: #64748b;
+  --disp: 'Chakra Petch', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --body: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+
+html[lang="ar"] body { font-family: 'IBM Plex Sans Arabic', 'IBM Plex Sans', sans-serif; }
+html[lang="ar"] .brand, html[lang="ar"] h1, html[lang="ar"] .h2, html[lang="ar"] .kick,
+html[lang="ar"] .cell h3, html[lang="ar"] .step h3, html[lang="ar"] .faq-q, html[lang="ar"] .f-col h4,
+html[lang="ar"] .plan .price {
+  font-family: 'Cairo', 'Chakra Petch', sans-serif;
+  letter-spacing: 0 !important;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-padding-top: 72px; scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-desktop);
+  color: var(--txt);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 15% 10%, rgba(0, 162, 237, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 85% 25%, rgba(139, 92, 246, 0.06) 0%, transparent 45%),
+    linear-gradient(to right, rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; border: none; background: none; }
+
+/* Subtle Technical Noise */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: .03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+
+/* ============ BUTTONS & BADGES ============ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--mono); font-size: 12px; font-weight: 600;
+  letter-spacing: .06em; text-transform: uppercase; padding: 10px 18px;
+  border-radius: 6px; transition: all .2s ease; cursor: pointer;
+}
+.btn-primary {
+  background: var(--cyan); color: #fff;
+  box-shadow: 0 4px 16px var(--cyan-glow);
+}
+.btn-primary:hover {
+  background: var(--cyan-bright); transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+}
+.btn-subtle {
+  background: var(--bg-card); color: var(--txt);
+  border: 1px solid var(--line-strong);
+}
+.btn-subtle:hover {
+  background: var(--bg-card-hover); border-color: var(--cyan);
+  color: var(--cyan-bright); transform: translateY(-1px);
+}
+.btn-amber {
+  background: var(--amber); color: #070b14; font-weight: 700;
+  box-shadow: 0 4px 16px var(--amber-glow);
+}
+.btn-amber:hover {
+  background: #fbb024; transform: translateY(-1px);
+}
+
+.kick {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--cyan-bright);
+  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+}
+.kick::before {
+  content: ""; width: 8px; height: 8px; background: var(--cyan);
+  border-radius: 2px; display: inline-block;
+}
+.h2 {
+  font-family: var(--disp); font-size: 32px; font-weight: 700;
+  letter-spacing: -0.01em; color: #fff; line-height: 1.2;
+}
+.sub {
+  font-size: 15px; color: var(--txt-dim); margin-top: 8px; line-height: 1.6;
+}
+
+/* ============ NAVIGATION BAR ============ */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(11, 16, 27, 0.88); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line); height: 68px;
+  display: flex; align-items: center;
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between; width: 100%;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 10px; font-family: var(--disp);
+  font-size: 19px; font-weight: 700; color: #fff; letter-spacing: .02em;
+}
+.nav-brand svg { width: 28px; height: 28px; flex: none; }
+.nav-brand span b { color: var(--cyan-bright); }
+.nav-badge {
+  font-family: var(--mono); font-size: 9.5px; background: rgba(0, 162, 237, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.35); color: var(--cyan-bright);
+  padding: 2px 7px; border-radius: 4px;
+}
+
+.nav-links {
+  display: flex; align-items: center; gap: 22px;
+}
+.nav-links a {
+  font-family: var(--mono); font-size: 11.5px; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--txt-dim);
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--cyan-bright); }
+
+.nav-actions {
+  display: flex; align-items: center; gap: 10px;
+}
+.lang-btn {
+  font-family: var(--mono); font-size: 11.5px; font-weight: 600;
+  padding: 6px 12px; background: var(--bg-card); border: 1px solid var(--line-strong);
+  border-radius: 4px; color: var(--txt); transition: all .2s;
+}
+.lang-btn:hover { border-color: var(--cyan); color: var(--cyan-bright); }
+
+/* ============ HERO SECTION ============ */
+.hero-sec {
+  padding: 70px 0 50px 0; position: relative;
+}
+.hero-header {
+  text-align: center; max-width: 900px; margin: 0 auto 40px auto;
+}
+.hero-header .kick { justify-content: center; }
+.hero-header h1 {
+  font-family: var(--disp); font-size: 46px; font-weight: 700;
+  color: #fff; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 16px;
+}
+.hero-header h1 span {
+  background: linear-gradient(90deg, #38bdf8 0%, #00a2ed 50%, #818cf8 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-header p {
+  font-size: 17px; color: var(--txt-dim); line-height: 1.6; max-width: 780px; margin: 0 auto 28px auto;
+}
+.hero-cta-group {
+  display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap;
+}
+
+.hero-stats-bar {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  background: var(--line); border: 1px solid var(--line-strong);
+  border-radius: 8px; overflow: hidden; margin-top: 36px;
+}
+.hero-stat-cell {
+  background: var(--bg-card); padding: 16px 20px; text-align: center;
+}
+.hero-stat-cell b {
+  font-family: var(--disp); font-size: 26px; color: #fff; font-weight: 700; display: block;
+}
+.hero-stat-cell span {
+  font-family: var(--mono); font-size: 10px; color: var(--txt-dim);
+  letter-spacing: .15em; text-transform: uppercase; margin-top: 4px; display: block;
+}
+
+/* ============ VORTEX PT VIRTUAL WORKSTATION ============ */
+.workstation-sec {
+  padding: 40px 0 90px 0;
+}
+.app-frame {
+  background: var(--bg-app); border: 1px solid var(--line-strong);
+  border-radius: 12px; overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 162, 237, 0.12);
+  display: flex; flex-direction: column;
+}
+
+/* Windows 11 Titlebar */
+.app-titlebar {
+  height: 40px; background: #090e18; border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; padding: 0 14px;
+}
+.titlebar-brand {
+  display: flex; align-items: center; gap: 8px; font-family: var(--mono);
+  font-size: 11.5px; color: #cbd5e1;
+}
+.titlebar-brand svg { width: 16px; height: 16px; }
+.titlebar-center {
+  font-family: var(--mono); font-size: 11px; color: #64748b;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+  padding: 3px 12px; border-radius: 4px;
+}
+.titlebar-ctrls {
+  display: flex; align-items: center; gap: 8px;
+}
+.win-btn { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+.win-min { background: #38bdf8; opacity: .7; }
+.win-max { background: #f59e0b; opacity: .7; }
+.win-close { background: #ef4444; opacity: .7; }
+
+/* Top Command Bar */
+.app-commandbar {
+  background: #0d1424; border-bottom: 1px solid var(--line);
+  padding: 10px 16px; display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+.cmd-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.btn-cmd-open {
+  background: var(--cyan); color: #fff; font-family: var(--mono);
+  font-size: 11.5px; font-weight: 600; padding: 6px 14px; border-radius: 4px;
+  display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px var(--cyan-glow);
+}
+.btn-cmd-open:hover { background: var(--cyan-bright); }
+
+.tendon-selector-box {
+  background: var(--bg-card); border: 1px solid var(--line-strong);
+  color: #fff; font-family: var(--mono); font-size: 11.5px; padding: 5px 12px;
+  border-radius: 4px; display: flex; align-items: center; gap: 8px;
+}
+.tendon-selector-box b { color: var(--cyan-bright); }
+
+.cmd-chips { display: flex; align-items: center; gap: 6px; }
+.cmd-chip {
+  background: var(--bg-card); border: 1px solid var(--line); color: var(--txt-dim);
+  font-family: var(--mono); font-size: 10.5px; padding: 4px 10px; border-radius: 4px;
+  transition: all .2s;
+}
+.cmd-chip.active {
+  background: rgba(0, 162, 237, 0.15); border-color: rgba(56, 189, 248, 0.4);
+  color: var(--cyan-bright); font-weight: 600;
+}
+
+.qa-alert-badge {
+  background: rgba(245, 158, 11, 0.16); border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24; font-family: var(--mono); font-size: 11px; font-weight: 600;
+  padding: 4px 12px; border-radius: 999px; display: flex; align-items: center;
+  gap: 6px; cursor: pointer; transition: all .2s;
+}
+.qa-alert-badge:hover { background: rgba(245, 158, 11, 0.28); }
+
+/* Workstation Layout */
+.app-body {
+  display: grid; grid-template-columns: 56px 1fr; min-height: 600px;
+}
+
+/* NavRail */
+.app-navrail {
+  background: #090e18; border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 8px;
+}
+.rail-btn {
+  width: 42px; height: 42px; border-radius: 6px; display: grid; place-items: center;
+  color: var(--txt-dim); transition: all .2s; position: relative;
+}
+.rail-btn svg { width: 20px; height: 20px; }
+.rail-btn:hover { color: #fff; background: var(--bg-card-hover); }
+.rail-btn.active {
+  color: var(--cyan-bright); background: rgba(0, 162, 237, 0.15);
+}
+.rail-btn.active::before {
+  content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px;
+  background: var(--cyan); border-radius: 0 2px 2px 0;
+}
+.rail-spacer { flex: 1; }
+.rail-license-dot {
+  width: 8px; height: 8px; background: var(--green); border-radius: 50%;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+/* Views Container */
+.app-view-stage {
+  position: relative; overflow: hidden; background: #070b14;
+}
+.app-view {
+  display: none; height: 100%; width: 100%;
+}
+.app-view.active { display: block; }
+
+/* VIEW 1: MODEL WORKSPACE */
+.model-workspace-grid {
+  display: grid; grid-template-columns: 1fr 280px; height: 600px;
+}
+.cad-canvas-panel {
+  position: relative; display: flex; flex-direction: column; overflow: hidden;
+}
+.cad-svg-area {
+  flex: 1; background: #070b14; position: relative; overflow: hidden;
+}
+.cad-svg {
+  width: 100%; height: 100%; display: block;
+}
+
+/* Floating Project Metrics HUD */
+.hud-metrics-card {
+  position: absolute; top: 16px; right: 16px; width: 220px;
+  background: rgba(14, 21, 38, 0.90); backdrop-filter: blur(10px);
+  border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px;
+  padding: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  font-family: var(--mono); z-index: 10;
+}
+.hud-title {
+  font-size: 10.5px; font-weight: 700; color: var(--cyan-bright);
+  letter-spacing: .12em; text-transform: uppercase; margin-bottom: 10px;
+  border-bottom: 1px solid var(--line); padding-bottom: 4px;
+}
+.hud-row {
+  display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 5px;
+}
+.hud-row span { color: var(--txt-dim); }
+.hud-row b { color: #fff; }
+
+/* Floating QA Alert Banner */
+.hud-qa-banner {
+  position: absolute; top: 16px; left: 16px; max-width: 440px;
+  background: rgba(245, 158, 11, 0.12); backdrop-filter: blur(10px);
+  border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 8px;
+  padding: 12px 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10;
+}
+.hud-qa-banner h5 {
+  font-family: var(--mono); font-size: 11px; font-weight: 700; color: #fbbf24;
+  margin-bottom: 3px; display: flex; align-items: center; gap: 6px;
+}
+.hud-qa-banner p {
+  font-size: 11.5px; color: #fde68a; line-height: 1.4; margin: 0;
+}
+
+/* Bottom Profile Viewer */
+.cad-profile-dock {
+  height: 150px; background: #0a0f1d; border-top: 1px solid var(--line);
+  display: flex; flex-direction: column; padding: 10px 16px;
+}
+.dock-header {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--mono); font-size: 10.5px; color: var(--txt-dim);
+  margin-bottom: 6px;
+}
+.dock-header b { color: var(--cyan-bright); }
+.dock-svg-wrap {
+  flex: 1; position: relative;
+}
+
+/* Model Right Inspector */
+.model-inspector {
+  background: #090e18; border-left: 1px solid var(--line);
+  padding: 18px; display: flex; flex-direction: column; gap: 16px;
+}
+.insp-title {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .12em; color: var(--txt-dim); text-transform: uppercase;
+}
+.insp-prop-list {
+  display: flex; flex-direction: column; gap: 8px; font-family: var(--mono); font-size: 11.5px;
+}
+.insp-row {
+  display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.03);
+  padding-bottom: 4px;
+}
+.insp-row span { color: var(--txt-dim); }
+.insp-row b { color: #fff; }
+
+/* VIEW 2: EXPORT CENTER */
+.export-view-wrap {
+  padding: 30px; height: 600px; overflow-y: auto;
+}
+.export-view-wrap h3 {
+  font-family: var(--disp); font-size: 22px; color: #fff; margin-bottom: 4px;
+}
+.export-card-grid {
+  display: flex; flex-direction: column; gap: 12px; margin-top: 20px;
+}
+.exp-card {
+  background: var(--bg-card); border: 1px solid var(--line-strong); border-radius: 8px;
+  padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
+}
+.exp-card h4 { font-family: var(--disp); font-size: 15px; color: #fff; margin-bottom: 3px; }
+.exp-card p { font-size: 12.5px; color: var(--txt-dim); }
+.exp-ctrl select {
+  background: #090e18; border: 1px solid var(--line-strong); color: #fff;
+  font-family: var(--mono); font-size: 12px; padding: 6px 12px; border-radius: 4px;
+}
+
+/* VIEW 3: SCHEDULES & TABLES */
+.sched-view-wrap {
+  padding: 24px; height: 600px; display: flex; flex-direction: column;
+}
+.sched-pills {
+  display: flex; gap: 10px; margin-bottom: 16px;
+}
+.sched-pill {
+  font-family: var(--mono); font-size: 11.5px; padding: 6px 14px;
+  background: var(--bg-card); border: 1px solid var(--line-strong);
+  border-radius: 4px; color: var(--txt-dim); transition: all .2s;
+}
+.sched-pill.active {
+  background: var(--cyan); color: #fff; border-color: var(--cyan);
+}
+.sched-table-container {
+  flex: 1; background: var(--bg-card); border: 1px solid var(--line-strong);
+  border-radius: 8px; overflow: auto;
+}
+.sched-table {
+  width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 11.5px;
+}
+.sched-table th {
+  background: #090e18; color: var(--cyan-bright); padding: 10px 14px;
+  text-align: left; border-bottom: 1px solid var(--line-strong);
+}
+.sched-table td {
+  padding: 9px 14px; border-bottom: 1px solid var(--line); color: #e2e8f0;
+}
+.sched-table tr:hover td { background: rgba(0, 162, 237, 0.04); }
+
+/* VIEW 4: SETTINGS VIEW */
+.settings-view-wrap {
+  padding: 24px 30px; height: 600px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
+}
+.settings-view-wrap h3 {
+  font-family: var(--disp); font-size: 22px; color: #fff;
+}
+.set-card {
+  background: var(--bg-card); border: 1px solid var(--line-strong); border-radius: 8px;
+  padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
+}
+.set-card h4 { font-family: var(--disp); font-size: 15px; color: #fff; margin-bottom: 3px; }
+.set-card p { font-size: 12.5px; color: var(--txt-dim); max-width: 520px; }
+.set-input {
+  background: #090e18; border: 1px solid var(--line-strong); color: var(--cyan-bright);
+  font-family: var(--mono); font-size: 11.5px; padding: 6px 12px; border-radius: 4px; text-align: center;
+}
+
+/* App Statusbar */
+.app-statusbar {
+  height: 28px; background: #070b14; border-top: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; padding: 0 14px;
+  font-family: var(--mono); font-size: 10.5px; color: var(--txt-muted);
+}
+.stat-indicator {
+  width: 6px; height: 6px; background: var(--green); border-radius: 50%; display: inline-block;
+  margin-right: 6px;
+}
+
+/* ============ USER MANUAL SHOWCASE SECTION ============ */
+.manual-sec {
+  padding: 90px 0; background: var(--bg-app); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.manual-grid {
+  display: grid; grid-template-columns: 1fr 1.3fr; gap: 36px; align-items: center; margin-top: 36px;
+}
+.manual-cover-card {
+  background: var(--bg-card); border: 1px solid var(--line-strong); border-radius: 12px;
+  padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); position: relative;
+}
+.manual-cover-img {
+  border-radius: 8px; overflow: hidden; border: 1px solid rgba(56, 189, 248, 0.35); position: relative;
+}
+.manual-cover-img img { width: 100%; height: auto; display: block; }
+.manual-cover-overlay {
+  position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,11,20,0.2) 0%, rgba(7,11,20,0.9) 100%);
+  display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;
+}
+
+.ch-list-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.ch-card {
+  background: var(--bg-card); border: 1px solid var(--line-strong); border-radius: 6px;
+  padding: 12px 14px; transition: border-color .2s;
+}
+.ch-card:hover { border-color: var(--cyan); }
+.ch-num { font-family: var(--mono); font-size: 9.5px; font-weight: 700; color: var(--cyan-bright); }
+.ch-title { font-size: 13px; font-weight: 600; color: #fff; margin-top: 2px; }
+.ch-desc { font-size: 11px; color: var(--txt-dim); margin-top: 2px; }
+
+/* ============ AUTHENTIC SCREENSHOTS GALLERY ============ */
+.gal-sec { padding: 90px 0; background: var(--bg-desktop); }
+.gal-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 36px;
+}
+.gal-card {
+  background: var(--bg-card); border: 1px solid var(--line-strong); border-radius: 8px;
+  overflow: hidden; transition: all .3s ease; cursor: pointer;
+}
+.gal-card:hover {
+  transform: translateY(-5px); border-color: var(--cyan);
+  box-shadow: 0 15px 35px rgba(0, 162, 237, 0.16);
+}
+.gal-thumb { aspect-ratio: 16/9; background: #000; overflow: hidden; }
+.gal-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+.gal-card:hover .gal-thumb img { transform: scale(1.04); }
+.gal-info { padding: 16px; }
+.gal-info h4 { font-family: var(--disp); font-size: 15px; color: #fff; margin-bottom: 4px; }
+.gal-info p { font-size: 12px; color: var(--txt-dim); line-height: 1.5; }
+
+/* ============ PRICING SECTION ============ */
+.price-sec { padding: 90px 0; background: var(--bg-app); border-top: 1px solid var(--line); }
+.price-trial-banner {
+  background: linear-gradient(135deg, rgba(0, 162, 237, 0.12) 0%, rgba(14, 21, 38, 0.95) 100%);
+  border: 1px solid rgba(0, 162, 237, 0.35); border-radius: 10px; padding: 22px 28px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+  margin-top: 36px; box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+}
+.price-plans-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 36px;
+}
+.plan-card {
+  background: var(--bg-card); border: 1px solid var(--line-strong); border-radius: 10px;
+  padding: 34px 26px; display: flex; flex-direction: column; position: relative;
+  transition: all .3s;
+}
+.plan-card:hover {
+  transform: translateY(-6px); border-color: var(--cyan);
+  box-shadow: 0 20px 45px rgba(0, 162, 237, 0.16);
+}
+.plan-card.hot {
+  border-color: var(--cyan);
+  background: linear-gradient(180deg, rgba(0, 162, 237, 0.10) 0%, rgba(14, 21, 38, 0.95) 100%);
+}
+.plan-card.perpetual {
+  border-color: var(--purple);
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.10) 0%, rgba(14, 21, 38, 0.95) 100%);
+}
+.plan-badge {
+  position: absolute; top: -12px; right: 20px; font-family: var(--mono);
+  font-size: 9.5px; font-weight: 700; letter-spacing: .15em; padding: 4px 12px;
+  border-radius: 4px; color: #fff;
+}
+.badge-cyan { background: var(--cyan); box-shadow: 0 4px 10px var(--cyan-glow); }
+.badge-purple { background: var(--purple); box-shadow: 0 4px 10px rgba(139, 92, 246, 0.4); }
+
+.plan-tag {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .2em; color: var(--cyan-bright);
+  font-weight: 600; text-transform: uppercase;
+}
+.plan-card.perpetual .plan-tag { color: #c4b5fd; }
+.plan-price {
+  font-family: var(--disp); font-size: 46px; font-weight: 700; color: #fff; margin: 12px 0 2px;
+}
+.plan-price sub { font-size: 13px; font-weight: 400; color: var(--txt-dim); font-family: var(--mono); }
+.plan-term { font-family: var(--mono); font-size: 11px; color: var(--txt-dim); margin-bottom: 22px; }
+.plan-features {
+  list-style: none; display: flex; flex-direction: column; gap: 11px; margin-bottom: 28px; flex: 1;
+  font-size: 13px; color: #cbd5e1;
+}
+.plan-features li { display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+.plan-features li::before { content: "✓"; color: var(--cyan-bright); font-weight: 800; font-size: 13px; }
+.plan-card.perpetual .plan-features li::before { color: #c4b5fd; }
+
+/* ============ FAQ ACCORDION ============ */
+.faq-sec { padding: 90px 0; background: var(--bg-desktop); }
+.faq-list { margin-top: 36px; border-top: 1px solid var(--line); }
+.faq-item { border-bottom: 1px solid var(--line); }
+.faq-btn {
+  width: 100%; padding: 20px 0; display: flex; justify-content: space-between; align-items: center;
+  color: #fff; font-family: var(--disp); font-size: 17px; font-weight: 600; text-align: left;
+}
+.faq-btn::after { content: "+"; font-size: 22px; color: var(--cyan-bright); transition: transform .25s; }
+.faq-item.open .faq-btn::after { transform: rotate(45deg); color: var(--amber); }
+.faq-ans {
+  max-height: 0; overflow: hidden; transition: max-height .35s ease;
+  color: var(--txt-dim); font-size: 14px; line-height: 1.7; padding-bottom: 0;
+}
+.faq-item.open .faq-ans { max-height: 240px; padding-bottom: 18px; }
+
+/* ============ FOOTER ============ */
+footer {
+  background: #05080e; border-top: 1px solid var(--line); padding: 60px 0 30px;
+  font-size: 13px; color: var(--txt-muted);
+}
+.f-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+.f-col h4 {
+  font-family: var(--disp); font-size: 14px; color: #fff; text-transform: uppercase;
+  margin-bottom: 14px; letter-spacing: .08em;
+}
+.f-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.f-col a { color: var(--txt-dim); transition: color .2s; }
+.f-col a:hover { color: var(--cyan-bright); }
+.f-bottom {
+  border-top: 1px solid var(--line); padding-top: 24px; display: flex;
+  justify-content: space-between; font-family: var(--mono); font-size: 11px;
+}
+
+/* Lightbox Modal */
+.lightbox {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(8px);
+  z-index: 200; display: none; align-items: center; justify-content: center; padding: 24px;
+}
+.lightbox.active { display: flex; }
+.lightbox-content { max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column; gap: 10px; }
+.lightbox-content img { max-height: 80vh; object-fit: contain; border-radius: 6px; border: 1px solid var(--line-strong); }
+.lightbox-caption { font-family: var(--mono); font-size: 13px; color: var(--cyan-bright); text-align: center; }
+.lightbox-close { position: absolute; top: 20px; right: 24px; color: #fff; font-size: 32px; cursor: pointer; }
+
+/* RTL Support */
+[dir="rtl"] nav .nav-inner { flex-direction: row-reverse; }
+[dir="rtl"] .kick::before { order: 2; }
+[dir="rtl"] .app-body { grid-template-columns: 1fr 56px; direction: rtl; }
+[dir="rtl"] .model-workspace-grid { grid-template-columns: 280px 1fr; }
+[dir="rtl"] .hud-metrics-card { right: auto; left: 16px; }
+[dir="rtl"] .hud-qa-banner { left: auto; right: 16px; }
+[dir="rtl"] .faq-btn { text-align: right; }
+[dir="rtl"] .f-grid { direction: rtl; }
+</style>
+</head>
+<body>
+
+<!-- ============ NAVIGATION BAR ============ -->
+<nav>
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-brand">
+      <svg viewBox="0 0 500 500" fill="none">
+        <path d="M 86,220 C 130,375 370,375 414,220" stroke="#00a2ed" stroke-width="32" stroke-linecap="round"/>
+        <circle cx="74" cy="214" r="30" stroke="#38bdf8" stroke-width="16"/>
+        <circle cx="426" cy="214" r="30" stroke="#f59e0b" stroke-width="16"/>
+        <line x1="125" y1="80" x2="250" y2="400" stroke="#00a2ed" stroke-width="60" stroke-linecap="round"/>
+        <line x1="375" y1="80" x2="250" y2="400" stroke="#818cf8" stroke-width="60" stroke-linecap="round"/>
+      </svg>
+      <span>VORTEX <b>PT</b></span>
+      <span class="nav-badge">v2.6.4</span>
+    </a>
+
+    <div class="nav-links">
+      <a href="#workstation" data-i18n="nav_workstation">WORKSTATION</a>
+      <a href="#gallery" data-i18n="nav_gallery">GALLERY</a>
+      <a href="#manual" data-i18n="nav_manual">USER MANUAL</a>
+      <a href="#pricing" data-i18n="nav_pricing">PRICING</a>
+      <a href="#faq" data-i18n="nav_faq">FAQ</a>
+    </div>
+
+    <div class="nav-actions">
+      <a href="Vortex_PT_User_Manual.pdf" download="Vortex_PT_User_Manual.pdf" class="btn btn-subtle" style="font-size:11px; padding:6px 12px; border-color:var(--cyan); color:var(--cyan-bright);">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span data-i18n="nav_manual_btn">MANUAL (PDF)</span>
+      </a>
+      <button class="lang-btn" id="langToggle">عربي</button>
+      <a href="#pricing" class="btn btn-primary" data-i18n="nav_trial">
+        <span>GET 7-DAY TRIAL</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO SECTION ============ -->
+<header class="hero-sec">
+  <div class="wrap">
+    <div class="hero-header">
+      <div class="kick" data-i18n="hero_kicker">RAM CONCEPT (.CPT) & ADAPT-BUILDER (.ADM / .INB) TO AUTOCAD (.DWG)</div>
+      <h1 data-i18n="hero_title">THE STRUCTURAL SUITE FOR <span>POST-TENSIONED SHOP DRAWINGS</span></h1>
+      <p data-i18n="hero_lead">
+        Turn complex tendon models into production-ready AutoCAD DWG shop drawings, true 3D parabolic drape profiles, and Excel bar bending schedules in seconds. <strong>100% offline desktop engineering</strong>.
+      </p>
+      <div class="hero-cta-group">
+        <a href="#pricing" class="btn btn-primary" style="padding:12px 24px; font-size:13px;" data-i18n="hero_cta_trial">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>START 7-DAY FREE TRIAL</span>
+        </a>
+        <a href="Vortex_PT_User_Manual.pdf" download="Vortex_PT_User_Manual.pdf" class="btn btn-subtle" style="padding:12px 22px; font-size:13px;" data-i18n="hero_cta_manual">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span>USER MANUAL (PDF • 17 PAGES)</span>
+        </a>
+        <a href="#workstation" class="btn btn-subtle" style="padding:12px 20px; font-size:13px;" data-i18n="hero_cta_sim">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span>INTERACTIVE WORKSTATION</span>
+        </a>
+      </div>
+
+      <div class="hero-stats-bar">
+        <div class="hero-stat-cell">
+          <b>70+</b>
+          <span data-i18n="stat1_label">TENDONS PARSED / SEC</span>
+        </div>
+        <div class="hero-stat-cell">
+          <b>0</b>
+          <span data-i18n="stat2_label">MANUAL REDRAFTING</span>
+        </div>
+        <div class="hero-stat-cell">
+          <b>100%</b>
+          <span data-i18n="stat3_label">OFFLINE ED25519</span>
+        </div>
+        <div class="hero-stat-cell">
+          <b>DWG+XLS</b>
+          <span data-i18n="stat4_label">SITE-READY OUTPUT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ VORTEX PT VIRTUAL WORKSTATION (INTERACTIVE SIMULATOR) ============ -->
+<section class="workstation-sec" id="workstation">
+  <div class="wrap">
+    <div style="text-align:center; margin-bottom:28px;">
+      <div class="kick" style="justify-content:center;" data-i18n="sim_kicker">LIVE APPLICATION SIMULATOR</div>
+      <h2 class="h2" data-i18n="sim_title">VORTEX PT DESKTOP WORKSTATION</h2>
+      <p class="sub" data-i18n="sim_sub">Explore the authentic desktop application environment. Switch tabs on the left navigation rail, inspect tendons, and toggle layers.</p>
+    </div>
+
+    <div class="app-frame">
+      <!-- Windows 11 Fluent Titlebar -->
+      <div class="app-titlebar">
+        <div class="titlebar-brand">
+          <svg viewBox="0 0 500 500" fill="none">
+            <path d="M 86,220 C 130,375 370,375 414,220" stroke="#00a2ed" stroke-width="32" stroke-linecap="round"/>
+            <circle cx="74" cy="214" r="30" stroke="#38bdf8" stroke-width="16"/>
+            <circle cx="426" cy="214" r="30" stroke="#f59e0b" stroke-width="16"/>
+            <line x1="125" y1="80" x2="250" y2="400" stroke="#00a2ed" stroke-width="60" stroke-linecap="round"/>
+            <line x1="375" y1="80" x2="250" y2="400" stroke="#818cf8" stroke-width="60" stroke-linecap="round"/>
+          </svg>
+          <span>Vortex PT — [B01-PART 2.cpt]</span>
+        </div>
+        <div class="titlebar-center">Licensed to: ENG. AHMED ELKHOLY • Node-Locked VTX2</div>
+        <div class="titlebar-ctrls">
+          <span class="win-btn win-min"></span>
+          <span class="win-btn win-max"></span>
+          <span class="win-btn win-close"></span>
+        </div>
+      </div>
+
+      <!-- Top Command Bar -->
+      <div class="app-commandbar">
+        <div class="cmd-left">
+          <button class="btn-cmd-open" id="simOpenBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <span>Open Model</span>
+          </button>
+          <div class="tendon-selector-box">
+            <span>Selected:</span>
+            <b id="simSelectedTendonLabel">Tendon Y-3 (Longitude) | Spans: 8 | Length: 78.4m</b>
+          </div>
+          <div class="cmd-chips">
+            <span class="cmd-chip active" data-chip="slabs">Slabs</span>
+            <span class="cmd-chip active" data-chip="drops">Drops</span>
+            <span class="cmd-chip active" data-chip="cols">Columns</span>
+            <span class="cmd-chip active" data-chip="tendons">Tendons</span>
+            <span class="cmd-chip active" data-chip="chairs">Chairs</span>
+          </div>
+        </div>
+        <div>
+          <div class="qa-alert-badge" id="simQaBadge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>1 QA Warning</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- App Body (NavRail + View Stage) -->
+      <div class="app-body">
+        <div class="app-navrail">
+          <button class="rail-btn active" data-tab="model" title="2D CAD Model Workspace">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </button>
+          <button class="rail-btn" data-tab="export" title="AutoCAD DWG Export">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+          <button class="rail-btn" data-tab="schedules" title="Fabrication Schedules">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+          </button>
+          <button class="rail-btn" data-tab="settings" title="Detailing Settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+          <div class="rail-spacer"></div>
+          <div class="rail-license-dot" title="License: Active (Permanent)"></div>
+        </div>
+
+        <div class="app-view-stage">
+          <!-- VIEW 1: MODEL WORKSPACE -->
+          <div class="app-view active" id="view-model">
+            <div class="model-workspace-grid">
+              <div class="cad-canvas-panel">
+                <div class="cad-svg-area">
+                  <!-- Floating Project Metrics Card (Matches real app) -->
+                  <div class="hud-metrics-card">
+                    <div class="hud-title">PROJECT METRICS</div>
+                    <div class="hud-row"><span>Model</span><b>B01-PART 2</b></div>
+                    <div class="hud-row"><span>Slab Area</span><b>1,383.6 m²</b></div>
+                    <div class="hud-row"><span>Main Slab T</span><b>250 mm</b></div>
+                    <div class="hud-row"><span>Drop Panels</span><b>11 Drops</b></div>
+                    <div class="hud-row"><span>Beams</span><b>13 Beams</b></div>
+                    <div class="hud-row"><span>Tendons</span><b style="color:var(--cyan-bright);">70 Total</b></div>
+                    <div class="hud-row"><span>Strand Length</span><b style="color:var(--cyan-bright);">5,234 m</b></div>
+                    <div class="hud-row"><span>Strand Weight</span><b style="color:var(--cyan-bright);">4,055 kg</b></div>
+                    <div class="hud-row"><span>Jacks / Anchors</span><b>86 / 54</b></div>
+                  </div>
+
+                  <!-- Floating QA Alert (Matches real app) -->
+                  <div class="hud-qa-banner" id="simQaBanner">
+                    <h5>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      <span>Engineering QA Alert (1 Issue Detected)</span>
+                    </h5>
+                    <p><strong>[WARNING] Y-1:</strong> Tendon 'Y-1' has two live ends but its length (9.68 m) is smaller than the minimum recommended threshold (35.0 m). Recommend single live end.</p>
+                  </div>
+
+                  <!-- 2D CAD Vector Canvas -->
+                  <svg viewBox="0 0 800 420" class="cad-svg">
+                    <g id="v-grid" opacity="0.3">
+                      <line x1="60" y1="60" x2="740" y2="60" stroke="#1e2b45" stroke-width="1"/>
+                      <line x1="60" y1="160" x2="740" y2="160" stroke="#1e2b45" stroke-width="1"/>
+                      <line x1="60" y1="260" x2="740" y2="260" stroke="#1e2b45" stroke-width="1"/>
+                      <line x1="60" y1="360" x2="740" y2="360" stroke="#1e2b45" stroke-width="1"/>
+                      <line x1="160" y1="40" x2="160" y2="380" stroke="#1e2b45" stroke-width="1"/>
+                      <line x1="320" y1="40" x2="320" y2="380" stroke="#1e2b45" stroke-width="1"/>
+                      <line x1="480" y1="40" x2="480" y2="380" stroke="#1e2b45" stroke-width="1"/>
+                      <line x1="640" y1="40" x2="640" y2="380" stroke="#1e2b45" stroke-width="1"/>
+                    </g>
+                    <!-- Slab Perimeter -->
+                    <rect x="60" y="50" width="680" height="320" rx="4" fill="none" stroke="#475569" stroke-width="2"/>
+                    <!-- Drop Panels -->
+                    <g id="v-drops">
+                      <rect x="135" y="135" width="50" height="50" fill="#141c2c" stroke="#f59e0b" stroke-width="1.2"/>
+                      <rect x="295" y="135" width="50" height="50" fill="#141c2c" stroke="#f59e0b" stroke-width="1.2"/>
+                      <rect x="455" y="135" width="50" height="50" fill="#141c2c" stroke="#f59e0b" stroke-width="1.2"/>
+                      <rect x="615" y="135" width="50" height="50" fill="#141c2c" stroke="#f59e0b" stroke-width="1.2"/>
+                      <rect x="135" y="235" width="50" height="50" fill="#141c2c" stroke="#f59e0b" stroke-width="1.2"/>
+                      <rect x="295" y="235" width="50" height="50" fill="#141c2c" stroke="#f59e0b" stroke-width="1.2"/>
+                      <rect x="455" y="235" width="50" height="50" fill="#141c2c" stroke="#f59e0b" stroke-width="1.2"/>
+                      <rect x="615" y="235" width="50" height="50" fill="#141c2c" stroke="#f59e0b" stroke-width="1.2"/>
+                    </g>
+                    <!-- Columns -->
+                    <g id="v-cols">
+                      <rect x="150" y="150" width="20" height="20" fill="#fbbf24"/>
+                      <rect x="310" y="150" width="20" height="20" fill="#fbbf24"/>
+                      <rect x="470" y="150" width="20" height="20" fill="#fbbf24"/>
+                      <rect x="630" y="150" width="20" height="20" fill="#fbbf24"/>
+                      <rect x="150" y="250" width="20" height="20" fill="#fbbf24"/>
+                      <rect x="310" y="250" width="20" height="20" fill="#fbbf24"/>
+                      <rect x="470" y="250" width="20" height="20" fill="#fbbf24"/>
+                      <rect x="630" y="250" width="20" height="20" fill="#fbbf24"/>
+                    </g>
+                    <!-- Beams -->
+                    <line x1="60" y1="160" x2="740" y2="160" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="6 3"/>
+                    <line x1="60" y1="260" x2="740" y2="260" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="6 3"/>
+                    <!-- Latitude Tendons (Magenta) -->
+                    <path d="M 60,110 C 180,110 220,125 320,125 C 420,125 460,110 580,110 C 640,110 680,110 740,110" fill="none" stroke="#d946ef" stroke-width="2"/>
+                    <path d="M 60,210 C 180,210 220,225 320,225 C 420,225 460,210 580,210 C 640,210 680,210 740,210" fill="none" stroke="#d946ef" stroke-width="2"/>
+                    <path d="M 60,310 C 180,310 220,325 320,325 C 420,325 460,310 580,310 C 640,310 680,310 740,310" fill="none" stroke="#d946ef" stroke-width="2"/>
+                    <!-- Longitude Tendons (Teal) -->
+                    <path d="M 230,50 C 230,150 245,210 245,260 C 245,310 230,340 230,370" fill="none" stroke="#14b8a6" stroke-width="2"/>
+                    <path d="M 550,50 C 550,150 565,210 565,260 C 565,310 550,340 550,370" fill="none" stroke="#14b8a6" stroke-width="2"/>
+                    <!-- Highlight Selected Tendon Y-3 (Cyan Glow) -->
+                    <path d="M 390,50 C 390,140 405,210 405,260 C 405,310 390,340 390,370" fill="none" stroke="#38bdf8" stroke-width="4" filter="drop-shadow(0 0 6px #00a2ed)"/>
+                    <circle cx="390" cy="50" r="6" fill="#ef4444"/>
+                    <rect x="385" y="364" width="10" height="8" fill="#3b82f6"/>
+                  </svg>
+                </div>
+
+                <!-- Bottom Profile Drawer -->
+                <div class="cad-profile-dock">
+                  <div class="dock-header">
+                    <span>ELEVATION PROFILE: <b>TENDON Y-3</b> (LONGITUDE • 8 SPANS)</span>
+                    <span>MAIN SLAB T = 250mm • CHAIR FABRICATION CGS</span>
+                  </div>
+                  <div class="dock-svg-wrap">
+                    <svg viewBox="0 0 740 90" style="width:100%; height:100%;">
+                      <rect x="10" y="10" width="720" height="70" fill="#070b14" stroke="#1e2c46" stroke-width="1.2" rx="2"/>
+                      <line x1="10" y1="20" x2="730" y2="20" stroke="#334155" stroke-width="0.8" stroke-dasharray="3 3"/>
+                      <line x1="10" y1="70" x2="730" y2="70" stroke="#334155" stroke-width="0.8" stroke-dasharray="3 3"/>
+                      <!-- PAN BOX Block (Yellow) -->
+                      <rect x="20" y="22" width="46" height="18" fill="#eab308" rx="2"/>
+                      <text x="24" y="34" fill="#070b14" font-size="7.5" font-weight="bold" font-family="monospace">PAN BOX</text>
+                      <!-- Parabolic Tendon Curve (Cyan) -->
+                      <path d="M 22,31 C 80,31 120,68 180,68 C 240,68 280,24 340,24 C 400,24 440,68 500,68 C 560,68 620,28 720,28" fill="none" stroke="#38bdf8" stroke-width="2.6" stroke-linecap="round"/>
+                      <text x="170" y="64" fill="#f59e0b" font-size="8" font-family="monospace">L=40</text>
+                      <text x="328" y="20" fill="#00a2ed" font-size="8" font-family="monospace">H=195</text>
+                      <text x="490" y="64" fill="#f59e0b" font-size="8" font-family="monospace">L=40</text>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Element Inspector -->
+              <div class="model-inspector">
+                <div class="insp-title">ELEMENT PROPERTIES</div>
+                <div class="insp-prop-list">
+                  <div class="insp-row"><span>Tendon ID</span><b style="color:var(--cyan-bright);">TENDON Y-3</b></div>
+                  <div class="insp-row"><span>Direction</span><b>Longitude</b></div>
+                  <div class="insp-row"><span>Strand Count</span><b>5 × 12.7mm</b></div>
+                  <div class="insp-row"><span>Plan Length</span><b>78.40 m</b></div>
+                  <div class="insp-row"><span>Cutting Length</span><b>78.70 m</b></div>
+                  <div class="insp-row"><span>Strand Weight</span><b style="color:var(--cyan-bright);">304.8 kg</b></div>
+                  <div class="insp-row"><span>Jacking Force</span><b>742.5 kN</b></div>
+                  <div class="insp-row"><span>Elongation</span><b>328 mm</b></div>
+                  <div class="insp-row"><span>Start Anchor</span><b style="color:#ef4444;">LIVE (Pan Box)</b></div>
+                  <div class="insp-row"><span>End Anchor</span><b style="color:#3b82f6;">DEAD END</b></div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:auto;">
+                  <button class="btn btn-primary" style="padding:8px; font-size:10px;">Focus</button>
+                  <button class="btn btn-subtle" style="padding:8px; font-size:10px;">Export DWG</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW 2: EXPORT CENTER -->
+          <div class="app-view" id="view-export">
+            <div class="export-view-wrap">
+              <h3>AUTOCAD DWG & EXCEL EXPORT OPTIONS</h3>
+              <p style="color:var(--txt-dim); font-size:13px;">Generate site-ready drawings with dedicated layers and standardized dimensions.</p>
+              
+              <div class="export-card-grid">
+                <div class="exp-card">
+                  <div>
+                    <h4>CAD Drawing Type</h4>
+                    <p>Full shop drawing fabrication with chair elevations, or design-only profile points.</p>
+                  </div>
+                  <div class="exp-ctrl">
+                    <select>
+                      <option selected>Shop Drawing (Full Fabrication & Chairs)</option>
+                      <option>Design Drawing (Points Only with Kholy Block)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="exp-card">
+                  <div>
+                    <h4>CAD Drawing Plan Layout</h4>
+                    <p>Place both Latitude & Longitude drawings side-by-side on a single unified sheet.</p>
+                  </div>
+                  <div class="exp-ctrl">
+                    <select>
+                      <option selected>Side-by-Side Dual Plan (Lat & Long)</option>
+                      <option>Combined Single Plan</option>
+                      <option>Separate DWG Files per Direction</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="exp-card">
+                  <div>
+                    <h4>Dynamic Self-Measuring Dimensions</h4>
+                    <p>Dimensions measure automatically in AutoCAD without text overrides. Grip edits update values.</p>
+                  </div>
+                  <div>
+                    <span style="color:var(--green); font-family:var(--mono); font-size:12px;">✓ Enabled (dimrnd: 5mm)</span>
+                  </div>
+                </div>
+
+                <div class="exp-card">
+                  <div>
+                    <h4>Unified Pan Box Block</h4>
+                    <p>Inserts single block containing pocket former and live end anchor. Zero duplicates.</p>
+                  </div>
+                  <div>
+                    <span style="color:var(--green); font-family:var(--mono); font-size:12px;">✓ Active (PAN Block)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex; gap:12px; margin-top:24px;">
+                <button class="btn btn-primary" style="padding:12px 24px;">GENERATE AUTOCAD DWG</button>
+                <button class="btn btn-subtle" style="padding:12px 24px;">EXPORT EXCEL SCHEDULES</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW 3: SCHEDULES & TABLES -->
+          <div class="app-view" id="view-schedules">
+            <div class="sched-view-wrap">
+              <div class="sched-pills">
+                <button class="sched-pill active">Cutting Lengths (Combined)</button>
+                <button class="sched-pill">Chair Heights Summary (Split Tables)</button>
+                <button class="sched-pill">Project Strand Takeoff</button>
+              </div>
+              <div class="sched-table-container">
+                <table class="sched-table">
+                  <thead>
+                    <tr>
+                      <th>TENDON ID</th>
+                      <th>STRANDS</th>
+                      <th>PLAN LENGTH</th>
+                      <th>CUTTING LENGTH (+0.3m)</th>
+                      <th>ELONGATION</th>
+                      <th>START ANCHOR</th>
+                      <th>END ANCHOR</th>
+                      <th>WEIGHT</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Y-1</td><td>4 × 12.7</td><td>9.68 m</td><td>9.98 m</td><td>42 mm</td><td style="color:#ef4444;">LIVE</td><td style="color:#ef4444;">LIVE</td><td>30.9 kg</td></tr>
+                    <tr style="background:rgba(0,162,237,0.06);"><td>Y-3</td><td>5 × 12.7</td><td>78.40 m</td><td>78.70 m</td><td>328 mm</td><td style="color:#eab308;">LIVE (Pan)</td><td style="color:#3b82f6;">DEAD</td><td>304.8 kg</td></tr>
+                    <tr><td>Y-5</td><td>4 × 12.7</td><td>64.20 m</td><td>64.50 m</td><td>264 mm</td><td style="color:#ef4444;">LIVE</td><td style="color:#3b82f6;">DEAD</td><td>199.9 kg</td></tr>
+                    <tr><td>X-16</td><td>5 × 12.7</td><td>82.10 m</td><td>82.40 m</td><td>346 mm</td><td style="color:#ef4444;">LIVE</td><td style="color:#3b82f6;">DEAD</td><td>319.2 kg</td></tr>
+                    <tr><td>X-18</td><td>4 × 12.7</td><td>76.50 m</td><td>76.80 m</td><td>314 mm</td><td style="color:#ef4444;">LIVE</td><td style="color:#ef4444;">LIVE</td><td>238.1 kg</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW 4: SETTINGS VIEW -->
+          <div class="app-view" id="view-settings">
+            <div class="settings-view-wrap">
+              <h3>CAD Shop Drawing Detailing Settings</h3>
+              <p style="color:var(--txt-dim); font-size:13px;">Configure AutoCAD templates, custom anchor blocks, layer colors, and engineering criteria.</p>
+
+              <div class="set-card">
+                <div>
+                  <h4>AutoCAD Block Template (templates/blocks.dwg)</h4>
+                  <p>Anchor and chair blocks are imported from 'templates/blocks.dwg'. Click Edit to open in AutoCAD.</p>
+                </div>
+                <button class="btn btn-subtle" style="padding:6px 12px; font-size:11px;">Edit in AutoCAD</button>
+              </div>
+
+              <div class="set-card">
+                <div>
+                  <h4>Live End Anchor Block Name</h4>
+                  <p>AutoCAD block inserted at live stressing anchorage locations.</p>
+                </div>
+                <input type="text" class="set-input" value="LIVEND" style="width:100px;" readonly>
+              </div>
+
+              <div class="set-card">
+                <div>
+                  <h4>Dead End Anchor Block Name</h4>
+                  <p>AutoCAD block inserted at cast-in dead blind anchorage locations.</p>
+                </div>
+                <input type="text" class="set-input" value="DEADEND" style="width:100px;" readonly>
+              </div>
+
+              <div class="set-card">
+                <div>
+                  <h4>Pan Box Block Name</h4>
+                  <p>AutoCAD block inserted for interior slab setback anchors.</p>
+                </div>
+                <input type="text" class="set-input" value="PAN" style="width:100px;" readonly>
+              </div>
+
+              <div class="set-card">
+                <div>
+                  <h4>Chair Text Height in CAD</h4>
+                  <p>Standard text height for all exported chair elevations and annotations.</p>
+                </div>
+                <input type="text" class="set-input" value="200.0 mm" style="width:100px;" readonly>
+              </div>
+
+              <div class="set-card">
+                <div>
+                  <h4>Strand Unit Weight</h4>
+                  <p>Mass per linear meter for 0.5" 7-wire strand (used for BBS weight calculation).</p>
+                </div>
+                <input type="text" class="set-input" value="0.775 kg/m" style="width:100px;" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- App Statusbar -->
+      <div class="app-statusbar">
+        <div>
+          <span class="stat-indicator"></span>
+          <span>Model: B01-PART 2.cpt (70 tendons, 12 slabs) &nbsp;|&nbsp; Coordinate: X: 8.16 m, Y: 79.94 m</span>
+        </div>
+        <div>
+          <span>Engine: Direct Concept / ADAPT Binary Parser</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OFFICIAL USER MANUAL SECTION ============ -->
+<section class="manual-sec" id="manual">
+  <div class="wrap">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:20px;">
+      <div>
+        <div class="kick" data-i18n="manual_kicker">OFFICIAL ENGINEERING DOCUMENTATION</div>
+        <h2 class="h2" data-i18n="manual_title">COMPREHENSIVE TECHNICAL USER MANUAL</h2>
+        <p class="sub" style="max-width:680px;" data-i18n="manual_sub">
+          Full 17-page technical guide with step-by-step procedures, annotated workspace screenshots, CAD block customization, ACI 318/PTI quality rules, and ASTM strand reference tables.
+        </p>
+      </div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <a href="Vortex_PT_User_Manual.pdf" download="Vortex_PT_User_Manual.pdf" class="btn btn-primary" style="padding:12px 22px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span data-i18n="btn_download_manual_pdf">DOWNLOAD MANUAL (PDF • 2.3 MB)</span>
+        </a>
+        <a href="user_manual.html" target="_blank" rel="noopener" class="btn btn-subtle" style="padding:12px 20px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span data-i18n="btn_view_manual_web">VIEW ONLINE (HTML)</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="manual-grid">
+      <!-- Left: Manual Preview Card -->
+      <div class="manual-cover-card">
+        <div class="manual-cover-img">
+          <img src="./assets/screenshots/shot_app_model_main.png" alt="User Manual Cover">
+          <div class="manual-cover-overlay">
+            <span style="font-family:var(--mono); font-size:10px; color:var(--cyan-bright); letter-spacing:.15em; text-transform:uppercase; font-weight:700;">ENGINEERING USER MANUAL</span>
+            <h3 style="font-family:var(--disp); font-size:22px; color:#fff; font-weight:700; margin:4px 0;">VORTEX PT v2.6</h3>
+            <p style="font-size:12px; color:#cbd5e1; margin:0;">17 Pages • Full Color • Step-by-Step Detailing Guide</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Chapter Directory Grid -->
+      <div class="ch-list-grid">
+        <div class="ch-card"><div class="ch-num">CH 01</div><div class="ch-title">Architecture & FEA Parsers</div><div class="ch-desc">Zero-license RAM Concept & ADAPT parsers.</div></div>
+        <div class="ch-card"><div class="ch-num">CH 02</div><div class="ch-title">Opening & Ingesting Models</div><div class="ch-desc">Direct .cpt, .cpt8 and .inp model workflows.</div></div>
+        <div class="ch-card"><div class="ch-num">CH 03</div><div class="ch-title">2D CAD Viewport Navigation</div><div class="ch-desc">Pan, zoom, layer chips, and tendon inspector.</div></div>
+        <div class="ch-card"><div class="ch-num">CH 04</div><div class="ch-title">Parabolic Profiling & Chairs</div><div class="ch-desc">Drape curves, inflections, and chair deduction.</div></div>
+        <div class="ch-card"><div class="ch-num">CH 05</div><div class="ch-title">Engineering Compliance & QA</div><div class="ch-desc">ACI 318 cover, two-dead-end & double-live checks.</div></div>
+        <div class="ch-card"><div class="ch-num">CH 06</div><div class="ch-title">Detailing Settings & CAD Blocks</div><div class="ch-desc">Configuring LIVEND, DEADEND, PAN box blocks.</div></div>
+        <div class="ch-card"><div class="ch-num">CH 07</div><div class="ch-title">AutoCAD DWG Shop Drawings</div><div class="ch-desc">Side-by-side sheets, layers, self-measuring dims.</div></div>
+        <div class="ch-card"><div class="ch-num">CH 08</div><div class="ch-title">Fabrication Schedules & Takeoffs</div><div class="ch-desc">Excel cutting lists, elongations, chair summary.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AUTHENTIC SCREENSHOTS GALLERY ============ -->
+<section class="gal-sec" id="gallery">
+  <div class="wrap">
+    <div>
+      <div class="kick" data-i18n="gal_kicker">AUTHENTIC WORKSPACE GALLERY</div>
+      <h2 class="h2" data-i18n="gal_title">REAL PRODUCTION SCREENSHOTS</h2>
+      <p class="sub" data-i18n="gal_sub">High-resolution captures from production engineering runs of Vortex PT. Click any image to enlarge.</p>
+    </div>
+
+    <div class="gal-grid">
+      <div class="gal-card" data-full="./assets/screenshots/shot_app_model_main.png" data-cap="Production CAD Workspace: Interactive CAD canvas with live tendon inspection, drawing layer toggles, project metrics HUD (5,234 m strand length & 4,055 kg weight), and parabolic drape profile viewer.">
+        <div class="gal-thumb"><img src="./assets/screenshots/shot_app_model_main.png" alt="Production CAD Workspace" loading="lazy"></div>
+        <div class="gal-info">
+          <h4>01. Production CAD Workspace</h4>
+          <p>Full CAD canvas with live properties inspector, drawing layer toggles, project metrics card, and parabolic 2D cross-section viewer.</p>
+        </div>
+      </div>
+
+      <div class="gal-card" data-full="./assets/screenshots/shot_app_qa_alerts.png" data-cap="Engineering Compliance & QA Alerts: Floating diagnostic modal detecting tendon Y-1 below minimum two-live length threshold with one-click locate on canvas.">
+        <div class="gal-thumb"><img src="./assets/screenshots/shot_app_qa_alerts.png" alt="QA Compliance Alerts" loading="lazy"></div>
+        <div class="gal-info">
+          <h4>02. Engineering Compliance & QA Alerts</h4>
+          <p>Floating diagnostic modal detecting tendons with two live ends below minimum length threshold with instant one-click locate on canvas.</p>
+        </div>
+      </div>
+
+      <div class="gal-card" data-full="./assets/screenshots/shot_app_settings.png" data-cap="Detailing Criteria & CAD Blocks: Configurable AutoCAD templates, live/dead/pan box anchor blocks, ACI layer colors, chair text height, and design rules.">
+        <div class="gal-thumb"><img src="./assets/screenshots/shot_app_settings.png" alt="Settings & CAD Criteria" loading="lazy"></div>
+        <div class="gal-info">
+          <h4>03. Detailing Criteria & CAD Blocks</h4>
+          <p>Configurable AutoCAD block templates, live/dead/pan box anchor blocks, ACI layer colors, chair text height, and design rules.</p>
+        </div>
+      </div>
+
+      <div class="gal-card" data-full="./assets/screenshots/shot_app_elevation_profile.png" data-cap="11-Span Full Slab Elevation Profile: Continuous multi-span parabolic tendon curve X-16 across columns, chair markers, and pan box setbacks.">
+        <div class="gal-thumb"><img src="./assets/screenshots/shot_app_elevation_profile.png" alt="11-Span Elevation Profile" loading="lazy"></div>
+        <div class="gal-info">
+          <h4>04. 11-Span Full Slab Elevation Profile</h4>
+          <p>Continuous multi-span parabolic tendon curve across columns, high and low chair height markers, and pan box setbacks.</p>
+        </div>
+      </div>
+
+      <div class="gal-card" data-full="./assets/screenshots/shot_03_export.png" data-cap="AutoCAD DWG Export Center: Native DWG shop drawings, dual side-by-side sheets, dynamic self-measuring dimensions, and BBS schedules.">
+        <div class="gal-thumb"><img src="./assets/screenshots/shot_03_export.png" alt="Export Center" loading="lazy"></div>
+        <div class="gal-info">
+          <h4>05. AutoCAD DWG Export Center</h4>
+          <p>Native AutoCAD DWG generator with dual plan layout, embedded CAD takeoff tables, and dynamic self-measuring dimensions.</p>
+        </div>
+      </div>
+
+      <div class="gal-card" data-full="./assets/screenshots/shot_04_schedules.png" data-cap="Interactive Schedules: Bar bending schedules, strand takeoffs, and split chair height tables.">
+        <div class="gal-thumb"><img src="./assets/screenshots/shot_04_schedules.png" alt="Schedules Center" loading="lazy"></div>
+        <div class="gal-info">
+          <h4>06. Fabrication Schedules & BBS</h4>
+          <p>Automated cutting lengths with tail additions, strand tonnages, and chair distribution tables.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox Modal -->
+<div class="lightbox" id="galLightbox">
+  <span class="lightbox-close" id="lbClose">×</span>
+  <div class="lightbox-content">
+    <img id="lbImg" src="" alt="Enlarged Screenshot">
+    <div class="lightbox-caption" id="lbCap"></div>
+  </div>
+</div>
+
+<!-- ============ PRICING SECTION ============ -->
+<section class="price-sec" id="pricing">
+  <div class="wrap">
+    <div style="text-align:center;">
+      <div class="kick" style="justify-content:center;" data-i18n="price_kicker">TRANSPARENT ENGINEERING PRICING</div>
+      <h2 class="h2" data-i18n="price_title">CHOOSE YOUR PLAN. WORK 100% OFFLINE.</h2>
+      <p class="sub" style="margin-inline:auto;" data-i18n="price_sub">Every license is cryptographically node-locked via Ed25519 digital signatures. Zero telemetry or internet required.</p>
+    </div>
+
+    <!-- 7-Day Free Trial Banner -->
+    <div class="price-trial-banner">
+      <div>
+        <h4 style="font-family:var(--disp); font-size:18px; color:#fff; margin-bottom:4px; display:flex; align-items:center; gap:8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan-bright)" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span data-i18n="trial_banner_title">Want to test on your live model first?</span>
+        </h4>
+        <p style="font-size:13px; color:var(--txt-dim); margin:0;" data-i18n="trial_banner_sub">Download the full software with an instant 7-day trial. 100% full features, zero watermarks, no credit card required.</p>
+      </div>
+      <a href="https://wa.me/201552228306?text=Hello%20Abdelrhman%2C%20I%20would%20like%20to%20request%20access%20to%20the%20Vortex%20PT%20(7-Day%20Trial)." class="btn btn-subtle" target="_blank" rel="noopener" data-i18n="btn_trial_free">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>DOWNLOAD 7-DAY TRIAL</span>
+      </a>
+    </div>
+
+    <!-- Pricing Plans Grid -->
+    <div class="price-plans-grid">
+      <!-- Plan 1: Monthly ($25/mo) -->
+      <div class="plan-card">
+        <span class="plan-tag" data-i18n="plan_monthly_tag">MONTHLY PASS</span>
+        <div class="plan-price">$25<sub> / Month</sub></div>
+        <div class="plan-term" data-i18n="plan_monthly_per">Flexible Monthly Access • Cancel Anytime</div>
+        <ul class="plan-features">
+          <li>1 Workstation Node-Locked License (Machine-Bound Ed25519)</li>
+          <li>Unlimited RAM Concept (.cpt) & ADAPT (.adm / .inb) model extraction</li>
+          <li>AutoCAD DWG native generation with custom blocks & layers</li>
+          <li>Dynamic self-measuring dimension styles (no manual text overrides)</li>
+          <li>Full Excel cutting lists, elongation calculations & BBS</li>
+          <li>Split chair tables (Dead/Live ends excluded from summary)</li>
+          <li>100% offline air-gapped security (Zero internet required)</li>
+          <li>Standard engineering email support & bugfixes</li>
+        </ul>
+        <a href="https://wa.me/201552228306?text=Hello%20Abdelrhman%2C%20I%20would%20like%20to%20subscribe%20to%20the%20Vortex%20PT%20Monthly%20Pass%20(%2425%2Fmo)." target="_blank" rel="noopener" class="btn btn-subtle" data-i18n="btn_get_monthly">GET MONTHLY ACCESS</a>
+      </div>
+
+      <!-- Plan 2: Yearly ($250/yr) - Hot -->
+      <div class="plan-card hot">
+        <span class="plan-badge badge-cyan" data-i18n="plan_hot_badge">MOST POPULAR • SAVE $50</span>
+        <span class="plan-tag" data-i18n="plan_yearly_tag">ANNUAL LICENSE</span>
+        <div class="plan-price">$250<sub> / Year</sub></div>
+        <div class="plan-term" data-i18n="plan_yearly_per">Equivalent to ~$20.80/month • 2 Months Free</div>
+        <ul class="plan-features">
+          <li><strong>Everything in Monthly, plus:</strong></li>
+          <li>1 Workstation Annual License with continuous updates</li>
+          <li>2 Free Hardware Migrations per year (Machine ID transfers)</li>
+          <li>Unified Pan Box & Live End block detailing automation</li>
+          <li>Two-live end minimum length threshold QA alerts</li>
+          <li>Strand unit weight (kg/m) custom takeoff calculator</li>
+          <li>Priority engineering feature requests & updates</li>
+          <li>Direct WhatsApp & Email priority technical support</li>
+        </ul>
+        <a href="https://wa.me/201552228306?text=Hello%20Abdelrhman%2C%20I%20would%20like%20to%20purchase%20the%20Vortex%20PT%20Annual%20License%20(%24250%2Fyr)." target="_blank" rel="noopener" class="btn btn-primary" data-i18n="btn_get_yearly">GET YEARLY PASS</a>
+      </div>
+
+      <!-- Plan 3: Lifetime ($1,500 Lifetime) - Perpetual -->
+      <div class="plan-card perpetual">
+        <span class="plan-badge badge-purple" data-i18n="plan_lifetime_badge">PERPETUAL • PAY ONCE</span>
+        <span class="plan-tag" data-i18n="plan_lifetime_tag">LIFETIME OWNERSHIP</span>
+        <div class="plan-price">$1,500<sub> / Lifetime</sub></div>
+        <div class="plan-term" data-i18n="plan_lifetime_per">One-Time Payment • Perpetual Node-Locked • Own Forever</div>
+        <ul class="plan-features">
+          <li><strong>Lifetime Perpetual License for 1 Workstation</strong></li>
+          <li>Zero recurring fees, subscription fatigue, or renewal costs</li>
+          <li>Unlimited hardware transfers over product lifetime</li>
+          <li>All future major releases, version upgrades & tools included</li>
+          <li>Custom AutoCAD template (.dwg) & title block onboarding setup</li>
+          <li>Direct VIP line to the lead software developer</li>
+          <li>Standalone Admin License Generator utility option for offline offices</li>
+          <li>Lifetime priority engineering support & consulting</li>
+        </ul>
+        <a href="https://wa.me/201552228306?text=Hello%20Abdelrhman%2C%20I%20would%20like%20to%20purchase%20the%20Vortex%20PT%20Lifetime%20License%20(%241%2C500)." target="_blank" rel="noopener" class="btn btn-primary" style="background:#8b5cf6;" data-i18n="btn_get_lifetime">GET LIFETIME LICENSE</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ACCORDION ============ -->
+<section class="faq-sec" id="faq">
+  <div class="wrap" style="max-width:860px;">
+    <div>
+      <div class="kick" data-i18n="faq_kicker">FREQUENTLY ASKED QUESTIONS</div>
+      <h2 class="h2" data-i18n="faq_title">QUESTIONS, ANSWERED.</h2>
+      <p class="sub" data-i18n="faq_sub">Everything you need to know about Vortex PT, file formats, and engineering licensing.</p>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-btn">Which versions of RAM Concept and ADAPT-Builder are supported?</button>
+        <div class="faq-ans">
+          <p>Vortex PT directly parses Bentley RAM Concept files (.cpt, .cpt8) from Concept v5 through v8 (including 2023, 2024, and 2025 releases) and ADAPT-Builder models (.adm) via paired companion exchange (.inb / .inp) files. It extracts tendon layout, tendon strand counts, jacking forces, and floor boundary coordinates with zero loss of engineering data.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn">Are the exported AutoCAD drawings native DWG files?</button>
+        <div class="faq-ans">
+          <p>Yes. Vortex PT generates native AutoCAD DWG drawings that can be opened directly in AutoCAD 2000 through 2026, Civil 3D, and BricsCAD without any conversion steps. All entities are mapped to clean engineering layers with true colors and dynamic self-measuring dimension styles.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn">How does the Two-Live End Stressing validation rule work?</button>
+        <div class="faq-ans">
+          <p>Under standard post-tensioning practice, short tendons stressed from both ends suffer excessive friction and wedge seating loss at both jacks. Vortex PT features a configurable minimum length threshold (default 35.0 m). Any two-live-end tendon shorter than this threshold triggers an engineering alert, recommending one-end stressing instead.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn">Does Vortex PT require an internet connection to run?</button>
+        <div class="faq-ans">
+          <p>No. Vortex PT operates 100% offline. License activation is cryptographically verified on your machine using an asymmetric Ed25519 digital signature bound to your hardware Machine ID. Your proprietary project models and engineering drawings never leave your computer.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn">Can I customize chair height deductions and text sizes?</button>
+        <div class="faq-ans">
+          <p>Yes. The Settings tab lets you configure low chair deduction, high chair deduction, intermediate chair deductions, minimum chair height, and standard text height (default 200mm). The software also automatically formats chair height tables, separating Slab Chairs, Live End Chairs, and Dead End Chairs.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="f-grid">
+      <div class="f-col">
+        <div class="nav-brand" style="margin-bottom:14px;">
+          <svg viewBox="0 0 500 500" fill="none">
+            <path d="M 86,220 C 130,375 370,375 414,220" stroke="#00a2ed" stroke-width="32" stroke-linecap="round"/>
+            <circle cx="74" cy="214" r="30" stroke="#38bdf8" stroke-width="16"/>
+            <circle cx="426" cy="214" r="30" stroke="#f59e0b" stroke-width="16"/>
+            <line x1="125" y1="80" x2="250" y2="400" stroke="#00a2ed" stroke-width="60" stroke-linecap="round"/>
+            <line x1="375" y1="80" x2="250" y2="400" stroke="#818cf8" stroke-width="60" stroke-linecap="round"/>
+          </svg>
+          <span>VORTEX <b>PT</b></span>
+        </div>
+        <p style="max-width:34ch; font-size:13px; line-height:1.6; color:var(--txt-dim);">
+          Professional shop drawing and fabrication takeoff automation software for post-tensioned concrete slabs. Built by engineers, for engineers.
+        </p>
+      </div>
+
+      <div class="f-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#workstation">Workstation</a></li>
+          <li><a href="#gallery">Screenshots Gallery</a></li>
+          <li><a href="#manual">User Manual (PDF)</a></li>
+          <li><a href="#pricing">Pricing & Trial</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+
+      <div class="f-col">
+        <h4>Technical Specs</h4>
+        <ul>
+          <li>Windows 10 / 11 64-bit</li>
+          <li>RAM Concept (.cpt) v5-v8</li>
+          <li>ADAPT-Builder (.adm / .inb)</li>
+          <li>AutoCAD DWG 2000-2026</li>
+          <li>Excel XLSX Schedules</li>
+        </ul>
+      </div>
+
+      <div class="f-col">
+        <h4>Contact & Support</h4>
+        <ul>
+          <li><a href="mailto:abdelrhmn1elkoly@gmail.com">abdelrhmn1elkoly@gmail.com</a></li>
+          <li><a href="https://wa.me/201552228306" target="_blank" rel="noopener">WhatsApp: +20 155 222 8306</a></li>
+          <li><a href="https://github.com/abdelrhmn1elkoly/VortexPT" target="_blank" rel="noopener">GitHub Repository</a></li>
+          <li><a href="https://github.com/abdelrhmn1elkoly/VortexPT/releases" target="_blank" rel="noopener">Latest Releases</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="f-bottom">
+      <div>© 2026 Vortex PT. Developed by Abdelrhman Elkholy. All rights reserved.</div>
+      <div style="color:var(--cyan-bright);">Version 1.0.3 Official Release (Build 2026.09)</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function() {
+  "use strict";
+
+  const $ = (s, c) => (c || document).querySelector(s);
+  const $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
+
+  // Workstation Tab Switching
+  const railBtns = $$(".rail-btn");
+  const views = $$(".app-view");
+
+  railBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const tab = btn.getAttribute("data-tab");
+      if (!tab) return;
+      railBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      views.forEach(v => v.classList.remove("active"));
+      const target = $(`#view-${tab}`);
+      if (target) target.classList.add("active");
+    });
+  });
+
+  // QA Badge Toggle
+  const qaBadge = $("#simQaBadge");
+  const qaBanner = $("#simQaBanner");
+  qaBadge?.addEventListener("click", () => {
+    if (qaBanner) {
+      qaBanner.style.display = qaBanner.style.display === "none" ? "block" : "none";
+    }
+  });
+
+  // Lightbox
+  const lb = $("#galLightbox");
+  const lbImg = $("#lbImg");
+  const lbCap = $("#lbCap");
+
+  $$(".gal-card").forEach(card => {
+    card.addEventListener("click", () => {
+      const full = card.getAttribute("data-full");
+      const cap = card.getAttribute("data-cap");
+      if (lb && lbImg && full) {
+        lbImg.src = full;
+        if (lbCap) lbCap.textContent = cap || "";
+        lb.classList.add("active");
+      }
+    });
+  });
+
+  $("#lbClose")?.addEventListener("click", () => lb?.classList.remove("active"));
+  lb?.addEventListener("click", (e) => {
+    if (e.target === lb) lb.classList.remove("active");
+  });
+
+  // FAQ Accordion
+  $$(".faq-item").forEach(item => {
+    const btn = item.querySelector(".faq-btn");
+    btn?.addEventListener("click", () => {
+      const isOpen = item.classList.contains("open");
+      $$(".faq-item").forEach(i => i.classList.remove("open"));
+      if (!isOpen) item.classList.add("open");
+    });
+  });
+
+  // Bilingual Dictionary
+  const I18N = {
+    en: {
+      nav_workstation: "WORKSTATION",
+      nav_gallery: "GALLERY",
+      nav_manual: "USER MANUAL",
+      nav_manual_btn: "MANUAL (PDF)",
+      nav_pricing: "PRICING",
+      nav_faq: "FAQ",
+      nav_trial: "GET 7-DAY TRIAL",
+      hero_kicker: "RAM CONCEPT (.CPT) & ADAPT-BUILDER (.ADM / .INB) TO AUTOCAD (.DWG)",
+      hero_title: "THE STRUCTURAL SUITE FOR POST-TENSIONED SHOP DRAWINGS",
+      hero_lead: "Turn complex tendon models into production-ready AutoCAD DWG shop drawings, true 3D parabolic drape profiles, and Excel bar bending schedules in seconds. 100% offline desktop engineering.",
+      hero_cta_trial: "START 7-DAY FREE TRIAL",
+      hero_cta_manual: "USER MANUAL (PDF • 17 PAGES)",
+      hero_cta_sim: "INTERACTIVE WORKSTATION",
+      stat1_label: "TENDONS PARSED / SEC",
+      stat2_label: "MANUAL REDRAFTING",
+      stat3_label: "OFFLINE ED25519",
+      stat4_label: "SITE-READY OUTPUT",
+      sim_kicker: "LIVE APPLICATION SIMULATOR",
+      sim_title: "VORTEX PT DESKTOP WORKSTATION",
+      sim_sub: "Explore the authentic desktop application environment. Switch tabs on the left navigation rail, inspect tendons, and toggle layers.",
+      manual_kicker: "OFFICIAL ENGINEERING DOCUMENTATION",
+      manual_title: "COMPREHENSIVE TECHNICAL USER MANUAL",
+      manual_sub: "Full 17-page technical guide with step-by-step procedures, annotated workspace screenshots, CAD block customization, ACI 318/PTI quality rules, and ASTM strand reference tables.",
+      btn_download_manual_pdf: "DOWNLOAD MANUAL (PDF • 2.3 MB)",
+      btn_view_manual_web: "VIEW ONLINE (HTML)",
+      gal_kicker: "AUTHENTIC WORKSPACE GALLERY",
+      gal_title: "REAL PRODUCTION SCREENSHOTS",
+      gal_sub: "High-resolution captures from production engineering runs of Vortex PT. Click any image to enlarge.",
+      price_kicker: "TRANSPARENT ENGINEERING PRICING",
+      price_title: "CHOOSE YOUR PLAN. WORK 100% OFFLINE.",
+      price_sub: "Every license is cryptographically node-locked via Ed25519 digital signatures. Zero telemetry or internet required.",
+      trial_banner_title: "Want to test on your live model first?",
+      trial_banner_sub: "Download the full software with an instant 7-day trial. 100% full features, zero watermarks, no credit card required.",
+      btn_trial_free: "DOWNLOAD 7-DAY TRIAL",
+      plan_monthly_tag: "MONTHLY PASS",
+      plan_monthly_per: "Flexible Monthly Access • Cancel Anytime",
+      btn_get_monthly: "GET MONTHLY ACCESS",
+      plan_hot_badge: "MOST POPULAR • SAVE $50",
+      plan_yearly_tag: "ANNUAL LICENSE",
+      plan_yearly_per: "Equivalent to ~$20.80/month • 2 Months Free",
+      btn_get_yearly: "GET YEARLY PASS",
+      plan_lifetime_badge: "PERPETUAL • PAY ONCE",
+      plan_lifetime_tag: "LIFETIME OWNERSHIP",
+      plan_lifetime_per: "One-Time Payment • Perpetual Node-Locked • Own Forever",
+      btn_get_lifetime: "GET LIFETIME LICENSE",
+      faq_kicker: "FREQUENTLY ASKED QUESTIONS",
+      faq_title: "QUESTIONS, ANSWERED.",
+      faq_sub: "Everything you need to know about Vortex PT, file formats, and engineering licensing."
+    },
+    ar: {
+      nav_workstation: "بيئة العمل",
+      nav_gallery: "معرض الصور",
+      nav_manual: "دليل المستخدم",
+      nav_manual_btn: "دليل المستخدم (PDF)",
+      nav_pricing: "الأسعار والتراخيص",
+      nav_faq: "الأسئلة الشائعة",
+      nav_trial: "تجربة مجانية 7 أيام",
+      hero_kicker: "تحويل مباشر من RAM Concept و ADAPT-Builder إلى أوتوكاد DWG",
+      hero_title: "المنظومة الهندسية المتكاملة للوحات ما بعد الشد (PT)",
+      hero_lead: "حوّل نماذج كابلات البوست تنشن إلى لوحات أوتوكاد DWG تنفيذية معتمدة، وبروفايلات مكافئة 3D حقيقية، وجداول تفريد أوتوماتيكية في ثوانٍ. يعمل بدون إنترنت 100%.",
+      hero_cta_trial: "ابدأ التجربة المجانية (7 أيام)",
+      hero_cta_manual: "دليل المستخدم (PDF • 17 صفحة)",
+      hero_cta_sim: "محاكي بيئة العمل الحقيقية",
+      stat1_label: "كابل مستخرج / ثانية",
+      stat2_label: "إعادة رسم يدوية",
+      stat3_label: "أمان بدون إنترنت",
+      stat4_label: "مخرجات جاهزة للموقع",
+      sim_kicker: "عرض حي وتفاعلي للبرنامج",
+      sim_title: "بيئة عمل VORTEX PT الحقيقية",
+      sim_sub: "استكشف واجهة البرنامج الحقيقية كما هي. تنقل بين شريط الأوامر، لوحة النموذج، التصدير، الجداول، والإعدادات.",
+      manual_kicker: "التوثيق الهندسي الرسمي",
+      manual_title: "دليل الاستخدام الفني الشامل",
+      manual_sub: "دليل فني متكامل من 17 صفحة يشرح خطوات العمل، لقطات واجهة البرنامج، تخصيص بلوكات الأوتوكاد، قواعد الجودة ACI 318، ومواصفات الكابلات.",
+      btn_download_manual_pdf: "تحميل الدليل (PDF • 2.3 MB)",
+      btn_view_manual_web: "معاينة عبر المتصفح (HTML)",
+      gal_kicker: "لقطات شاشة فعلية من البرنامج",
+      gal_title: "واجهة VORTEX PT الحقيقية",
+      gal_sub: "لقطات شاشة حقيقية وعالية الدقة من بيئة العمل الفعلية لبرنامج Vortex PT. انقر على أي صورة لتكبيرها.",
+      price_kicker: "أسعار وتراخيص هندسية واضحة",
+      price_title: "اختر خطتك. واعمل بدون إنترنت 100%.",
+      price_sub: "من الاشتراك الشهري المرن للمشاريع إلى التملك الدائم مدى الحياة. كل ترخيص مرتبط بعتاد حاسوبك بتشفير Ed25519 وبدون أي اتصال سحابي.",
+      trial_banner_title: "هل ترغب في تجربة البرنامج على مشروعك الفعلي أولاً؟",
+      trial_banner_sub: "حمّل النسخة الكاملة بتجربة مجانية فورية لمدة 7 أيام. كافة المميزات مفعلة بالكامل، بدون علامة مائية، وبدون بطاقة بنكية.",
+      btn_trial_free: "تحميل التجربة المجانية (7 أيام)",
+      plan_monthly_tag: "اشتراك شهري",
+      plan_monthly_per: "مرونة شهرية كاملة • إلغاء في أي وقت",
+      btn_get_monthly: "الحصول على الاشتراك الشهري",
+      plan_hot_badge: "الأكثر طلباً • وفر 50$",
+      plan_yearly_tag: "ترخيص سنوي",
+      plan_yearly_per: "ما يعادل ~20.80$ شهرياً • شهران مجاناً",
+      btn_get_yearly: "الحصول على الترخيص السنوي",
+      plan_lifetime_badge: "ترخيص دائم • ادفع مرة واحدة",
+      plan_lifetime_tag: "تملك مدى الحياة",
+      plan_lifetime_per: "دفعة واحدة للأبد • ترخيص دائم لجهازك • بدون تجديد",
+      btn_get_lifetime: "الحصول على ترخيص مدى الحياة",
+      faq_kicker: "الأسئلة الشائعة",
+      faq_title: "إجابات على كافة استفساراتكم",
+      faq_sub: "كل ما تود معرفته عن Vortex PT، توافق الملفات، وآلية التراخيص الهندسية."
+    }
+  };
+
+  let currentLang = "en";
+  const langBtn = $("#langToggle");
+
+  function setLanguage(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    if (lang === "ar") {
+      document.documentElement.setAttribute("dir", "rtl");
+      if (langBtn) langBtn.textContent = "English";
+    } else {
+      document.documentElement.removeAttribute("dir");
+      if (langBtn) langBtn.textContent = "عربي";
+    }
+
+    const dict = I18N[lang] || I18N.en;
+    $$("[data-i18n]").forEach(el => {
+      const k = el.getAttribute("data-i18n");
+      if (dict[k]) el.textContent = dict[k];
+    });
+  }
+
+  langBtn?.addEventListener("click", () => {
+    setLanguage(currentLang === "en" ? "ar" : "en");
+  });
+
+})();
+</script>
+</body>
+</html>

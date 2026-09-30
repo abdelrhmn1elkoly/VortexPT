@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.0.9",
+  "release_date": "2026-09-30",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.0.9/VortexPT-Setup-1.0.9.exe",
+  "release_notes": "Vortex PT v1.0.9:\n• RAM Concept Beam Deduction for Slab Tendons: For slab tendons, chairs strictly stand on slab/drop formwork; profile heights outside or through beam corridors are referenced to slab soffit (e.g. 175mm profile height / 168mm chair height on Tendon X-37 in 1ST-FL.cpt), deducting (beam_depth - slab_th) when profile is modeled inside deep beams.\n• ADAPT-Builder Bottom Chair Fidelity: End anchor chair heights in schedules, tables, and cross-section viewer strictly taken as-is from ADAPT (100mm on X-36), preserving top-cover datum callouts with asterisk for CAD plans.\n• Architectural Net Floor Slab Area: True 2D geometric union and opening subtraction eliminates double-counting of localized sunken and up-panel slabs across both ADAPT and RAM Concept models (e.g. 1443.31 m² matching ADAPT report).\n• Chair Increment Rounding: Increment rounding strictly isolated to intermediate chairs, never altering structural control points."
+}
