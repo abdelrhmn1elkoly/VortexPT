@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.0.7",
+  "release_date": "2026-09-30",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.0.7/VortexPT-Setup-1.0.7.exe",
+  "release_notes": "Vortex PT v1.0.7:\n• ADAPT-Builder Exact Endpoint Chair Heights: In ADAPT-Builder models, start and end anchor elevations are read directly as-is from ADAPT without incorrect top-cover deductions (e.g. 100mm chair remains 100mm, not 200mm). The tendon elevation profile, schedule tables, cross-section viewer, and max chair metrics now match ADAPT 100%.\n• CAD Drawing Plan Datum vs Formwork Soffit: Drawing plan anchor annotations show calculated top cover (CL {cov}*) when top datum is selected or bottom height (CL {h}) when bottom datum is selected, while chair schedules always reference the bottom soffit."
+}
