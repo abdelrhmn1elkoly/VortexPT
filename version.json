@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.1.0",
+  "release_date": "2026-10-01",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.1.0/VortexPT-Setup-1.1.0.exe",
+  "release_notes": "Vortex PT v1.1.0:\n• RAM Concept Profile Fidelity: Profile elevations and reverse parabolic geometry strictly preserve native RAM Concept design values (e.g. 230mm high points, 300mm cantilever/anchor profiles) in cross-section viewer without erroneous intermediate clamping or shifts.\n• Edge Beam Formwork Deduction Separation: When anchors terminate in deep edge beams (e.g. 450mm beam on 300mm slab), the formwork drop deduction (150mm) is applied exclusively to the shop drawing text label (CL 150*) and fabrication chair tables, while the tendon trajectory curve and cross-section viewer retain the true 300mm structural profile.\n• ADAPT-Builder Cantilever Profile Resolution: Corrected cantilever profile inflection detection (cantilever down vs cantilever up) to preserve smooth downward tendon profiles to end anchors."
+}
