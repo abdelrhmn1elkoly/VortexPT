@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.1.2",
+  "release_date": "2026-10-02",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.1.2/VortexPT-Setup-1.1.2.exe",
+  "release_notes": "Vortex PT v1.1.2:\n• Exact Geometric Beam Boundaries: Eliminated transverse dilation tolerances and circular end-caps in beam boundary queries. Tendon control points adjacent to beams (e.g. at 50.67m [175], 57.81m [225], and 60.46m [215]) strictly preserve slab formwork soffits and top concrete cover without artificial beam stem drops.\n• Elimination of Spurious Internal Peaks: Monotonic tendon profiles approaching boundary anchors cleanly preserve authentic design nodes (such as 215) and eliminate artificial intermediate peaks (such as 196), restoring authentic 3D cable profile geometry, accurate tendon arc length, and pristine CAD shop drawing callouts."
+}
