@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.1.1",
+  "release_date": "2026-10-02",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.1.1/VortexPT-Setup-1.1.1.exe",
+  "release_notes": "Vortex PT v1.1.1:\n• Stressing Jack Tail Elongation Deduction (Ljack): Added fully integrated option to deduct elastic strand elongation occurring inside the stressing jack body (Hooke's Law: dL = P_target * Ljack / (Ap * Ep)) for ASTM A416 Grade 270 12.7mm (0.5\") and 15.2mm (0.6\") strands.\n• Exact Technical Standard: At 1.0m jack internal tail length, standard 12.7mm strand deducts 7.2mm at 75% load (137.7 kN) and 7.6mm at 80% load (146.9 kN) per live stressing end.\n• Universal Propagation: Automatically updates schedules, tables, CAD plan callouts, and drawing general notes (Note 6) with both gross and net elongation values tracked."
+}
