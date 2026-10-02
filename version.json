@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.1.3",
+  "release_date": "2026-10-02",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.1.3/VortexPT-Setup-1.1.3.exe",
+  "release_notes": "Vortex PT v1.1.3:\n• Precision Beam Transverse Containment: Enforced strict rectangular beam boundaries with zero transverse tolerance dilation. Tendons and control points running adjacent or parallel to beam faces are strictly preserved in their slab formwork context without artificial drop into beam stems.\n• ADAPT-Builder Drop Panel Prioritization & Seamless Geometry: Drop panels and thickenings on any floor or split-level elevation are correctly prioritized as DROP in cross sections and 2D profiles, eliminating premature truncation and ensuring full containment of end cantilever spans and live jack anchors.\n• ADAPT Straight Tendon Profile Fidelity: Straight spans across slab steps maintain constant top cover relative to local slab surfaces rather than artificially ramping, providing consistent chair heights matching CAD plans.\n• Dual Control Point Annotations: Profile viewer displays fabrication chair heights at tendon supports alongside top cover annotations above TOC."
+}

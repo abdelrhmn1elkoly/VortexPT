@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Left Arm Gradient: Vibrant Cyan to Deep Sky Blue -->
+    <linearGradient id="leftArmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+
+    <!-- Right Arm Gradient: Soft Sky Blue to Royal Indigo -->
+    <linearGradient id="rightArmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#93C5FD" />
+      <stop offset="60%" stop-color="#818CF8" />
+      <stop offset="100%" stop-color="#6366F1" />
+    </linearGradient>
+
+    <!-- Outer Parabolic Tendon Cable Gradient: Electric Cyan to Azure to Indigo -->
+    <linearGradient id="outerTendonGrad" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="30%" stop-color="#38BDF8" />
+      <stop offset="70%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#818CF8" />
+    </linearGradient>
+
+    <!-- Middle Tendon Cable Gradient: Lavender Periwinkle -->
+    <linearGradient id="midTendonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C084FC" />
+      <stop offset="50%" stop-color="#A78BFA" />
+      <stop offset="100%" stop-color="#818CF8" />
+    </linearGradient>
+
+    <!-- Top Inner Drape Gradient -->
+    <linearGradient id="innerDrapeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22D3EE" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+
+    <!-- Glowing Drop Shadow Filter -->
+    <filter id="logoGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Group with subtle glow -->
+  <g filter="url(#softGlow)">
+    <!-- 1. Top Inner Parabolic Drape Cable -->
+    <path d="M 185,115 C 215,205 285,205 315,115"
+          fill="none"
+          stroke="url(#innerDrapeGrad)"
+          stroke-width="9"
+          stroke-linecap="round" />
+
+    <!-- 2. Middle Parabolic Tendon Cable -->
+    <path d="M 108,162 C 165,305 335,305 392,162"
+          fill="none"
+          stroke="url(#midTendonGrad)"
+          stroke-width="12"
+          stroke-linecap="round"
+          opacity="0.9" />
+
+    <!-- 3. Outer Major Tendon Drape Cable -->
+    <path d="M 86,220 C 130,375 370,375 414,220"
+          fill="none"
+          stroke="url(#outerTendonGrad)"
+          stroke-width="17"
+          stroke-linecap="round" />
+
+    <!-- 4. Left Live Anchor Terminal Ring (Jack / Anchor Head) -->
+    <circle cx="74" cy="214" r="22"
+            fill="none"
+            stroke="#00F0FF"
+            stroke-width="11" />
+
+    <!-- 5. Right Live Anchor Terminal Ring (Jack / Anchor Head) -->
+    <circle cx="426" cy="214" r="22"
+            fill="none"
+            stroke="#38BDF8"
+            stroke-width="11" />
+
+    <!-- 6. Central "V" Left Arm (Cyan to Deep Sky Blue) -->
+    <line x1="125" y1="80" x2="250" y2="400"
+          stroke="url(#leftArmGrad)"
+          stroke-width="48"
+          stroke-linecap="round" />
+
+    <!-- 7. Central "V" Right Arm (Sky Blue to Royal Indigo) -->
+    <line x1="375" y1="80" x2="250" y2="400"
+          stroke="url(#rightArmGrad)"
+          stroke-width="48"
+          stroke-linecap="round" />
+
+    <!-- 8. Rounded Joint Pivot Highlight at Apex -->
+    <circle cx="250" cy="400" r="24"
+            fill="#818CF8" />
+    <circle cx="250" cy="400" r="14"
+            fill="#A5B4FC"
+            opacity="0.8" />
+  </g>
+</svg>
