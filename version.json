@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.0.0",
+  "release_date": "2026-10-10",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.0.0/VortexPT-Setup-1.0.0.exe",
+  "release_notes": "Vortex PT 1.0.0 Public Version:\n• Official Public Production Release.\n• Persistent Templates & User Settings in %APPDATA%\\VortexPT.\n• Enhanced Tendon ID Block (BLOQUE1 & BLOQUE1_L) with automatic slope alignment and zero mirroring.\n• Hardware-Locked Cloud Licensing with Supabase 24/7 backend.\n• Exact ADAPT & RAM Concept detailing and profile fidelity."
+}
