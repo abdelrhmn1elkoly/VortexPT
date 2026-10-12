@@ -1,6 +1,6 @@
 {
-  "latest_version": "1.0.0",
-  "release_date": "2026-10-10",
-  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.0.0/VortexPT-Setup-1.0.0.exe",
-  "release_notes": "Vortex PT 1.0.0 Public Version:\n• Official Public Production Release.\n• Persistent Templates & User Settings in %APPDATA%\\VortexPT.\n• Enhanced Tendon ID Block (BLOQUE1 & BLOQUE1_L) with automatic slope alignment and zero mirroring.\n• Hardware-Locked Cloud Licensing with Supabase 24/7 backend.\n• Exact ADAPT & RAM Concept detailing and profile fidelity."
+  "latest_version": "1.1.0",
+  "release_date": "2026-10-12",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.1.0/VortexPT-Setup-1.1.0.exe",
+  "release_notes": "Vortex PT 1.1.0 Public Version:\n\u2022 RAM Concept mesh element geometry: beams framing into columns extend to the middle of the column in cross-sections.\n\u2022 Support profile fidelity: high points at column supports accurately reference beam soffit datums, eliminating out-of-slab points.\n\u2022 Stepped support shaft rendering: column support shafts step seamlessly with the concrete soffit.\n\u2022 Seamless collinear beams across column supports.\n\u2022 Reverse parabolic fidelity: elimination of profile kinks/hills across drop-to-beam transitions.\n\u2022 Shop drawing deduction consistency: plan and cross-section control points display deducted values.\n\u2022 ADAPT Excel and RTF report elongation import workflow.\n\u2022 Enhanced license manager and generator startup reliability."
 }
