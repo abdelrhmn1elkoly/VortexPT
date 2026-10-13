@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.3.5",
+  "release_date": "2026-10-13",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.3.5/VortexPT-Setup-1.3.5.exe",
+  "release_notes": "Vortex PT 1.3.5 Hybrid Formwork Datum Coherence & Precision Release:\n• Resolved Hybrid Tendon Interface Node Coherence: Eliminated formwork datum mismatches at transition nodes between slab spans and deep beam spans (e.g. Tendon Y-54). Profile curves maintain complete continuity strictly inside concrete with accurate local chair elevations across both slab and beam spans.\n• Anchor Soffit Datum Synchronization: Aligned anchor control point soffit elevations with their exact RAM Concept node definitions, ensuring 100% geometric coherence with thickened slabs and drop panel priorities.\n• Template DWG/DXF Block Preservation: Custom blocks and dimension styles saved by users in AutoCAD templates (blocks.dwg) are strictly preserved across app updates without being overwritten by factory defaults, and automatically synced to DXF for instant discovery in app pickers.\n• Multi-Model Quality Assurance: Verified zero regressions across multi-story tower models, flat slabs, drop panels, and transfer beams."
+}

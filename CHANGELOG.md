@@ -1,0 +1,526 @@
+# Changelog - Vortex PT
+
+All notable changes to the **Vortex PT** Post-Tensioning Shop Drawing & Analysis Platform will be documented in this file.
+
+---
+
+## [1.3.5] - 2026-10-13
+
+### 🚀 Highlights: Hybrid Formwork Datum Coherence & Interface Node Precision
+
+### Added & Improved
+- **Hybrid Tendon Interface Node Datum Coherence**:
+  - Eliminated formwork datum elevation mismatches at transition nodes between slab spans and interior deep beams (e.g. Tendon `Y-54` in `LEVEL 04.cpt`).
+  - Interface nodes between slab and beam spans dynamically synchronize their reference soffit datum (`sof_node`) with the local formwork used for profile height calculations.
+  - Profile curves remain 100% continuous strictly within concrete (`Z <= 0.0mm`) without artificial elevation spikes above top of slab.
+  - Restored true field chair heights in adjacent slab spans (`250, 260, 270, 290`) and interior deep beams (`340, 220, 140, 90`).
+- **Anchor Soffit Datum Synchronization**:
+  - Aligned anchor control point soffit elevations with their exact RAM Concept node definitions, ensuring full geometric harmony with thickened slab and drop panel priorities.
+- **Multi-Model Regression Testing & Quality Assurance**:
+  - Verified 100% test pass rate across 176 automated test suites and multi-story tower models (`LEVEL 04.cpt`, `5TH-FL.cpt`, `09-KHI-1107-33TH-34TH-FL.cpt`, `01-KHI-PODUIM FL.cpt`).
+
+---
+
+## [1.3.4] - 2026-10-13
+
+### 🚀 Highlights: Anchor Slab Datum & Priorities, Local Span-by-Span Formwork, and AutoCAD Template Block Preservation
+
+### Added & Improved
+- **Anchor Slab Datum & RAM Concept Slab Priorities**:
+  - Anchors located within overlapping slabs or drop panels strictly respect RAM Concept slab priorities and node soffit elevations.
+  - Eliminated erroneous distant span probing that picked up adjacent typical slabs over the anchor's actual thickened slab or drop panel (e.g. Tendon `Y-8` dead end anchor in a 400mm thickened slab with 200mm elevation now outputs `CL 200*` top cover and `CL 200` chair height rather than `CL 20*`).
+  - Added node soffit verification matching RAM Concept's exact internal anchor soffit elevation (`soffit_mm`).
+- **Local Span-by-Span Formwork (Hybrid Tendons)**:
+  - Transitioned from global tendon-level classification to local span-by-span / segment resolution.
+  - Tendons traversing both flat slab spans and interior deep beams dynamically adapt their formwork datum per span (`is_station_beam_tendon` and `is_node_beam_tendon`).
+  - Deep beam sections accurately take the beam soffit as formwork datum, while slab segments strictly preserve the slab soffit.
+- **Template DWG/DXF Block Preservation & Auto-Sync**:
+  - Fixed user template seeding in `%APPDATA%\VortexPT\templates`: custom blocks and dimension styles added by users in AutoCAD to `blocks.dwg` are never overwritten by factory defaults on application restart.
+  - Added background AutoCAD `accoreconsole` synchronization (`sync_template_dwg_to_dxf`) to automatically convert modified `blocks.dwg` to `blocks.dxf`.
+  - App block and dimension pickers instantly recognize and display user-defined blocks and dimstyles directly from AutoCAD drawings.
+
+---
+
+## [1.3.3] - 2026-10-13
+
+### 🚀 Highlights: Column-Beam Framing Corridor Precision & Slab Tendon Soffit Integrity
+
+### Added & Improved
+- **Column-Beam Framing Corridor Precision**:
+  - Enforced transverse beam corridor filtering when checking whether framing beams extend into column boundaries. A framing beam extends to the column center strictly within its physical beam width corridor (`perp_dist <= half_width + 0.05m`).
+  - Tendons crossing large columns lateral to narrow framing beams (e.g. Tendon `Y-53` in `5TH-FL.cpt`) now strictly preserve the slab formwork datum (275mm slab, soffit -275mm) rather than adopting a distant 200mm framing beam's soffit (-800mm).
+  - Completely resolved false high profile spikes (e.g. 700mm / 735mm instead of 210mm) and eliminated false minimum cover violation alerts.
+- **Slab Tendon Formwork Integrity**:
+  - Maintained slab formwork soffit precedence for slab tendons crossing transverse downstand beams, preventing spurious plunging into beam stems while retaining true beam depths for dedicated beam tendons.
+
+---
+
+## [1.2.0] - 2026-10-04
+
+### 🚀 Highlights: Flat Support & Transverse Beam Profile Fidelity, Elimination of Low Chairs Between High Supports
+
+### Added & Improved
+- **Flat Profile & Transverse Beam Transition Fidelity**:
+  - Fixed a critical profiling bug in `eval_at_station` where tendon segments with linear raw RAM Concept elevations (such as straight horizontal tendon segments crossing transverse beams or support bands) were erroneously forced through a curved reverse parabola (`calc_reverse_parabola`).
+  - Added detection of linear elevation progressions and identical global vertical coordinates (`abs(z1 - z2) < 2.0mm`), ensuring straight and flat horizontal tendon runs maintain a constant horizontal elevation across the entire span.
+- **Elimination of Low Sag Chairs Between High Points**:
+  - Fixed an issue where tendons crossing transverse beams (e.g. Tendons X-95 and X-97) generated intermediate chairs of `40mm` and `140mm` dipping far below the low point between two adjacent high points ($H=157\text{mm}$).
+  - Guaranteed that intermediate chairs in flat high support spans maintain their full high chair height ($\approx 155\text{mm}$), ensuring complete consistency across all parallel tendons (e.g. matching Tendons X-94 and X-96).
+- **Regression Suite Expansion**:
+  - Added comprehensive test coverage in `tests/test_v120_flat_support_beam_crossing.py` verifying that flat tendon spans crossing transverse beams into slabs never dip or produce false low chairs.
+
+---
+
+## [1.1.9] - 2026-10-04
+
+### 🚀 Highlights: Reverse Parabola Stepping Fix & Monotonic Intermediate Chair Bounding
+
+### Added & Improved
+- **Reverse Parabola Intermediate Chair Stepping**:
+  - Eliminated a double-deduction datum conversion bug during intermediate chair stepping between an edge beam anchor and the span low point.
+  - Calculated common datum stepping elevations directly using control point profile elevations (`pe_a` and `pe_b`), preventing reverse parabola stepping from collapsing to 0.0mm and ensuring intermediate chairs smoothly transition along a true reverse parabola.
+- **Edge Beam Connecting Slab Resolution**:
+  - Enhanced `get_anchor_slab_geom` to probe along the tendon corridor into the span (up to 1.5m) and match the beam's top-of-concrete (TOC), ensuring slab tendon anchors at perimeter/step beams reliably select the connecting floor slab rather than adjacent drop or sunken slab areas.
+- **Strict Low Point Chair Bounding**:
+  - Enforced a structural lower bound guaranteeing that intermediate chairs on descending spans to a low point (or ascending spans from a low point) can never dip below the span low point chair height.
+
+---
+
+## [1.1.8] - 2026-10-04
+
+### 🚀 Highlights: Dead End & Anchor Formwork Soffit Normalization & Vertical Midpoint Fix
+
+### Added & Improved
+- **Dead End & Anchor Soffit Formwork Normalization**:
+  - Fixed an issue where slab tendon anchors near perimeter edge beams inherited raw beam-soffit-relative profile elevations (e.g. 300mm in a 450mm beam) while being plotted against the slab soffit (-300mm), erroneously placing the anchor at the very top of the concrete slab (+0.000).
+  - Explicitly mapped slab tendon anchor profile elevations (`profile_elevation_mm`) and chair heights (`chair_height_mm`) to the slab formwork datum ("like the beam is not here"), ensuring an anchor with `CL=150` in a 300mm slab is rendered at the exact vertical center of the slab (150mm from soffit, 150mm from TOC).
+- **Coordinate Space Synchronization in Profile Viewer**:
+  - Corrected elevation transformation in `get_cp_cgs_and_soffit` so that all concrete soffit references and beam soffits are strictly normalized relative to the tendon's local reference TOC (`ref_toc`), preventing +150mm coordinate shifts in raised slabs and split-level models.
+  - Spliced anchor point hardware badges (`DEAD END` / `PAN BOX` / `LIVE JACK`) directly to `get_cp_cgs_and_soffit` output so badges perfectly track the anchor circle.
+- **Continuous Parabolic Profiling**:
+  - Ensured that the profile curve starts smoothly from the mid-depth anchor elevation and smoothly cascades down to intermediate chairs (135mm, 100mm, etc.) without vertical kinks or plunges.
+
+---
+
+## [1.1.7] - 2026-10-04
+
+### 🚀 Highlights: Bulletproof RAM Concept Process Launcher & Headless/GUI Fallback
+
+### Added & Improved
+- **Bulletproof RAM Concept Process Launcher**:
+  - Environment sanitization: Stripped PyInstaller runtime leakage (`PYTHONPATH`, `PYTHONHOME`, `_MEIPASS2`, and `_internal` DLL paths) and configured `NO_PROXY` exemptions for local server communication.
+  - Standard handle isolation: Explicitly supplied `stdin=subprocess.DEVNULL` to avoid low-level C runtime initialization failures in windowed GUI environments.
+  - Explicit working directory: Guaranteed `Concept.exe` starts with its own folder as `cwd` to ensure proper loading of Qt configs, translation files, and licensing libraries.
+- **Responsive Process Polling & Diagnostic Reporting**:
+  - Replaced Bentley's default non-blocking pipe loop with a robust, thread-safe queue reader matching string EOF sentinels.
+  - Active process polling: Immediately catches process exits and captures stderr output instead of hanging for 120 seconds.
+- **Headless to GUI Server Automatic Fallback**:
+  - Transparently attempts headless `-apiServer` mode first; if headless licensing credentials fail or the service exits, automatically retries in `-apiServerWithGui` mode to leverage the user's active desktop Bentley session.
+- **Clean Process Termination & Cleanup**:
+  - Multi-process registry tracks all spawned Concept processes and terminates them cleanly upon model extraction completion or app exit.
+- **Shortcut WorkingDir Targeting**:
+  - Added explicit `WorkingDir: "{app}"` to Inno Setup shortcuts so the application always launches with its installation folder as the working directory.
+
+---
+
+## [1.1.6] - 2026-10-03
+
+### 🚀 Highlights: RAM Concept Engine Extraction Robustness, 2/3 : 1/3 Viewport Split, File-Lock Recovery
+
+### Added & Improved
+- **RAM Concept Model Extraction Robustness**:
+  - Isolated extractor lifecycle: Each model load initializes a fresh, clean `ConceptExtractor` instance rather than sharing a mutable singleton.
+  - Locked-File Snapshot Recovery: Added transparent fallback to create a temporary snapshot copy when the selected `.cpt` model is already open and locked by RAM Concept GUI, preventing "Sharing violation / File in use" extraction failures.
+  - Engine Startup Timeout Headroom: Increased headless `Concept.start_concept` timeout from 60s to 120s to ensure reliable initialization during Bentley licensing checks and heavy model loading.
+  - Safe Session Cleanup: Restored original HTTP session hooks in `finally:` block and explicitly closed connection pools to avoid Windows socket exhaustion and stale connection reuse.
+- **Default 2/3 Drawing Space : 1/3 Section Area Viewport Layout**:
+  - Configured center paned window to allocate 2/3 of vertical space to CAD canvas / drawing area and 1/3 to the tendon profile viewer / cross-section dock.
+  - Responsive layout preservation on window maximize and resize events unless manually adjusted by the user.
+- **Diagnostic Error Reporting**:
+  - Automatically captures and logs full extraction tracebacks to `model_extraction_error.log` in the application root directory for immediate diagnostic visibility.
+  - Updated user-facing error dialogs to reference the diagnostic log file.
+
+---
+
+## [1.1.4] - 2026-10-02
+
+### 🚀 Highlights: Precision Control Point Alignment, Continuous Slab Step Datums, Elimination of Phantom Double Control Points
+
+### Added & Improved
+- **Continuous Baseline Reference Datum Across Slab Steps**:
+  - Replaced discontinuous individual slab polygon soffit subtraction in `ConceptExtractor` with a continuous baseline reference datum transitioning linearly between segment endpoints.
+  - Eliminated artificial elevation spikes across slab depressions and steps, preventing false crest detection and distorted curve geometry.
+- **Node Extremum and High/Low Classification Precision**:
+  - Implemented direct neighbor extremum evaluation for tendon nodes, ensuring authentic crests (e.g. intermediate high point at 135 mm over slab steps) are strictly classified as HIGH points (`chair = 128 mm`) rather than misclassified as low points (`122 mm`).
+- **Guarded Internal Crest and Sag Detection**:
+  - Protected monotonic sloping spans connecting high to low nodes (or low to high nodes) from triggering phantom internal control points (e.g. 203/230 mm), guaranteeing that control points are strictly anchored to authentic design nodes.
+- **Anchor Beam Top Cover & Slab Formwork Chair Deduction**:
+  - Automatically identifies anchors terminating in edge beams with RAM elevations measured from beam soffits (e.g. 745 mm in 800 mm beam). Calculates exact top cover from the beam surface ($800 - 745 = 55\text{ mm} \implies \mathbf{CL\ 55^*}$), eliminating clamped `CL 0*` and negative `CL -55*` callouts.
+  - Automatically deducts the beam drop ($\text{beam\_depth} - \text{slab\_th}$) for slab chairs on the drawing, allowing intermediate chair stepping to remain strictly in the normal slab range (40 mm – 245 mm) and eliminating spurious $595\text{ mm}$ and $345\text{ mm}$ chairs.
+- **Transverse Beam Crossing Profile Fidelity in Profile Viewer**:
+  - Slab tendons crossing over transverse deep beams (e.g. $400\times 1200$) preserve their continuous slab formwork datum rather than adding slab chair heights to deep beam soffits, eliminating 1-meter rollercoaster dips into beam stems.
+  - End anchor beam cross sections are accurately detected and rendered in the 2D cut.
+
+---
+
+## [1.1.3] - 2026-10-02
+
+### 🚀 Highlights: Precision Beam Transverse Containment, ADAPT Drop Panel Prioritization & Seamless Cross Sections, Straight Tendon Constant Cover Fidelity
+
+### Added & Improved
+- **Strict Transverse Beam Containment**:
+  - Enforced exact rectangular containment transversely in `BeamModel.contains_point` with zero tolerance dilation (`max(0.0, tolerance_m)`).
+  - Tendons and control points running adjacent or parallel to beam faces are strictly preserved in their slab formwork context, eliminating false containment that previously caused profiles to plunge into beam stems, violate cover, and corrupt tendon arc lengths.
+- **ADAPT-Builder Drop Panel Prioritization & Geometry Continuity**:
+  - `ConceptModelData.get_cross_section_at` prioritizes drop panels over up-panels regardless of base slab offset, ensuring drop panels on split-levels or sunken floors are accurately classified as `DROP` and rendered with their full drop depth.
+  - Profile Viewer region transition logic detects thickness, elevation, and label changes, rendering separate, distinct badges (`SUNKEN SLAB`, `SLAB`, `DROP`) rather than merging drop panels into adjacent slabs.
+  - End cantilever spans (e.g. Tendon Y-19 Span 3) and live jack anchors (e.g. 200 mm) remain cleanly contained within drop panels (e.g. `DROP T=400`) all the way to the slab edge.
+- **ADAPT Straight Tendon Profile Fidelity**:
+  - Straight spans with equal top covers (`cov1 == cov_end`) maintain constant top cover relative to local slab surfaces across floor steps, providing constant chair heights in flat floor zones (e.g. `165 mm` in 230 mm slabs) matching ADAPT design models and CAD shop drawings.
+- **Dual Control Point Annotations in Profile Viewer**:
+  - Profile Viewer displays physical fabrication chair heights at tendon support circles alongside top cover annotations above TOC, matching CAD callouts and fabrication schedules.
+
+---
+
+## [1.1.2] - 2026-10-02
+
+### 🚀 Highlights: Exact Rectangular Beam Boundaries, Elimination of Spurious Intermediate Peaks, Preserved 3D Tendon Profile Fidelity
+
+### Added & Improved
+- **Exact Rectangular Beam Geometric Containment**:
+  - Eliminated transverse dilation tolerances (`tolerance_m = 0.10` and `0.30`) and semicircular capsule end-caps in `BeamModel.contains_point`.
+  - Tendon control points located immediately beside beam boundaries (e.g. at $X = 50.669\text{ m}$ [elevation 175], $X = 57.810\text{ m}$ [elevation 225], and $X = 60.459\text{ m}$ [elevation 215]) strictly reference floor slab formwork datums rather than plunging down into deep beam stems.
+  - Profile Viewer cross-section rendering terminates beam hatches strictly at the physical concrete face, ensuring top concrete cover is preserved and eliminating artificial downward dips.
+- **Elimination of Spurious Internal Crest Peaks**:
+  - Prevented intermediate segment elevation spikes from generating false internal crest points (e.g. `196`) that previously replaced authentic design control points (`215`).
+  - Monotonic and reverse parabolic tendon paths approaching end anchors preserve authentic design nodes (`CL 150*`, `215`, `225`), ensuring true 3D cable integration, pristine fabrication chair schedules, and accurate CAD shop drawing plan annotations.
+
+---
+
+## [1.1.1] - 2026-10-02
+
+### 🚀 Highlights: Stressing Jack Tail Elongation Deduction ($L_{\text{jack}}$), ASTM A416 Strand Calibration
+
+### Added & Improved
+- **Stressing Jack Internal Tail Elongation Deduction ($L_{\text{jack}}$)**:
+  - Added engineering option in calculation settings (`enable_jack_elongation_deduction`) to deduct elastic elongation inside the stressing jack tail from recorded gross elongation:
+    $$\Delta L_{\text{jack}} = \frac{P_{\text{target}} \cdot L_{\text{jack}}}{A_p \cdot E_p}$$
+  - Calibrated for ASTM A416 Grade 270 strands:
+    - Standard 12.7 mm (0.5"): $A_p = 98.7\text{ mm}^2$, $E_p = 195{,}000\text{ MPa}$, $f_{pu} = 1860\text{ MPa}$ ($P_{pu} = 183.6\text{ kN}$).
+      - At 75% load ($137.7\text{ kN}$): 7.16 mm (7.2 mm) per 1.0 m jack tail.
+      - At 80% load ($146.9\text{ kN}$): 7.63 mm (7.6 mm) per 1.0 m jack tail.
+    - Standard 15.2 mm (0.6"): $A_p = 140.0\text{ mm}^2$, $E_p = 195{,}000\text{ MPa}$, $f_{pu} = 1860\text{ MPa}$ ($P_{pu} = 260.4\text{ kN}$).
+  - Fully adjustable jack tail length $L_{\text{jack}}$ (default 1.00 m, common ranges 0.80 m – 1.20 m).
+  - Automatically applied per live stressing end (1 deduction for single-end stressing, 2 deductions for double-end stressing, 0 for dead ends).
+  - Populates both gross and net elongation fields across tendons, schedules, CSV exports, UI tables, and CAD general notes (Note 6).
+
+---
+
+## [1.1.0] - 2026-10-01
+
+### 🚀 Highlights: RAM Concept Profile Fidelity, Edge Beam Anchor Formwork Separation, ADAPT Cantilever Profile Resolution
+
+### Added & Improved
+- **RAM Concept Profile Fidelity**:
+  - In RAM Concept models, native profile elevations and reverse parabolas retain their exact values (e.g. 230 mm high points, 300 mm cantilever/anchor elevations) without intermediate shifts or clamping.
+  - Sourced true local soffit coordinates along segments directly rather than linear ramp interpolation between dissimilar node soffits (e.g., beam -300 mm vs slab -150 mm).
+  - Profile Viewer displays exact design control points (`CL=300`, `H=230`, `L=45`) and smooth curvature matching RAM Concept without dips or kinks.
+- **Edge Beam Formwork Deduction Separation**:
+  - When an anchor terminates inside a deep edge beam (e.g. 450 mm beam on 300 mm slab), the 150 mm formwork drop deduction is applied exclusively to the drawing plan text callout (`CL 150*`) and fabrication chair tables.
+  - The cross-section curve and profile elevation remain strictly at 300 mm structural profile height.
+- **ADAPT-Builder Cantilever Profile Resolution**:
+  - Fixed cantilever profile inflection detection (cantilever down vs cantilever up) to preserve smooth downward tendon profiles to end anchors.
+
+---
+
+## [1.0.9] - 2026-09-30
+
+### 🚀 Highlights: RAM Concept Beam Deduction for Slab Tendons, ADAPT Bottom Chair Height Fidelity, Control Point Rounding Integrity
+
+### Added & Improved
+- **RAM Concept Beam Deductions for Slab Tendons**:
+  - For slab tendons spanning across floor slabs, chairs strictly stand on slab or drop panel formwork, never inside the beam stem.
+  - Profile points in or near beam corridors are referenced to the slab soffit ("like the beam is not here").
+  - When profile elevation in RAM Concept exceeds slab/drop thickness because it was referenced to a deeper beam soffit, the program automatically deducts $(D_{\text{beam}} - T_{\text{slab/drop}})$. On Tendon X-37 in `1ST-FL.cpt`, profile elevation correctly yields 175 mm (with 168 mm high chair) instead of false 1145 mm / 745 mm beam readings.
+- **ADAPT-Builder Bottom Chair Height Fidelity**:
+  - In tables, schedules, takeoff, and profile viewer, end anchor chair heights are strictly taken as-is from ADAPT (100 mm on X-36), while top cover asterisk callouts (`CL 200*`) are preserved for CAD drawing plan when top datum is selected.
+- **Structural Control Point Rounding Integrity**:
+  - Increment rounding (`round_chair_increment_mm`) is strictly restricted to intermediate spacing chairs; anchors, high crests, and low sags remain exact structural elevations.
+
+---
+
+## [1.0.8] - 2026-09-30
+
+### 🚀 Highlights: Exact Net Floor Slab Area Union, ADAPT Soffit Endpoint Chair Heights, Collinear Aligned Interior Tendon Spacing Dimensions
+
+### Added & Improved
+- **Exact Geometric Net Floor Slab Area (ADAPT & RAM Concept)**:
+  - Implemented exact multi-polygon boolean union (`shapely.ops.unary_union`) across all floor slabs with opening hole subtractions.
+  - Resolves double-counting of sunken slabs, up-panels, and drop panels (e.g. for `TYPE-G-FIRST.INP`, area accurately reduced from 1810.74 m² to 1443.31 m², matching the ADAPT floor area report to the decimal place).
+- **ADAPT-Builder Soffit Endpoint Chair Heights**:
+  - Start and end anchor chair heights in schedules, tables, and cross-section profiles are strictly measured from the bottom formwork soffit ($h = \text{slab\_th} - \text{cgs\_top}$, e.g. 100mm chair on a 300mm slab with 200mm top cover).
+  - Drawing plan anchor annotations show calculated top cover (`CL {cov}*`) when top datum is selected or bottom height (`CL {h}`) when bottom datum is selected.
+- **Collinear Aligned Interior Tendon Spacing Dimensions**:
+  - Replaced scattered, zigzagging dimension strings with 2-3 clean, aligned straight dimension lines perpendicular across tendons.
+  - Dimension cut lines are positioned strictly between high and low points in open space to completely eliminate collisions with chair callout text.
+  - Ray-casting connects dimensions cleanly to slab and opening edges at both ends, and short tendons are fully captured.
+
+---
+
+## [1.0.7] - 2026-09-30
+
+### 🚀 Highlights: ADAPT-Builder Exact Endpoint Chair Heights & Clean Elevation Profile View
+
+### Added & Improved
+- **ADAPT-Builder Direct Endpoint Reading**:
+  - In ADAPT-Builder models, start and end anchor elevations are read directly as-is from ADAPT without incorrect top-cover deductions (e.g. 100mm anchor chair remains 100mm, not 200mm).
+  - The continuous tendon elevation profile, schedule tables, cross-section viewer, and max chair metrics now match ADAPT 100%.
+- **CAD Drawing Plan Datum vs Formwork Soffit**:
+  - Drawing plan anchor annotations show calculated top cover (`CL {cov}*`) when top datum is selected or bottom height (`CL {h}`) when bottom datum is selected, while chair schedules always reference the bottom soffit.
+- **Cross-Section Profile Clarity**:
+  - Direct display of exact anchor chair heights with live/dead status badges and directional arrows matching ADAPT's graphical tendon window.
+
+---
+
+## [1.0.6] - 2026-09-29
+
+### 🚀 Highlights: Control Points Protected from Rounding, RAM Concept Edge/Middle Beam Deductions, ADAPT Dynamic Endpoint Datum Callouts
+
+### Added & Improved
+- **Profile Control Points Strictly Protected from Rounding**:
+  - The chair height increment rounding setting (`round_chair_increment_mm`, e.g. round to nearest 5 or 10mm) is strictly restricted to in-between (intermediate) chairs.
+  - Profile control points (anchors, high crests over supports, and low sags) are never rounded by `round_inc`. They receive only their precise engineering deductions (`high_chair_deduction_mm`, `low_chair_deduction_mm`) and standard integer rounding, preserving exact structural cable profiles.
+- **RAM Concept Edge Beam and Middle Beam Formwork Deductions**:
+  - In RAM Concept models where slab tendons terminate into or cross edge beams or middle beams, profile elevations referenced from deep beam soffits (e.g. 1000mm) are adjusted by deducting the beam depth exceeding slab thickness (`beam_depth - slab_th`, e.g. 1000 - 250 = 750mm).
+  - Profiles and chair heights are measured directly from the floor slab formwork soffit ("as if the beam is not here"), preventing artificial high chair elevations at perimeter slab anchors and transverse beam crossings.
+  - Dedicated longitudinal beam tendons running inside beam stems preserve their full beam elevations.
+- **ADAPT Drawing Endpoint Annotation Datum & Bottom-Referenced Schedules**:
+  - ADAPT-Builder model extraction dynamically reflects the user's `anchor_calculation_datum` preference on CAD drawing plans: `CL {cov}*` when calculated from top cover, and `CL {h}` without asterisks when calculated from bottom formwork.
+  - In-app tables, Excel takeoff exports, and DXF sheet schedules always measure anchor chair heights strictly from the bottom formwork soffit.
+
+---
+
+## [1.0.5] - 2026-09-29
+
+### 🚀 Highlights: End Anchor Tables Strictly Bottom-Referenced, Zero ADAPT Cover False Warnings, 1:1 Custom Block Scale, Viewport Dominance & Modern Dark Scrollbars
+
+### Added & Improved
+- **End Anchor Chairs in Tables Always Bottom-Referenced (Soffit Datum)**:
+  - Users can select whether anchor annotations on the CAD drawing are measured from top (`CL 125*`) or bottom (`CL 125`).
+  - In all schedules and tables (Excel export, in-app Schedules tab, DXF sheet schedule table), anchor chair heights are strictly measured from the bottom formwork soffit, regardless of the drawing annotation datum setting.
+- **Eliminated ADAPT Cover Warning False Positives**:
+  - Fixed concrete cover validation for ADAPT-Builder models by evaluating profile elevations against absolute formwork soffit and TOC coordinates with tendon local datum resolution.
+  - Eliminated 170 false positive cover violation alerts on valid ADAPT models while retaining rigorous checks for genuine cover deficiencies.
+- **True 1:1 Custom End Block Scale**:
+  - Replaced legacy forced 100x block scaling with exact 1:1 insertion scale in all directions (Scale X: 1.0, Y: 1.0, Z: 1.0) when users load custom DWG/DXF anchor blocks.
+- **Dominant CAD Model Workspace & Constrained Properties Width**:
+  - Restructured main application layout so the CAD workspace is the dominant central viewport with responsive stretch controls, preventing the Element Properties panel from over-expanding on fullscreen.
+- **Compact Profile Section Viewer & Invisible Scrollbar**:
+  - Reduced vertical height of the cross-section viewer to maximize the CAD canvas. Made the horizontal scrollbar invisible while maintaining smooth mouse wheel and click-and-drag panning.
+  - Synced Profile Viewer cross-section orientation with the CAD plan layout (tendons starting on the right in plan start on the right in section view).
+- **Modern Fluent/WinUI 3 Dark Scrollbars**:
+  - Replaced native Windows classic scrollbars across all tables, views, and dialogs with custom Fluent/WinUI 3 styled dark scrollbars.
+
+---
+
+## [1.0.4] - 2026-09-28
+
+### 🚀 Highlights: Persistent 'Update Now' Button, Inverted ADAPT Downward Offset Geometry & Zero Tendon Elevation Violations
+
+### Added & Improved
+- **Permanent 'Update Now' Button & Layout Resilience**:
+  - Resolved missing/clipped update button: packed action button bar (`side="bottom"`) before center expanding elements, ensuring the button is never pushed off-screen by long release notes or Windows DPI display scaling.
+  - Made the update dialog comfortably resizable (`520x420`, min `480x360`) with word-wrapping release summary notes.
+  - Guaranteed the `Update Now` button is always active and accessible: allows one-click update when a new version is detected, and allows re-downloading or reinstalling the latest production build at any time even when up to date.
+- **ADAPT-Builder Downward Offset Sign Inversion & Slab Containment**:
+  - Corrected generic `.INP` offset parsing where positive offset represents downward distance from story reference plane: sunken slabs now correctly drop to negative TOC, aligning bottom soffits flush with adjacent main slab formwork.
+  - Edge/boundary slabs with deep soffits classified as drop panels (`priority = 20, is_drop_panel = True`).
+  - Synchronized Profile Viewer tendon datum (`cgs_elev = pe_val - ref_toc`), eliminating false out-of-slab elevation violations (reduced from 69 to 0 across all tendons).
+
+---
+
+## [1.0.3] - 2026-09-28
+
+### 🚀 Highlights: Full ADAPT-Builder Beam & Elevation Cross-Section Reconstruction, Strict Anchor Topology Guarantee, Direct ADAPT Chair Support & Universal Tendon Spacing Dimensions
+
+### Added & Improved
+- **ADAPT-Builder Beam Extraction & Level-Aware Elevation Cross-Section Reconstruction**:
+  - Fully parsed and loaded downstand and upstand concrete beams from ADAPT-Builder `.INP` files (`~DATA BEAM ... ~END_DATA BEAM`), converting them to native `BeamModel` entities with exact width, depth, and top elevation offsets.
+  - Eliminated incorrect flat slab cross-sections: downstand beams (e.g. 700mm deep downstand beams under Tendon 66 / X-4) and upstand beams are now faithfully rendered in the 2D Elevation Profile Viewer with true formwork soffit drops.
+  - Implemented level-aware soffit and top-of-concrete (TOC) sampling across drop panels, sunken slabs, and raised panels/plinths, removing inverted and distorted profile geometry.
+- **Strict Anchor Topology Guarantee & Direct ADAPT Chair Extraction**:
+  - Fixed control point vs endpoint bug where interior chairs were falsely labeled as anchors and end anchors were labeled as chairs.
+  - Tendon start and end points are now strictly guaranteed as `anchor` points (`CL *`), while all interior supports are guaranteed as `high` chairs, and midspan sags as `low` chairs (0 interior false anchors across 100% of tendons).
+  - Directly extracts and respects ADAPT parabolic drape control points and chairs, while seamlessly applying the app's user-configured deductions (`low_chair_deduction_mm`, `high_chair_deduction_mm`) and rounding increments (`5mm`, `1mm`, `10mm`).
+  - Enhanced 2D Profile Viewer title to display both sequential mark and original ADAPT model label (e.g., `TENDON X-4 (Tendon 66)`).
+- **Universal Tendon Spacing Dimensions**:
+  - Re-architected `_add_tendon_spacing_dimensions` with orientation angle clustering: tendons with differing inclinations (0°, 30°, 45°, 60°) are grouped into distinct angle clusters.
+  - Station lines are formed strictly perpendicular to local tendon vectors, creating clean chained aligned dimensions along perimeter formwork edges.
+  - Added short tendon bridging: perimeter dimension chains bridge across setback tendons to maintain continuous formwork measurement, while dedicated local pair dimensions accurately locate internal anchorage points.
+  - Configurable engineering parameters in settings: `spacing_dim_angle_tol_deg` (2.0°), `spacing_dim_clearance_mm` (150mm), `spacing_dim_anchor_clearance_mm` (600mm), and `short_tendon_threshold_mm` (1500mm).
+
+---
+
+## [1.0.2] - 2026-09-28
+
+### 🚀 Highlights: Full CAD Dimension Style Fidelity & Native 0.18 Text Height Preservation, Automatic Startup Update Search & Resilient Template Sync
+
+### Added & Improved
+- **CAD Dimension Style Fidelity & Native Text Height (0.18) Preservation**:
+  - Eliminated unwanted dimension text height defaults (2.5) when exporting AutoCAD DWG/DXF drawings.
+  - Dimension styles imported from CAD templates (`blocks.dwg`, `blocks.dxf`, `KHOLY TENDONS.dwg`, `KHOLY TENDONS.dxf`, or custom user templates) strictly preserve their native text height (`dimtxt = 0.18`), arrowheads (`dimasz`), overall scale (`dimscale`), precision (`dimdec`), and rounding increments (`dimrnd`) without alteration.
+  - Ensured `Kholy Tendons DIm` and all template dimension styles retain their exact 0.18 text height and styling parameters.
+  - Implemented case-insensitive dimension style resolution across modelspace and block tables.
+  - Removed destructive `(setvar "DIMSCALE" 1.0)` during DWG conversion to safeguard custom template dimension scales.
+  - Fixed DWG-to-DXF template synchronization to reliably detect and recompile updated `.dwg` block definitions without prompt blocking.
+- **Automatic Startup Cloud Update Search**:
+  - The application automatically initiates a background update search upon application launch as soon as the main window is revealed.
+  - Checks the official GitHub repository releases and `version.json` manifest silently in a dedicated background worker thread.
+  - Instantly presents a non-intrusive, interactive Fluent InfoBar banner alerting the user when a newer release is published, complete with a direct 🚀 **Update Now** one-click action dialog.
+
+---
+
+## [1.0.1] - 2026-09-27
+
+### 🚀 Highlights: Laptop & Small Screen Optimization, Warning Pill Fix, Welcome Card Text Wrapping & GitHub Auto-Update Integration
+
+### Added & Improved
+- **Toolbar Warning Pill Badge Clipping Fix**:
+  - Re-positioned `btn_warnings` into the primary viewport & QA cluster (`after=self.btn_manual`), preventing it from ever being pushed against the right boundary or clipped by the search box.
+  - Enhanced `FluentButton` canvas rendering to strictly bound the WinUI 3 pill rounded rectangle inside visible canvas dimensions, eliminating abrupt right-edge truncation.
+  - Added safety margin to `req_w` measurement to ensure warning and error text never crowds button borders.
+- **Empty State Welcome Card Text Wrap Fix**:
+  - Bound subtitle description inside `_draw_empty_state()` with an explicit `width=card_w - 60` wrap boundary, guaranteeing text never overflows outside the hero card container on any resolution.
+  - Dynamically scaled the decorative PT parabolic tendon curve illustration and action button to fit gracefully within the card across compact and widescreen displays.
+- **Laptop & Small Display Screen UI Optimization**:
+  - Added responsive window launch sizing: automatically detects display dimensions and fits within 1366x768, 1280x720, and 1080p scaled laptop screens without taskbar clipping.
+  - Decreased minimum window size from `(1080, 700)` to `(920, 560)` for maximum versatility on mobile workstations.
+  - Compacted the main command bar: streamlined button padding, 28px height, compact 140px search box, and ergonomic `["All", "Lat (X)", "Long (Y)"]` direction filter.
+  - Adjusted default sidebar and inspector panel widths to 245px and 255px (with 210px minsize), giving up to 100px more horizontal workspace to the 2D CAD canvas.
+  - Reduced center paned vertical minsize thresholds (`canvas: 200px`, `profile: 140px`) to prevent vertical viewport distortion on 768p displays.
+- **Automatic GitHub Cloud Update Integration**:
+  - Corrected cloud update manifest repository URL to `https://raw.githubusercontent.com/abdelrhmn1elkoly/VortexPT/main/version.json`.
+  - Added resilient fallback to GitHub's official REST Releases API (`api.github.com/repos/abdelrhmn1elkoly/VortexPT/releases/latest`), providing real-time update detection even if raw CDN caches are propagating.
+  - Added silent background startup check in a dedicated daemon thread: automatically notifies users via an InfoBar banner with a direct `"Update Now"` launcher when a new production release is published on GitHub.
+
+---
+
+## [1.0.0] - 2026-09-26
+
+### 🚀 Highlights: Production 1.0.0 Release, AutoCAD Dimension Style Customization, Selectable Design Markers & Flexible Chair Rounding
+
+### Added & Improved
+- **AutoCAD Dimension Style Customization & Native Property Preservation**:
+  - Automatically scans and imports dimension styles (`Kholy Tendons DIm`, `2D1`, `100`, `DIM-100`, `Standard`, etc.) directly from CAD template files (`blocks.dxf`, `KHOLY TENDONS.dxf`, `blocks.dwg`).
+  - **Zero Destructive Overrides**: Removed forced override properties on imported dimstyles, allowing AutoCAD to render dimensions with 100% fidelity to the native style definition—including text height (`dimtxt`), arrowheads (`dimasz`), extension line extensions (`dimexe`), extension line offsets (`dimexo`), dimension gap (`dimgap`), and dimension rounding (`dimrnd`).
+  - Added **"AutoCAD Dimension Style"** setting card with interactive dropdown picker in Settings Section 2.
+- **Design Drawing Hexagon Marker Block Customization**:
+  - Made the high/low profile point marker block fully customizable in Settings (defaulting to `"Kholy point"`).
+  - Users can now select any custom block definition from the template library (e.g. `Kholy point`, `_TagHexagon`, or custom firm blocks) with an interactive block picker in Settings Section 2.
+  - Safe import ensures user-customized CAD blocks retain their native orientation and geometry without unintended deletion.
+- **Configurable Chair Height Rounding Increments**:
+  - Added user-selectable chair height rounding increment in Settings Section 4 (`PT Anchors & Chairs`).
+  - Supports standard construction increments: **5 mm (Standard)**, **1 mm (Exact)**, **10 mm**, **2 mm**, and **25 mm (1 inch)**.
+  - Chair heights calculated across all tendon profile evaluation engines (RAM Concept and ADAPT-Builder) dynamically snap to the chosen increment.
+- **Dual Bentley RAM Concept Engine Support (2024 & 2023)**:
+  - Full automated runtime binding for RAM Concept 2024 and 2023 with version fallback and user preference control.
+- **Direct PDF Technical Manual Integration**:
+  - Instant access to `Vortex_PT_User_Manual.pdf` from the WinUI 3 command bar, keyboard shortcut `F1`, and Settings.
+- **Official Production Release**:
+  - Version incremented to **1.0.0** across all modules, cloud manifests, test suites, and Inno Setup installer.
+
+---
+
+## [0.9.7] - 2026-09-26
+
+### 🚀 Highlights: Bentley RAM Concept 2023 & 2024 Dual-Engine Support & Direct PDF User Manual Access
+
+### Added & Improved
+- **Bentley RAM Concept 2023 & 2024 Dual-Engine Architecture**:
+  - Added comprehensive native support for **RAM Concept 2023** alongside **RAM Concept 2024** without requiring third-party plugins or manual API configuration.
+  - **Dynamic Engine Discovery & Version Resolution**: Automatically scans system program directories and Windows Registry (`HKCU\Software\Bentley\Engineering\Concept\Integration`) to discover all installed RAM Concept engines (2024, 2023, 2025, and custom installations).
+  - **Seamless Runtime API Binding**: Dynamically isolates and activates the matching `ram_concept` Python API (`v23.0.1` or `v24.0.2`) on the fly, eliminating module cache collisions and version mismatch exceptions.
+  - **Intelligent Auto-Switching Fallback**: If an engine (e.g. RAM Concept 2023) encounters a model file saved in a newer format ("Error: This file was not written by RAM Concept"), the extractor automatically switches to RAM Concept 2024 without interrupting user workflow.
+  - **Configurable Engine Preference**: Added setting `ram_concept_version` in `SettingsView` allowing users to choose `"Auto-Detect (2024 / 2023)"`, `"RAM Concept 2024"`, `"RAM Concept 2023"`, or custom `Concept.exe` paths, displaying live detection summaries.
+
+- **Direct PDF User Manual Integration**:
+  - Replaced the in-app plain text/HTML documentation dialog with immediate launch of the official technical publication **`Vortex_PT_User_Manual.pdf`** in the system's default PDF viewer (Adobe Acrobat, Edge, Chrome, etc.).
+  - Added a dedicated **"Manual"** command button with document icon on the primary WinUI 3 command toolbar.
+  - Added global keyboard shortcut **`F1`** to instantly open the PDF manual from anywhere in the application.
+  - Added **"Open User Manual (PDF)"** action card in Settings under General & Interface.
+  - Fully bundled `Vortex_PT_User_Manual.pdf` inside PyInstaller standalone distribution and Inno Setup installer.
+
+- **Packaging & Delivery**:
+  - Updated PyInstaller specification `vortex_pt.spec` to bundle the complete PDF manual in both `docs/` and root distribution paths.
+  - Updated Inno Setup installer definition `installer/VortexPT.iss` to build `VortexPT-Setup-0.9.7.exe`.
+
+---
+
+## [0.9.6] - 2026-09-26
+
+### 🚀 Highlights: Rotated Slab Direction Clustering & RAM Concept-Style Sequential Renumbering
+
+### Added & Improved
+- **ADAPT-Builder Rotated Slab Direction Clustering**:
+  - Replaced naive Cartesian `dx >= dy` tendon direction classification with a mathematical 2-axis circular 4-angle clustering algorithm.
+  - Successfully detects principal grid orientations for any building rotation angle (e.g. 43.4° / 133.4° in angled basement slabs like `BASEMENT-PART-P`).
+  - **Zero Direction Mixing**: Completely prevents transverse tendons from polluting the Longitude plan, and longitudinal tendons from polluting the Latitude plan.
+  - Preserves distinct orthogonal tendon groups (e.g. 38 Latitude transverse tendons and 17 Longitude tendons in `BASEMENT-PART-P`).
+
+- **Sequential RAM Concept-Style Tendon Numbering**:
+  - Automatically renumbers ADAPT tendons identically to RAM Concept's convention:
+    - **Latitude Tendons**: Renumbered sequentially as `X-1, X-2, X-3, ..., X-N`.
+    - **Longitude Tendons**: Renumbered sequentially as `Y-1, Y-2, Y-3, ..., Y-M`.
+  - Calculates physical transverse spacing order across the slab via orthogonal normal-vector projections ($\vec{P}_{\text{mid}} \cdot \vec{n}$).
+  - Automatically detects model numbering direction covariance to maintain natural structural layout ordering from bottom-to-top and left-to-right.
+  - Eliminates gaps, missing numbers, and duplicate tendon labels imported from legacy ADAPT models.
+  - Seamlessly updates `ContinuousTendon.mark`, `tendon_number`, `strand_tag` (`"3S"`, `"4S"`), `span_set`, `layer_name` (`"ADAPT Latitude Tendon"`, `"ADAPT Longitude Tendon"`), tendon segments, and chair dimension records.
+
+- **Seamless ADAPT-Builder Model Import**:
+  - Automatically identifies and reads the companion Generic Model (`.inp`) beside the selected `.adm` database or inside backup directories.
+  - Retained strict file dialog filtering (`.cpt` and `.adm`) to prevent accidental raw text file selection.
+
+- **Automated Verification**:
+  - Added test suite `test_rotated_building_direction_clustering_and_renumbering` in `tests/test_adapt_inp_extractor.py`.
+  - Verified full DXF export and Excel takeoff schedule generation for rotated buildings.
+
+---
+
+## [0.9.5-beta] - 2026-09-22
+
+### Added
+- **Native Self-Measuring CAD Spacing Dimensions**:
+  - Dynamic dimension lines between chair points directly on the CAD drawing.
+  - Automatic collision avoidance and text offset along tendon drapes.
+- **Configurable Strand Unit Weight**:
+  - Added customizable strand unit weight in settings dialog (`0.785 kg/m` for 12.7mm, `1.100 kg/m` for 15.2mm).
+- **Unified Pan Box CAD Block**:
+  - Standardized internal dead/live pocket block insertion (`PAN`).
+- **Cloud Update Verification**:
+  - Integrated update checker and version dialog against GitHub releases.
+
+---
+
+## [0.9.4] - 2026-09-15
+
+### Added
+- **ADAPT-Builder `.INP` Generic Model Parser**:
+  - Direct import of geometry, slab thicknesses, drop panels, columns, openings, and tendons.
+  - Three-point reverse parabola drape curve evaluation.
+  - Calculation of elongation, jacking forces, and friction/wobble losses.
+
+---
+
+## [0.9.0] - [0.9.3] - 2026-09-01
+
+### Added
+- **Bentley RAM Concept API Integration**:
+  - Direct extraction of `.cpt` structural models.
+- **Interactive 2D CAD Vector Canvas**:
+  - Smooth pan/zoom, layer visibility filters, coordinate inspector, and click-to-inspect.
+- **2D Tendon Drape Profile Viewer**:
+  - Cross-sectional profile viewer with high/low chair heights, inflection points, and TOC/soffit datum.
+- **AutoCAD DXF Shop Drawing Generator**:
+  - Standard CAD layering, border sheets, title blocks, and embedded tendon schedules.
+- **Excel & CSV Takeoff Schedules**:
+  - Multi-sheet workbook with PT tendon schedule, chair height tables, and material takeoffs.
