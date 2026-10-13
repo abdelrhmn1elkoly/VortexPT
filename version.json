@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.3.3",
+  "release_date": "2026-10-13",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.3.3/VortexPT-Setup-1.3.3.exe",
+  "release_notes": "Vortex PT 1.3.3 Precision & Maintenance Release:\n• Resolved column-beam framing corridor issue where slab tendons passing through column boundaries near framing beams were falsely assigned beam soffit depths, fixing profile spikes (e.g. 700mm) and false cover violation warnings.\n• Ensured slab tendons crossing transverse beams strictly preserve slab formwork datum without plunging into beam stems.\n• Enhanced tendon ID block attributes and bubble size setting scaling."
+}
