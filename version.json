@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.3.4",
+  "release_date": "2026-10-13",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.3.4/VortexPT-Setup-1.3.4.exe",
+  "release_notes": "Vortex PT 1.3.4 Precision & CAD Detailing Release:\n• Resolved Anchor Slab Datum & Priorities: Anchors located within overlapping slabs or drop panels strictly respect RAM Concept slab priorities and node soffit elevations, preventing unintended distance-from-top miscalculations (e.g. 400mm thickened slab anchor with 200mm profile outputs CL 200* rather than CL 20*).\n• Local Span-by-Span Formwork (Hybrid Tendons): Upgraded tendon formwork datum evaluation from a global tendon-wide classification to local span-by-span / segment resolution. Tendons traversing through both flat slab spans and interior deep beams accurately adapt their formwork datum per span.\n• Template DWG/DXF Block Preservation & Auto-Sync: Custom blocks and dimension styles saved by users in AutoCAD templates (blocks.dwg) are strictly preserved across app updates and app startups without being overwritten by factory defaults, and automatically synced to DXF for instant discovery in app block and dimension pickers."
+}
