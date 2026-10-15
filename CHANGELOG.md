@@ -4,6 +4,22 @@ All notable changes to the **Vortex PT** Post-Tensioning Shop Drawing & Analysis
 
 ---
 
+## [1.3.8] - 2026-10-15
+
+### 🚀 Highlights: Flat High-Profile Chair Deduction & Precision Release
+
+### Added & Improved
+- **Flat High-High Profile Spans & Chair Deduction Synchronization**:
+  - Intermediate chairs along flat high-profile spans over columns and support plates strictly inherit the high-profile chair elevation.
+  - Correctly incorporates the configured high chair deduction (e.g. 155mm - 10mm = 145mm instead of un-deducted raw 160mm).
+  - Eliminates rounding increment distortion across uniform flat high zones.
+- **Adaptive Multi-Soffit Support Transitions**:
+  - Intermediate chairs adapt to localized formwork soffit variations across drop panels and slab step-downs.
+- **Robust Floor Slab Area Fallback**:
+  - Enhanced net floor slab area calculation with Shoelace polygon opening deduction, guaranteeing seamless model extraction across all environments.
+
+---
+
 ## [1.3.7] - 2026-10-15
 
 ### 🚀 Highlights: CAD Material Takeoff Table, Dynamic Notes & Launcher Resilience
