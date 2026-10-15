@@ -4,6 +4,34 @@ All notable changes to the **Vortex PT** Post-Tensioning Shop Drawing & Analysis
 
 ---
 
+## [1.3.7] - 2026-10-15
+
+### 🚀 Highlights: CAD Material Takeoff Table, Dynamic Notes & Launcher Resilience
+
+### Added & Improved
+- **Project Material & Strand Takeoff Summary Table in Drawing**:
+  - Embedded full material takeoff schedule directly inside the drawing border layout.
+  - Reports: Total Slab Area (m²), Total Tendon Runs, Total Tendon Lengths per direction, Total Strand Length, Strand Weight (kg & tons), PT Rate (kg/m²), and Tendon Rate (m²/ton).
+  - Controllable via Settings toggle (`include_takeoff_table`) and Export dialog checkboxes.
+- **Dynamic General Notes**:
+  - Strand Diameter note dynamically reflects selected criteria (12.7mm vs 15.2mm).
+  - Jacking Force note calculates active strand force (138 kN for 12.7mm @ 75% fpu, 195 kN for 15.2mm) dynamically.
+  - Concrete transfer strength note (fcu / f'ci) is strictly suppressed unless extracted with positive value from RAM Concept criteria.
+- **Application Launcher Resilience**:
+  - Fortex BT.bat, Vortex PT.bat, and run_app.bat configured with virtual environment auto-discovery and PYTHONPATH.
+  - main.py dynamically detects and links `.venv/Lib/site-packages` on startup to prevent `ModuleNotFoundError: No module named 'PIL'`.
+- **Chair Detailing & Collision Avoidance**:
+  - Chair text orientation dropdown (Above vs Beside tick indicator).
+  - Automatic collision resolution: forces text above ticks when close tendon spacing creates interference.
+  - Configurable dimension line offset from tendon polyline (e.g. 50 mm).
+- **Tendon ID Block Customization & Template Sync**:
+  - Configurable ID block color and text height.
+  - Dynamic discovery and attribute extraction from AutoCAD template blocks.
+- **Cutting Length Integration**:
+  - Toggle to include cutting allowance when calculating tendon lengths and weights across schedules, DXF tables, and Excel takeoff.
+
+---
+
 ## [1.3.5] - 2026-10-13
 
 ### 🚀 Highlights: Hybrid Formwork Datum Coherence & Interface Node Precision
