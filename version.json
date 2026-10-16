@@ -1,6 +1,6 @@
 {
-  "latest_version": "1.3.8",
-  "release_date": "2026-10-15",
-  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.3.8/VortexPT-Setup-1.3.8.exe",
-  "release_notes": "Vortex PT 1.3.8 Flat High-Profile Chair Deduction & Precision Release:\n• Flat High-High Profile Spans: Intermediate chairs along flat high-profile spans over columns and support plates strictly inherit the high-profile chair elevation (incorporating the configured high chair deduction, e.g. 145mm instead of un-deducted raw 160mm) without rounding distortion.\n• Adaptive Multi-Soffit Steps: Intermediate chairs correctly account for local formwork soffit variations across drop panels and slab step-downs.\n• Robust Floor Slab Area Fallback: Enhanced net floor slab area calculation with Shoelace polygon opening deduction, guaranteeing seamless model extraction across all environments."
+  "latest_version": "1.3.9",
+  "release_date": "2026-10-16",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.3.9/VortexPT-Setup-1.3.9.exe",
+  "release_notes": "Vortex PT 1.3.9 Dedicated Beam Anchors, Wide Band Beam Detailing & Window Performance Release:\n• Dedicated Beam Tendons: Tendons running longitudinally inside beams (e.g. Tendon X-8) preserve beam soffit formwork datum with zero slab deduction (560mm) and accurate top-of-beam anchor callouts (CL 140*).\n• Wide Band Beams vs Narrow Stem Beams: Crossing chairs inside wide band beams (> 500mm, e.g. 2000x1000) sit directly on beam formwork at full elevation (925mm) without deduction, while narrow stem beams (<= 500mm) retain slab level formwork deduction.\n• Taskbar Restore Deadlock Fix: Resolved Windows modal grab lockup when minimizing dialogs (Activation, Check for Updates, Quick Export) by synchronizing grab states with window map/unmap events.\n• Instantaneous UI Restore: Viewport dimensions are cached to skip redundant full-canvas redraws on window restore and focus changes, eliminating 1-2s freezes."
 }
