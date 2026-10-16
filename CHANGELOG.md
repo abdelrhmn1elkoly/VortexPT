@@ -4,6 +4,25 @@ All notable changes to the **Vortex PT** Post-Tensioning Shop Drawing & Analysis
 
 ---
 
+## [1.4.0] - 2026-10-16
+
+### 🚀 Highlights: Beam Exit Transition Chairs, High-Speed Model Caching & Full User Manual Redesign
+
+### Added & Improved
+- **Beam Exit Transition Chairs**:
+  - Fixed chair elevations immediately beyond beam boundaries to reference slab soffit formwork (e.g. 150mm chair in 280mm slab).
+  - Profile viewer cross-section dots sit precisely on the cable trajectory.
+- **Ultra-Fast Model Caching**:
+  - Persistent SHA-256 disk cache loads models in 0.05s instead of 35s.
+- **CAD Canvas 60 FPS Performance**:
+  - Precomputed anchor jog map and viewport spatial culling for chairs eliminate all pan/zoom lag.
+- **Windows Taskbar Restore Fix**:
+  - Eliminated taskbar restore freeze when minimizing modal dialogs.
+- **Redesigned User Manual (v1.4)**:
+  - Clean executive PDF manual with WhatsApp direct support (+20 155 222 8306) and detailed customization guides.
+
+---
+
 ## [1.3.9] - 2026-10-16
 
 ### 🚀 Highlights: Dedicated Beam Anchors, Wide Band Beam Detailing & Window Performance Release
