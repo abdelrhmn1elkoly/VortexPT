@@ -4,6 +4,24 @@ All notable changes to the **Vortex PT** Post-Tensioning Shop Drawing & Analysis
 
 ---
 
+## [1.3.9] - 2026-10-16
+
+### 🚀 Highlights: Dedicated Beam Anchors, Wide Band Beam Detailing & Window Performance Release
+
+### Added & Improved
+- **Dedicated Beam Tendon Anchoring**:
+  - Tendons running entirely inside a beam now anchor directly to the beam formwork soffit with zero slab deduction.
+  - Top datum callouts calculate from top of beam, and profile anchor dots sit precisely on the cable curve.
+- **Wide Band Beams vs Narrow Stem Beams Detailing**:
+  - Chairs inside wide band beams (> 500mm width) sit directly on beam formwork without deducting beam depth.
+  - Narrow stem beams (<= 500mm width) retain slab deduction so chairs sit on slab deck formwork.
+  - Intermediate chair stepping within wide beam spans consistently references beam soffit.
+- **Window Minimize / Restore Deadlock & Smoothness**:
+  - Fixed Windows taskbar restore hang by releasing modal grabs on minimize and restoring on map.
+  - Canvas resize caching prevents redundant re-rendering of entire drawings on window restore, eliminating UI lag.
+
+---
+
 ## [1.3.8] - 2026-10-15
 
 ### 🚀 Highlights: Flat High-Profile Chair Deduction & Precision Release
