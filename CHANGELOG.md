@@ -6,6 +6,24 @@ All notable changes to the **Vortex PT** Post-Tensioning Shop Drawing & Analysis
 
 ## [1.4.2] - 2026-10-21
 
+### 🚀 Highlights: Unified ADAPT Import, Export Elongation Persistence & Dynamic Block ID Scaling
+
+### Added & Improved
+- **Unified Top-Bar ADAPT Report Import**:
+  - Consolidated ADAPT report importing into a single action beside Fast CAD Export in the top command bar.
+  - A single upload simultaneously refreshes the 2D CAD plan, profile elevation viewer, inspector properties panel, schedule tables, and export datasets.
+  - Removed duplicate import button from schedule table screen.
+- **Full Export Elongation Persistence**:
+  - Fixed export issue where exported AutoCAD drawings (DWG/DXF) and tables reverted to theoretical values instead of preserving imported ADAPT elongations.
+  - Both CAD drawings and takeoff schedules strictly retain imported ADAPT values.
+- **Dynamic Tendon ID Block Scaling**:
+  - Removed manual text height override from Settings.
+  - Tendon ID bubble blocks (`BLOQUE1`) take attribute text heights directly from the template DWG definition or scale naturally with bubble ID size (`tag_bubble_radius_mm`).
+
+---
+
+## [1.4.2] - 2026-10-21
+
 ### 🚀 Highlights: Above-Indicator Chair Text Layout & Auto-Clash Resolution
 
 ### Added & Improved
