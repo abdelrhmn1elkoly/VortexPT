@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.4.2",
+  "release_date": "2026-10-21",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.4.2/VortexPT-Setup-1.4.2.exe",
+  "release_notes": "Vortex PT 1.4.2 Above-Indicator Chair Text Layout & Auto-Clash Resolution:\n• Precision Above-Indicator Chair Text Layout: Implemented custom chair text placement rules for both orthogonal and angled tendons. Longitude tendons place elevation text with 0° rotation directly above the indicator (+Y) with a 50 mm offset. Latitude tendons place elevation text rotated 90° along the tendon, offset strictly to the left of the indicator (-X) by 50 mm, preventing overlaps in dense tendon bands.\n• Intelligent Chair Clash Detection: In 'Beside' placement mode, chair text automatically promotes to the above-indicator layout only when interference occurs with adjacent cables (spacing <= 550 mm) or neighboring chairs (proximity <= 600 mm), while preserving clean 'Beside' placement everywhere else.\n• Continuous Interior Tendon Spacing Dimensions: Fixed subgroup boundary handling ensuring full collinear dimension chains across interior tendon corridors in DXF export."
+}
