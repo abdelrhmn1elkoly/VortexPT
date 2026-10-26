@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.4.3",
+  "release_date": "2026-10-26",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.4.3/VortexPT-Setup-1.4.3.exe",
+  "release_notes": "Vortex PT 1.4.3 Directional Elongation & Material Takeoffs, Slab Rate Controls & Chair Summary CAD Toggle:\n• Directional Takeoff Subtotals (X/Y & Longitude/Latitude): Both CAD drawing sheets and Excel cutting length schedules now display detailed directional totals directly below each table for Total Strands, Anchors, and Wedges.\n• Combined Longitude & Latitude Grand Totals: Comprehensive grand total summary blocks across all axes in CAD and Excel, including directional side-by-side comparison matrices.\n• Optional Slab Area & PT Rate Export: User setting in CAD export dialog, CAD settings dialog, and Excel to toggle slab area, PT rates (kg/m² and m²/ton), tendon rates, and slab schedules on or off.\n• CAD Chair Summary Table Toggle: User switch in CAD export dialog and settings dialog to toggle whether Chair Summary Tables are drawn on CAD drawing sheets."
+}
