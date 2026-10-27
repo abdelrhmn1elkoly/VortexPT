@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.4.4",
+  "release_date": "2026-10-27",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.4.4/VortexPT-Setup-1.4.4.exe",
+  "release_notes": "Vortex PT 1.4.4 Drop Panel & Beam Formwork Governance & Intersecting Beam Anchor Alignment:\n• Drop Panel vs Beam Formwork Governance: Respects RAM Concept 2D mesh priority rules where standard beams (mesh_as_slab=False) defer to deeper drop panel soffits for formwork and tendon profiling.\n• Intersecting Beam Anchor Alignment: When tendons anchor where longitudinal and transverse beams intersect, tendon anchor callouts and chairs correctly rest on the longitudinal beam the tendon runs inside.\n• Accurate Anchor Top & Bottom Covers: Resolved top cover calculation ensuring exact callouts (e.g. CL 175* / 825mm chair in 1000mm drops, CL 75* / 625mm chair in 700mm beams).\n• ProfileViewer Beam Alignment: Cross-section viewer samples longitudinal beams matching tendon tangent direction."
+}
