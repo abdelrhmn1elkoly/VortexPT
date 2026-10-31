@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.4.5",
+  "release_date": "2026-10-31",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.4.5/VortexPT-Setup-1.4.5.exe",
+  "release_notes": "Vortex PT 1.4.5 Directional Plan Layers, Vortex-BT-ID Default Block & 64-Bit Clean Upgrades:\n• 64-Bit Program Files Installation: Modernized installer default directory to 64-bit Program Files, eliminating unnecessary administrator elevation prompts on x86 paths.\n• Seamless Automated Upgrade Uninstallation: Installer automatically detects and cleanly uninstalls previous versions before installing new binaries, while preserving user settings and customized template blocks in %APPDATA%/VortexPT.\n• Directional Plan Layers for Plan X & Plan Y: Distinct dedicated layers for Plan X (Latitude) and Plan Y (Longitude) chairs, control points, dimensions, tags, jacks, and dead ends (S-PT-CHAIRS-HIGH-X/Y, S-PT-CHAIRS-INT-X/Y, S-DIM-CHAIRS-X/Y, S-DIM-SPACING-X/Y, S-PT-TAGS-X/Y, S-PT-JACKS-X/Y, S-PT-DEAD-ENDS-X/Y).\n• Default Tendon ID Block 'Vortex-BT-ID': Updated default tendon ID block name to Vortex-BT-ID with automated template cloning and directional support.\n• Clean Window Title Bar: Removed redundant version number from the main application title bar."
+}
