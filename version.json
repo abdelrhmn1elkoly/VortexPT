@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.4.7",
+  "release_date": "2026-10-31",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.4.7/VortexPT-Setup-1.4.7.exe",
+  "release_notes": "Vortex PT 1.4.7 Horizontal Category Navigation, Small-Screen Responsive Layout & WinUI 3 Dark Mode:\n• Top Horizontal Category Navigation: Replaced nested inner sidebar with sleek horizontal category pills (All, Chairs, Strands, CAD, Schedules, QA, System), restoring a clean, full-width settings interface without duplicate sidebars.\n• Small-Screen & Laptop Responsive Viewport: Reclaimed 248px of width, ensuring all numeric inputs, dropdowns, and buttons remain 100% visible and unclipped across all screen sizes.\n• Windows 11 HDR Display Support: When HDR is active, seamlessly applies authentic WinUI 3 solid dark mode (#202020) with elevated cards (#2B2B2B), eliminating the empty pitch-black background void caused by GDI scRGB swapchain keying.\n• Instant Search & Section Jump: Quick keyword search filter and smooth category scrolling."
+}
