@@ -1,6 +1,6 @@
 # Vortex PT — Post-Tensioned Concrete CAD & Detailing Suite
 
-[![Version](https://img.shields.io/badge/version-1.4.5-00a2ed.svg)](https://github.com/abdelrhmn1elkoly/VortexPT/releases/latest)
+[![Version](https://img.shields.io/badge/version-1.4.7-00a2ed.svg)](https://github.com/abdelrhmn1elkoly/VortexPT/releases/latest)
 [![Platform](https://img.shields.io/badge/platform-Windows%2011%20%7C%2010%20(x64)-10b981.svg)](https://github.com/abdelrhmn1elkoly/VortexPT/releases/latest)
 [![RAM Concept](https://img.shields.io/badge/Bentley%20RAM%20Concept-2024%20%26%202023-f59e0b.svg)](https://www.bentley.com)
 [![ADAPT Builder](https://img.shields.io/badge/ADAPT--Builder-ADM%20%2F%20INP-8b5cf6.svg)](https://www.bentley.com)
@@ -15,9 +15,9 @@
 
 Download the official Windows standalone installer:
 
-[![Download Vortex PT v1.4.5](https://img.shields.io/badge/Download-VortexPT--Setup--1.4.5.exe-00a2ed?style=for-the-badge&logo=windows)](https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.4.5/VortexPT-Setup-1.4.5.exe)
+[![Download Vortex PT v1.4.5](https://img.shields.io/badge/Download-VortexPT--Setup--1.4.7.exe-00a2ed?style=for-the-badge&logo=windows)](https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.4.7/VortexPT-Setup-1.4.7.exe)
 
-- **Version**: 1.4.5 (Production Release)
+- **Version**: 1.4.7 (Production Release)
 - **Installer Size**: ~32.7 MB
 - **Prerequisites**: Windows 10 / 11 (64-bit). No separate Python or runtime installation needed.
 - **Trial**: Full-featured 7-day trial with instant activation.
