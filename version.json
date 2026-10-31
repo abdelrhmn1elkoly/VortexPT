@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.4.6",
+  "release_date": "2026-10-31",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.4.6/VortexPT-Setup-1.4.6.exe",
+  "release_notes": "Vortex PT 1.4.6 Fluent Settings Left Sidebar, Instant Search, HDR Mica & Documents Output:\n• Windows 11 Settings App Left-Sidebar Rail: Categorized navigation across Chairs, Strands, CAD Blocks, Schedules & Output, QA, and System.\n• Real-Time Instant Search: Instantly filter all configuration settings with live dynamic card packing.\n• Small-Screen & Laptop Responsive Scaling: Dynamic percentage-based card width and adaptive height expansion preventing text overflow on high-DPI displays.\n• Native Windows 11 Mica & Mica Alt with HDR: Translucent backdrop material works seamlessly with HDR displays enabled.\n• Default Documents Output Directory: Saved drawings and schedules default to Documents\\VortexPT, eliminating AutoCAD UAC read-only lock issues.\n• Tendon Parabola & Cache Resolution: Corrected anchor start elevation calculation and automated cache invalidation ensuring smooth parabolic profiling."
+}
