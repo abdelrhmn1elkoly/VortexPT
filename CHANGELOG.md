@@ -4,6 +4,22 @@ All notable changes to the **Vortex PT** Post-Tensioning Shop Drawing & Analysis
 
 ---
 
+## [1.4.6] - 2026-10-31
+
+### 🚀 Highlights: Fluent Settings Left Sidebar, Instant Search, HDR Mica & Documents Output
+
+### Added & Improved
+- **Windows 11 Fluent Settings Left Sidebar**: Categorized navigation rail across Chairs, Strands, CAD Blocks, Schedules & Output, QA, and System.
+- **Real-Time Instant Search**: Fast dynamic search filtering across all configuration cards.
+- **Responsive Sizing**: Dynamic percentage-based card containers and adaptive text wrapping for small screens and high-DPI laptops.
+- **HDR Mica Backdrop**: Translucent Mica Alt and Mica materials active on Windows 11 with HDR displays.
+- **Documents Output Directory**: Default export path moved to `%USERPROFILE%\Documents\VortexPT` to prevent AutoCAD read-only locks.
+- **Tendon Parabola Resolution**: Fixed anchor profile calculation and automated cache invalidation.
+- **Directional Plan Layers**: Export CAD drawings with dedicated `*-X` (Latitude) and `*-Y` (Longitude) layers for chairs, control points, dimensions, tags, jacks, and dead ends.
+- **Vortex-BT-ID Default Block**: Defaulted tendon ID bubble block to `Vortex-BT-ID` and `Vortex-BT-ID_L` with automated template synchronization.
+- **Clean Title Bar**: Main window title bar formatted cleanly without version string clutter.
+
+---
 ## [1.4.5] - 2026-10-31
 
 ### 🚀 Highlights: Directional Plan Layers, Vortex-BT-ID Default Block & 64-Bit Clean Upgrades
