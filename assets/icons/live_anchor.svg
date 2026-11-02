@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="liveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+    <linearGradient id="wedgeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE68A"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+  <!-- Slab Edge Line -->
+  <line x1="42" y1="6" x2="42" y2="42" stroke="#6B7280" stroke-width="2.5" stroke-dasharray="3,3"/>
+  <!-- Bearing Plate -->
+  <rect x="36" y="10" width="4" height="28" rx="1.5" fill="#92400E" stroke="#D97706" stroke-width="1.5"/>
+  <!-- Conical Trumpet Casting -->
+  <polygon points="18,16 36,12 36,36 18,32" fill="url(#liveGrad)" stroke="#B45309" stroke-width="1.5"/>
+  <!-- Wedges (Stressing Grips) -->
+  <polygon points="30,17 38,15 38,22 30,21" fill="url(#wedgeGrad)" stroke="#78350F" stroke-width="1"/>
+  <polygon points="30,27 38,26 38,33 30,31" fill="url(#wedgeGrad)" stroke="#78350F" stroke-width="1"/>
+  <!-- Tendon Strand Entering -->
+  <line x1="4" y1="24" x2="20" y2="24" stroke="#38BDF8" stroke-width="3" stroke-linecap="round"/>
+  <!-- Jacking Force Arrow -->
+  <path d="M 40,24 L 46,24 M 43,21 L 46,24 L 43,27" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

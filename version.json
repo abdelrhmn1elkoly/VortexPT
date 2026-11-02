@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.5.1",
+  "release_date": "2026-11-03",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.5.1/VortexPT-Setup-1.5.1.exe",
+  "release_notes": "Vortex PT 1.5.1 Table Export Customizer, Custom Vector Icons & Silent Updates:\n• Table Export Filtering: Columns toggled OFF in the UI are cleanly excluded from both CAD Shop Drawing cutting schedule tables and Excel export sheets.\n• Column Toggle Switches: ON/OFF toggle switches beneath each column header and interactive header clicking to toggle export states.\n• Custom Vector Icons: Distinct high-DPI and SVG vector icons for Live Anchors, Dead Anchors, and Pan Boxes.\n• Zero-Click Silent Auto-Update: Downloads and installs updates in-place automatically without installer wizard dialogs.\n• 3-Strand & 5-Strand Column Split: Separate columns for 3-strand and 5-strand chairs in both Live End and Dead End chair tables."
+}
