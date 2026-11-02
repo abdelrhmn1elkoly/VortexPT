@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vortex PT — Engineering User Manual & Technical Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+  @page {
+    size: A4 portrait;
+    margin: 18mm 16mm 20mm 16mm;
+    @top-left {
+      content: "VORTEX PT — TECHNICAL USER MANUAL";
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 8pt;
+      color: #64748b;
+      letter-spacing: 0.05em;
+    }
+    @top-right {
+      content: "POST-TENSION CAD & SHOP DRAWING SUITE";
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 8pt;
+      color: #64748b;
+    }
+    @bottom-left {
+      content: "OFFLINE DESKTOP EDITION • ACI 318 / PTI COMPLIANT";
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 8pt;
+      color: #94a3b8;
+    }
+    @bottom-right {
+      content: "Page " counter(page);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 8pt;
+      font-weight: 600;
+      color: #0284c7;
+    }
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 10pt;
+    line-height: 1.55;
+    color: #1e293b;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Cover Page (Redesigned Executive Edition) */
+  .cover-page {
+    page-break-before: always;
+    page-break-after: always;
+    min-height: 96vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: radial-gradient(circle at 82% 12%, rgba(0, 229, 255, 0.22), transparent 45%),
+                radial-gradient(circle at 18% 85%, rgba(0, 120, 212, 0.20), transparent 45%),
+                linear-gradient(135deg, #050811 0%, #091325 50%, #0f1f3d 100%);
+    color: #f8fafc;
+    padding: 38px 36px 30px 36px;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: 1px solid rgba(0, 229, 255, 0.25);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+  }
+
+  .cover-page::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+      linear-gradient(to right, rgba(0, 229, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 229, 255, 0.05) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+  }
+
+  .cover-top {
+    position: relative;
+    z-index: 2;
+  }
+
+  .cover-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 229, 255, 0.12);
+    border: 1px solid rgba(0, 229, 255, 0.5);
+    color: #00e5ff;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5pt;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+  }
+
+  .cover-title {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 38pt;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    margin: 0 0 6px 0;
+  }
+
+  .cover-title span {
+    color: #00e5ff;
+    text-shadow: 0 0 35px rgba(0, 229, 255, 0.6);
+  }
+
+    .cover-whatsapp-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.5);
+    color: #4ade80;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9pt;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+  }
+
+  .cover-sub-badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9pt;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: #38bdf8;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .cover-subtitle {
+    font-size: 11.5pt;
+    font-weight: 400;
+    color: #94a3b8;
+    line-height: 1.45;
+    max-width: 580px;
+    margin-bottom: 18px;
+  }
+
+  .cover-hero-img-wrap {
+    position: relative;
+    z-index: 2;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1.5px solid rgba(0, 229, 255, 0.45);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 229, 255, 0.2);
+    margin: 6px 0 18px 0;
+    background: #020617;
+  }
+
+  .cover-hero-img-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .cover-meta {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .cover-meta-item {
+    font-family: 'IBM Plex Mono', monospace;
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 6px;
+    padding: 8px 10px;
+  }
+
+  .cover-meta-label {
+    font-size: 7pt;
+    color: #38bdf8;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 3px;
+    font-weight: 600;
+  }
+
+  .cover-meta-val {
+    font-size: 8.5pt;
+    font-weight: 600;
+    color: #f1f5f9;
+    line-height: 1.3;
+  }
+
+  /* Structural Content */
+  .page {
+    page-break-before: always;
+    padding-top: 8px;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Chakra Petch', sans-serif;
+    color: #0f172a;
+    page-break-after: avoid;
+  }
+
+  h1 {
+    font-size: 20pt;
+    font-weight: 700;
+    border-bottom: 2.5px solid #0284c7;
+    padding-bottom: 6px;
+    margin-top: 24px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h1 .sec-num {
+    background: #0284c7;
+    color: #fff;
+    font-size: 11pt;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  h2 {
+    font-size: 13.5pt;
+    font-weight: 600;
+    color: #1e293b;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-left: 3.5px solid #00a2ed;
+    padding-left: 9px;
+  }
+
+  h3 {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #334155;
+    margin-top: 14px;
+    margin-bottom: 6px;
+  }
+
+  p {
+    margin: 0 0 10px 0;
+  }
+
+  /* Table of Contents */
+  .toc-container {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+
+  .toc-title {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 14pt;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #cbd5e1;
+    padding-bottom: 6px;
+  }
+
+  .toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 30px;
+    row-gap: 8px;
+  }
+
+  .toc-item {
+    font-size: 9.5pt;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .toc-item .num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    color: #0284c7;
+    margin-right: 8px;
+    min-width: 22px;
+  }
+
+  .toc-item .title {
+    font-weight: 500;
+    color: #334155;
+  }
+
+  /* Figure Styling */
+  .figure-card {
+    page-break-inside: avoid;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 8px;
+    margin: 16px 0;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  }
+
+  .figure-img-wrap {
+    border-radius: 6px;
+    overflow: hidden;
+    background: #070b14;
+    border: 1px solid #1e293b;
+  }
+
+  .figure-img-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .figure-caption {
+    font-size: 8.5pt;
+    color: #475569;
+    padding: 8px 6px 2px 6px;
+    display: flex;
+    gap: 8px;
+    line-height: 1.4;
+  }
+
+  .figure-caption strong {
+    font-family: 'IBM Plex Mono', monospace;
+    color: #0284c7;
+    white-space: nowrap;
+  }
+
+  /* Callout Boxes */
+  .callout {
+    page-break-inside: avoid;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 9.5pt;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .callout-icon {
+    font-size: 13pt;
+    line-height: 1;
+  }
+
+  .callout-body {
+    flex: 1;
+  }
+
+  .callout-title {
+    font-weight: 700;
+    font-family: 'Chakra Petch', sans-serif;
+    margin-bottom: 4px;
+    font-size: 10pt;
+  }
+
+  .callout-info {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-left: 4px solid #0284c7;
+    color: #0369a1;
+  }
+
+  .callout-warn {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-left: 4px solid #f59e0b;
+    color: #92400e;
+  }
+
+  .callout-tip {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-left: 4px solid #10b981;
+    color: #166534;
+  }
+
+  /* Key Value Grid */
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 14px 0;
+  }
+
+  .spec-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px 14px;
+  }
+
+  .spec-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8pt;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .spec-value {
+    font-size: 10pt;
+    font-weight: 600;
+    color: #0f172a;
+    margin-top: 2px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 9pt;
+    page-break-inside: avoid;
+  }
+
+  th {
+    background: #0e1526;
+    color: #f8fafc;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8pt;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 8px 10px;
+    border: 1px solid #1e293b;
+  }
+
+  td {
+    padding: 7px 10px;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+  }
+
+  tr:nth-child(even) td {
+    background-color: #f8fafc;
+  }
+
+  kbd {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5pt;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    color: #0f172a;
+  }
+
+  ul, ol {
+    margin: 0 0 12px 0;
+    padding-left: 20px;
+  }
+
+  li {
+    margin-bottom: 5px;
+  }
+
+  .code-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    background: #f1f5f9;
+    color: #0284c7;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 8.5pt;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ==================== COVER PAGE ==================== -->
+<div class="cover-page">
+  <div class="cover-top">
+    <div class="cover-badge">
+      <span>●</span> Official Engineering Documentation • Production Release 1.4.0
+    </div>
+    <div class="cover-title">
+      VORTEX <span>PT</span>
+    </div>
+    <div class="cover-sub-badge">POST-TENSION CAD DETAILING & SHOP DRAWING AUTOMATION SUITE</div>
+    <div class="cover-subtitle">
+      Comprehensive Technical Guide for Automated Parabolic Profiling, RAM Concept & ADAPT-Builder Integration, Dual Hexagon Tendon Tagging, and Production AutoCAD DWG Generation.
+    </div>
+  </div>
+
+  <div class="cover-hero-img-wrap">
+    <img src="assets/screenshots/shot_app_model_main.png" alt="Vortex PT Main Interface">
+  </div>
+
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <div class="cover-meta-label">Core Engines</div>
+      <div class="cover-meta-val">RAM Concept (.cpt)<br>ADAPT (.inp / .inb)</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="cover-meta-label">CAD Standards</div>
+      <div class="cover-meta-val">AutoCAD DWG / DXF<br>Excel Schedules</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="cover-meta-label">Compliance Code</div>
+      <div class="cover-meta-val">ACI 318-19 • PTI 6th<br>Eurocode 2 EN 1992</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="cover-meta-label">Direct Contact</div>
+      <div class="cover-meta-val">WhatsApp: +20 155 222 8306<br>Instant Developer Chat</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TABLE OF CONTENTS ==================== -->
+<div class="page">
+  <h1><span class="sec-num">TOC</span> Table of Contents</h1>
+  
+  <div class="toc-container">
+    <div class="toc-title">Document Architecture & Quick Navigation</div>
+    <ul class="toc-list">
+      <li class="toc-item">
+        <span><span class="num">01.</span> <span class="title">Introduction & Core Architecture</span></span>
+        <span class="code-badge">Page 2</span>
+      </li>
+      <li class="toc-item">
+        <span><span class="num">02.</span> <span class="title">Opening & Importing Models</span></span>
+        <span class="code-badge">Page 3</span>
+      </li>
+      <li class="toc-item">
+        <span><span class="num">03.</span> <span class="title">2D CAD Viewport & Layer Controls</span></span>
+        <span class="code-badge">Page 4</span>
+      </li>
+      <li class="toc-item">
+        <span><span class="num">04.</span> <span class="title">Parabolic Tendon Profiling & Chairs</span></span>
+        <span class="code-badge">Page 5</span>
+      </li>
+      <li class="toc-item">
+        <span><span class="num">05.</span> <span class="title">Engineering Compliance & QA Alerts</span></span>
+        <span class="code-badge">Page 6</span>
+      </li>
+      <li class="toc-item">
+        <span><span class="num">06.</span> <span class="title">Detailing Settings & CAD Blocks</span></span>
+        <span class="code-badge">Page 7</span>
+      </li>
+      <li class="toc-item">
+        <span><span class="num">07.</span> <span class="title">AutoCAD DWG/DXF Shop Drawing Export</span></span>
+        <span class="code-badge">Page 8</span>
+      </li>
+      <li class="toc-item">
+        <span><span class="num">08.</span> <span class="title">Fabrication Schedules & Takeoffs</span></span>
+        <span class="code-badge">Page 9</span>
+      </li>
+      <li class="toc-item">
+        <span><span class="num">09.</span> <span class="title">Node-Locked Licensing & Activation</span></span>
+        <span class="code-badge">Page 10</span>
+      </li>
+      <li class="toc-item">
+        <span><span class="num">10.</span> <span class="title">Keyboard Shortcuts & Engineering Tables</span></span>
+        <span class="code-badge">Page 11</span>
+      </li>
+    </ul>
+  </div>
+
+  <h2>1. Introduction & Core Architecture</h2>
+  <p>
+    <strong>Vortex PT</strong> is a specialized desktop engineering suite designed to bridge the workflow gap between finite-element post-tensioned design software (<strong>Bentley RAM Concept</strong> and <strong>ADAPT-Builder</strong>) and construction-ready shop drawings in <strong>AutoCAD (.dwg / .dxf)</strong>.
+  </p>
+  <p>
+    Traditional shop drawing workflows require draftsmen to manually trace tendon spans, hand-calculate chair support heights, transcribe profile points, and manually draw anchor setbacks. Vortex PT eliminates these manual steps, reducing a multi-day drafting task to under 30 seconds while guaranteeing zero transcription errors.
+  </p>
+
+  <div class="spec-grid">
+    <div class="spec-box">
+      <div class="spec-label">Target Users</div>
+      <div class="spec-value">Structural Engineers, PT Contractors, CAD Detailers</div>
+    </div>
+    <div class="spec-box">
+      <div class="spec-label">Execution Environment</div>
+      <div class="spec-value">100% Offline Desktop, Windows 10 / 11 64-bit</div>
+    </div>
+    <div class="spec-box">
+      <div class="spec-label">Input Formats Supported</div>
+      <div class="spec-value">Bentley RAM Concept (*.cpt, *.cpt8) & ADAPT-Builder (*.adm with .inb/.inp)</div>
+    </div>
+    <div class="spec-box">
+      <div class="spec-label">Output Formats Generated</div>
+      <div class="spec-value">Layered AutoCAD DWG, DXF, Microsoft Excel (.xlsx), CSV</div>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-icon">ℹ</div>
+    <div class="callout-body">
+      <div class="callout-title">No Host Software License Required</div>
+      Vortex PT features autonomous native binary parsers. You do <strong>not</strong> need a Bentley RAM Concept or ADAPT-Builder license running on your drafting or site workstations to open models and produce fabrication drawings.
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 2: OPENING MODELS ==================== -->
+<div class="page">
+  <h1><span class="sec-num">02</span> Opening & Importing Models</h1>
+  
+  <h2>2.1 Supported File Types</h2>
+  <p>
+    Vortex PT natively imports structural data directly from the industry's two dominant post-tensioned design platforms:
+  </p>
+  <ul>
+    <li><strong>Bentley RAM Concept Files (<code>*.cpt</code>, <code>*.cpt8</code>)</strong>: Direct parsing of proprietary binary archives including slabs, drop panels, openings, columns, shear walls, beams, latitude tendons, longitude tendons, and control points.</li>
+    <li><strong>ADAPT-Builder Project Models (<code>*.adm</code> with companion <code>*.inb</code> / <code>*.inp</code>)</strong>: Direct loading of ADAPT Floor Pro, MAT, and Edge models. You select the native <code>.adm</code> file directly in Vortex PT, which automatically reads the companion <code>.inb</code> / <code>.inp</code> file of the same name.</li>
+  </ul>
+
+  <h2>2.2 ADAPT-Builder Import Architecture (.adm + .inb)</h2>
+  <p>
+    In ADAPT-Builder, models are saved with the default extension <strong><code>.adm</code></strong>. To import an ADAPT model into Vortex PT:
+  </p>
+  <ul>
+    <li>Vortex PT directly opens the <strong><code>.adm</code></strong> file from the file open dialog.</li>
+    <li><strong>Mandatory Pairing Rule:</strong> Beside your <code>.adm</code> file in the same folder, there must exist a companion Generic Model file (<strong><code>.inb</code></strong> or <strong><code>.inp</code></strong>) bearing the <strong>exact same base name</strong> (e.g. <code>Building_Level2.adm</code> paired with <code>Building_Level2.inb</code> or <code>Building_Level2.inp</code>).</li>
+    <li>Vortex PT also automatically checks companion project subfolders (<code>&lt;model_folder&gt;/&lt;model_name&gt;/</code>) and ADAPT automatic backup directories (<code>backup/</code>).</li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body">
+      <div class="callout-title">How to Export from ADAPT-Builder</div>
+      <ol style="margin:4px 0 0 0; padding-left:18px;">
+        <li>Open your project in <strong>ADAPT-Builder</strong> (Floor Pro, MAT, or Edge).</li>
+        <li>Go to menu: <strong>File &rarr; Export &rarr; Generic Model (*.inp / *.inb)</strong>.</li>
+        <li>Save the exported file in the same directory as your <code>.adm</code> file with the matching name.</li>
+        <li>In Vortex PT, click <strong>Open Model</strong> and select the <code>.adm</code> file. Vortex PT reads the paired data and instantly renders the entire floor plate with 100% geometric fidelity!</li>
+      </ol>
+    </div>
+  </div>
+
+  <h2>2.3 Step-by-Step Model Loading Workflow</h2>
+  <ol>
+    <li>Click the vibrant electric cyan <strong>"+ Open Model"</strong> button located at the top left of the workspace toolbar, or press the universal shortcut <kbd>Ctrl</kbd> + <kbd>O</kbd>.</li>
+    <li>In the Windows File Dialog, browse to your model directory and select your <strong>Bentley RAM Concept (<code>.cpt</code> / <code>.cpt8</code>)</strong> or <strong>ADAPT-Builder (<code>.adm</code>)</strong> file.</li>
+    <li>Vortex PT initiates its multi-stage extraction pipeline:
+      <ul>
+        <li>Reads concrete geometry: slab perimeters, thickness zones, drop caps, and core openings.</li>
+        <li>Extracts structural supports: columns, shear walls, and perimeter foundation lines.</li>
+        <li>Assembles continuous tendon strings from segmental FEA elements, calculating curvature, inflection transitions, and anchorage conditions.</li>
+      </ul>
+    </li>
+    <li>Upon completion, the main CAD viewport renders the complete slab floor plate, and the <strong>Project Metrics Card</strong> populates immediately.</li>
+  </ol>
+
+  <div class="figure-card">
+    <div class="figure-img-wrap">
+      <img src="assets/screenshots/shot_app_model_main.png" alt="Model Main Screen">
+    </div>
+    <div class="figure-caption">
+      <strong>Figure 2.1:</strong> Live 2D CAD Workspace after opening <code>B01-PART 2.cpt</code>. Displays 70 continuous tendons, slab boundaries, drop panels, columns, the floating Project Metrics HUD, and Tendon Y-3 longitudinal profile.
+    </div>
+  </div>
+
+  <h2>2.4 ADAPT-Builder Exact Elongation & Area Extraction</h2>
+  <p>
+    When importing ADAPT-Builder models (<code>.inp</code> / <code>.inb</code>), Vortex PT guarantees 100% computational fidelity:
+  </p>
+  <ul>
+    <li><strong>Exact Cross-Sectional Area (Aps)</strong>: Preserves the exact total strand area (e.g. 197.4 mm² for 2 strands) as modeled in ADAPT, eliminating rounding discrepancies in force and stress calculations.</li>
+    <li><strong>End Elongations (End 1 & End 2)</strong>: Extracts theoretical jacking extensions for both stressing boundaries directly from ADAPT design output tables, matching fabrication tickets identically.</li>
+  </ul>
+
+  <h2>2.5 RAM Concept Transverse Beam & Flat Support Fidelity</h2>
+  <p>
+    Vortex PT incorporates intelligent geometry heuristics to handle complex post-tensioning conditions in Bentley RAM Concept (<code>.cpt</code>):
+  </p>
+  <ul>
+    <li><strong>Transverse Beam Steps & Band Crossings</strong>: Tendons crossing transverse band beams maintain true physical trajectory. Slices crossing linear ramp steps evaluate without spurious sag artifacts.</li>
+    <li><strong>Elimination of False Low Sags</strong>: Intermediate chairs between two high support zones strictly maintain high profile chair height (e.g. 155 mm) rather than dipping into artificial sags.</li>
+    <li><strong>Slanted Edge Collinear Dims</strong>: Non-orthogonal slab perimeters generate aligned dimension strings running parallel to the exterior concrete edge, preserving architectural boundaries.</li>
+  </ul>
+</div>
+
+<!-- ==================== CHAPTER 3: 2D CAD VIEWPORT ==================== -->
+<div class="page">
+  <h1><span class="sec-num">03</span> 2D CAD Viewport & Layer Controls</h1>
+
+  <h2>3.1 Viewport Navigation & Canvas Controls</h2>
+  <p>
+    The central viewport is powered by a high-performance vector rendering canvas designed for large multi-span commercial slabs:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Action</th>
+        <th>Input Mechanism</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Pan Canvas</strong></td>
+        <td>Middle Mouse Click & Drag <br>or Right Mouse Click & Drag</td>
+        <td>Smoothly translates the viewport in any direction without altering zoom scale.</td>
+      </tr>
+      <tr>
+        <td><strong>Zoom In / Out</strong></td>
+        <td>Mouse Scroll Wheel</td>
+        <td>Continuously zooms centered directly onto the cursor coordinate.</td>
+      </tr>
+      <tr>
+        <td><strong>Fit to Extents</strong></td>
+        <td>Press <kbd>Spacebar</kbd> or click <strong>"Fit View"</strong></td>
+        <td>Calculates the bounding box of all slabs and centers the entire floor plate.</td>
+      </tr>
+      <tr>
+        <td><strong>Select Tendon</strong></td>
+        <td>Left Mouse Click on Tendon</td>
+        <td>Selects the tendon, activates bright cyan vector highlight, and docks profile view.</td>
+      </tr>
+      <tr>
+        <td><strong>Tendon Search</strong></td>
+        <td><kbd>Ctrl</kbd> + <kbd>F</kbd> &rarr; Type Tendon Mark</td>
+        <td>Instantly queries tendons (e.g. <code>X-14</code>, <code>Y-3</code>), highlights, and centers the view.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>3.2 Layer Visibility Chips</h2>
+  <p>
+    Located in the command bar above the CAD canvas, interactive layer chips permit instant toggling of individual drafting layers:
+  </p>
+  <ul>
+    <li><strong>Slabs (Gray #475569)</strong>: Concrete floor boundaries and thickness elevation zones.</li>
+    <li><strong>Drops (Orange #F59E0B)</strong>: Drop panels and drop caps at column heads.</li>
+    <li><strong>Columns (Yellow #FBBF24)</strong>: Rectangular, circular, and wall support sections.</li>
+    <li><strong>Beams (Cyan #06B6D4)</strong>: Post-tensioned band beams and drop beams.</li>
+    <li><strong>Tendons (Latitude Magenta #D946EF / Longitude Teal #14B8A6)</strong>: Tendon c/c lines and anchor bubbles.</li>
+    <li><strong>Chairs & Dimensions</strong>: Chair height callouts, remainder dimensions, and span spacing.</li>
+  </ul>
+
+  <h2>3.3 Floating Project Metrics Card</h2>
+  <p>
+    The upper-right HUD card provides real-time engineering summary statistics for the loaded structure:
+  </p>
+  <ul>
+    <li><strong>Slab Area & Thickness</strong>: Net structural floor area (m²) and primary plate depth (mm).</li>
+    <li><strong>Structural Members</strong>: Drop panels count and transfer/band beams detected.</li>
+    <li><strong>Tendon & Strand Length</strong>: Total active tendon count and linear strand length (m).</li>
+    <li><strong>Strand Weight Takeoff</strong>: Total fabricated strand weight (kg) calculated using your configured unit weight.</li>
+    <li><strong>Anchorage Breakdown</strong>: Exact count of Live Stressing Jacks vs. Dead Blind End Anchors.</li>
+  </ul>
+</div>
+
+<!-- ==================== CHAPTER 4: PARABOLIC TENDON PROFILING ==================== -->
+<div class="page">
+  <h1><span class="sec-num">04</span> Parabolic Tendon Profiling & Chairs</h1>
+
+  <h2>4.1 The Longitudinal Profile Viewer</h2>
+  <p>
+    Selecting any tendon triggers the bottom <strong>Longitudinal Tendon Profile Dock</strong>. This viewer displays the continuous cross-sectional elevation of the tendon from its starting anchor to its ending anchor.
+  </p>
+
+  <div class="figure-card">
+    <div class="figure-img-wrap">
+      <img src="assets/screenshots/shot_app_elevation_profile.png" alt="Elevation Profile">
+    </div>
+    <div class="figure-caption">
+      <strong>Figure 4.1:</strong> Continuous 11-Span Longitudinal Elevation Profile of Tendon X-16. Features high support points over columns, low mid-span sags with fabricated chair heights, pan box setback blocks, and span dimension strings.
+    </div>
+  </div>
+
+  <h2>4.2 Mathematical Profile Modeling & Inflection Points</h2>
+  <p>
+    Vortex PT calculates true multi-span second-degree and third-degree reverse parabolic curves across each support bay:
+  </p>
+  <ul>
+    <li><strong>High Support Points (Hi)</strong>: Peak elevations located over column centerlines or interior wall supports.</li>
+    <li><strong>Low Sag Points (Li)</strong>: Maximum sag elevations located at mid-spans to optimize balancing load.</li>
+    <li><strong>Inflection Transition Points (Xinf)</strong>: Mathematically computed points of zero curvature where the curve transitions smoothly between concave-up and concave-down parabolas.</li>
+  </ul>
+
+  <h2>4.3 Automatic Chair Support Calculations</h2>
+  <p>
+    Fabrication chairs are calculated at regular field intervals (default 1,000 mm) along the tendon:
+  </p>
+  <div class="callout callout-info">
+    <div class="callout-icon">📐</div>
+    <div class="callout-body">
+      <div class="callout-title">Chair Height Governing Formula</div>
+      <div style="font-family:'IBM Plex Mono', monospace; font-size:10.5pt; font-weight:600; color:#0369a1; padding:4px 0 6px 0; letter-spacing:0.02em;">
+        Fabricated Chair Height = Tendon Centerline Profile (CGS) &minus; Deduction Constant
+      </div>
+      Calculated chair heights are automatically rounded to your specified fabrication increment (e.g. 5 mm steps).
+    </div>
+  </div>
+
+  <div class="callout callout-warn">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-body">
+      <div class="callout-title">Anchor Placement vs. Chairs</div>
+      Anchorage points (Live Jacking Ends and Dead Cast-In Anchors) are physical fittings affixed to the slab formwork. Vortex PT excludes anchors from the chair table summary to prevent accidental chair over-ordering on site.
+    </div>
+  </div>
+
+  <h2>4.4 Wide Beam & Beam Exit Transition Chairs</h2>
+  <p>
+    Vortex PT 1.4 introduces intelligent multi-depth soffit referencing across beams and slabs:
+  </p>
+  <ul>
+    <li><strong>Wide Beams (> 500 mm Width)</strong>: When beams are wider than 500 mm, tendons running along or terminating within the beam sit directly on the wide beam soffit formwork. Chairs inside wide beams reference the beam soffit directly without deducting stem depths, matching real-world site carpentry.</li>
+    <li><strong>Narrow Stem Beams (&le; 500 mm Width)</strong>: Tendons crossing narrow stem beams maintain their reference to the main slab soffit formwork with proper stem deductions.</li>
+    <li><strong>Beam Exit Transition Chairs</strong>: When a tendon exits a deep beam into an adjacent thinner slab, chairs immediately beyond the beam boundary strictly reference the slab soffit. The engine guarantees zero erroneous beam-depth inheritance outside the physical beam boundaries.</li>
+  </ul>
+</div>
+
+<!-- ==================== CHAPTER 5: ENGINEERING COMPLIANCE & QA ALERTS ==================== -->
+<div class="page">
+  <h1><span class="sec-num">05</span> Engineering Compliance & QA Alerts</h1>
+
+  <h2>5.1 Automated Quality Assurance Engine</h2>
+  <p>
+    Every imported model undergoes continuous geometric and structural integrity diagnostics based on <strong>ACI 318-19</strong> and the <strong>Post-Tensioning Institute (PTI) Manual</strong>. When an issue is detected, an amber <strong>"⚠ QA Warning"</strong> badge illuminates in the top command bar.
+  </p>
+
+  <div class="figure-card">
+    <div class="figure-img-wrap">
+      <img src="assets/screenshots/shot_app_qa_alerts.png" alt="QA Alerts Dialog">
+    </div>
+    <div class="figure-caption">
+      <strong>Figure 5.1:</strong> Engineering Compliance & QA Alerts diagnostic modal showing automated violation detection, severity ratings, and actionable structural recommendations.
+    </div>
+  </div>
+
+  <h2>5.2 Core Diagnostic Rules</h2>
+
+  <h3>A. Minimum Concrete Cover Verification</h3>
+  <ul>
+    <li><strong>Top Cover Check</strong>: Verifies that <code>Slab Depth &minus; Profile Elevation &ge; Min Cover</code> (default: 25 mm).</li>
+    <li><strong>Bottom Cover Check</strong>: Verifies that <code>Profile Elevation &ge; Min Cover</code> (default: 25 mm).</li>
+    <li><strong>Alert Condition</strong>: If strand trajectory violates cover rules at high or low points, Vortex PT flags the exact bay and span coordinate.</li>
+  </ul>
+
+  <h3>B. Double Live End Minimum Length Threshold</h3>
+  <ul>
+    <li><strong>Rule Rationale</strong>: Short tendons configured with live stressing jacks at both ends lead to wedge seating loss issues and unnecessary labor costs.</li>
+    <li><strong>Threshold Setting</strong>: In <strong>Settings</strong>, you configure the warning threshold (e.g. 35.0 m). Tendons with two live ends shorter than this threshold trigger an alert advising a single live end configuration.</li>
+  </ul>
+
+  <h3>C. Two Dead Ends Critical Validation</h3>
+  <ul>
+    <li><strong>Fatal Check</strong>: Scans the model for any tendon terminated with dead-end (cast-in) anchors at both boundaries.</li>
+    <li><strong>Severity</strong>: High / Critical. Tendons cannot be stressed if both ends are encapsulated in blind anchors.</li>
+  </ul>
+</div>
+
+<!-- ==================== CHAPTER 6: DETAILING SETTINGS & CAD BLOCKS ==================== -->
+<div class="page">
+  <h1><span class="sec-num">06</span> Detailing Settings & CAD Blocks</h1>
+
+  <h2>6.1 Windows 11 Fluent Settings Console</h2>
+  <p>
+    Click the <strong>"Settings"</strong> gear icon in the left navigation rail or press <kbd>Ctrl</kbd> + <kbd>,</kbd> to open the comprehensive configuration console.
+  </p>
+
+  <div class="figure-card">
+    <div class="figure-img-wrap">
+      <img src="assets/screenshots/shot_app_settings.png" alt="Settings Page">
+    </div>
+    <div class="figure-caption">
+      <strong>Figure 6.1:</strong> CAD Shop Drawing Detailing configuration cards, including template selection, block name bindings (LIVEND, DEADEND, PAN), ACI layer color overrides, and strand properties.
+    </div>
+  </div>
+
+  <h2>6.2 The New Tendon ID Block System (BLOQUE1 & BLOQUE1_L)</h2>
+  <p>
+    Vortex PT features an advanced, industry-standard dual-geometry Tendon ID block architecture that separates plan orientation from sequence numbers:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Block Geometry Tag</th>
+        <th>Attribute Tag</th>
+        <th>Display / Function</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Top Hexagon</strong></td>
+        <td><code>ID-PLAN</code></td>
+        <td>Directional axis indicator (<strong>X</strong> for Latitude, <strong>Y</strong> for Longitude).</td>
+      </tr>
+      <tr>
+        <td><strong>Bottom Hexagon</strong></td>
+        <td><code>ID-NUMBER</code></td>
+        <td>Sequence number of the tendon within the floor plate (e.g. <code>01</code>, <code>02</code>, <code>18</code>).</td>
+      </tr>
+      <tr>
+        <td><strong>Center Circle</strong></td>
+        <td><code>STRANDS</code></td>
+        <td>Strand count fabricated in the tendon bundle (e.g. <code>2</code>, <code>4</code>, <code>5</code>).</td>
+      </tr>
+      <tr>
+        <td><strong>Invisible Metadata</strong></td>
+        <td><code>MARK</code>, <code>LENGTH</code>, <code>ELONGATION1</code>, <code>ELONGATION2</code>, <code>CUT-LENGTH</code>, <code>SLAB</code></td>
+        <td>Embedded non-printing attributes for contractor data extraction, BIM audits, and automated BOM sync.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">🎯</div>
+    <div class="callout-body">
+      <div class="callout-title">Automatic Tendon Slope Alignment & Zero Mirroring</div>
+      The Tendon ID block is automatically rotated parallel to the tendon slope vector. The engine enforces quadrant normalization so text is <strong>never mirrored, inverted, or rendered upside down</strong>, regardless of tendon angle or stressing direction.
+    </div>
+  </div>
+
+  <h2>6.3 Persistent User Templates & Roaming AppData Isolation</h2>
+  <p>
+    To ensure your drafting customizations are never lost when installing software updates, Vortex PT isolates active user templates from the application binary directory:
+  </p>
+  <ul>
+    <li><strong>Active User Template Location</strong>: <code>%APPDATA%\VortexPT\templates\blocks.dwg</code> and <code>blocks.dxf</code>.</li>
+    <li><strong>Zero-Overwrite Protection</strong>: Software updates install exclusively into <code>C:\Program Files\Vortex PT</code>. The installer <strong>never touches or overwrites</strong> your custom blocks or <code>settings.json</code> in AppData.</li>
+    <li><strong>Dedicated Controls in Settings</strong>:
+      <ul>
+        <li><strong>Edit in AutoCAD</strong>: Directly launches your live AppData template in AutoCAD.</li>
+        <li><strong>Open Folder</strong>: Opens the AppData templates folder in Windows Explorer.</li>
+        <li><strong>Reset Defaults</strong>: Safely restores factory template blocks while creating an automatic timestamped backup of your current blocks.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2>6.4 Engineering Detailing Rules & Customization Controls</h2>
+  <p>
+    Vortex PT allows you to customize every aspect of tendon and chair detailing to match your exact project specifications and regional jobsite practices:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Setting / Option</th>
+        <th>Default</th>
+        <th>Customization Purpose & Effect</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Chair Spacing Interval</strong></td>
+        <td><code>1000 mm</code> (1.0 m)</td>
+        <td>Controls the spacing between support chairs along each tendon span (e.g. 1000 mm, 1200 mm, 1500 mm).</td>
+      </tr>
+      <tr>
+        <td><strong>Bottom Cover Deduction</strong></td>
+        <td><code>10 mm</code></td>
+        <td>Deducted from mid-span low profile points to account for rebar clearance or chair foot offsets.</td>
+      </tr>
+      <tr>
+        <td><strong>Top Cover Deduction</strong></td>
+        <td><code>0 mm</code></td>
+        <td>Offset applied to high-point chairs over column and wall supports.</td>
+      </tr>
+      <tr>
+        <td><strong>Wide Beam Threshold</strong></td>
+        <td><code>500 mm</code></td>
+        <td>Beams wider than this threshold allow chairs to sit directly on the beam soffit without stem deduction.</td>
+      </tr>
+      <tr>
+        <td><strong>Chair Rounding Increment</strong></td>
+        <td><code>5 mm</code> / <code>10 mm</code></td>
+        <td>Rounds calculated heights to the nearest standard chair inventory size (e.g., 144 mm becomes 145 mm or 150 mm).</td>
+      </tr>
+      <tr>
+        <td><strong>Tendon Colors (ACI)</strong></td>
+        <td>Latitude 6 (Magenta)<br>Longitude 4 (Cyan)</td>
+        <td>Custom ACI CAD layer colors for Latitude vs. Longitude tendons for immediate visual distinction.</td>
+      </tr>
+      <tr>
+        <td><strong>Chair Text Placement</strong></td>
+        <td><code>Beside</code> / <code>Above</code></td>
+        <td>Places chair height callouts beside the perpendicular tick line or directly centered above the tendon.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== CHAPTER 7: AUTOCAD DWG SHOP DRAWING EXPORT ==================== -->
+<div class="page">
+  <h1><span class="sec-num">07</span> AutoCAD DWG/DXF Shop Drawing Export</h1>
+
+  <h2>7.1 Export Console Overview</h2>
+  <p>
+    Click the <strong>"Export"</strong> icon in the left navigation rail or press <kbd>Ctrl</kbd> + <kbd>E</kbd> to access the production drawing generator.
+  </p>
+
+  <div class="figure-card">
+    <div class="figure-img-wrap">
+      <img src="assets/screenshots/shot_03_export.png" alt="Export Screen">
+    </div>
+    <div class="figure-caption">
+      <strong>Figure 7.1:</strong> Production Drawing Export Console. Configure drawing types, layout styles, annotation layers, and direct AutoCAD DWG / DXF generation.
+    </div>
+  </div>
+
+  <h2>7.2 Production Drawing Configurations</h2>
+  
+  <h3>A. CAD Drawing Type</h3>
+  <ul>
+    <li><strong>Shop Drawing (Full Fabrication & Chairs)</strong>: Complete fabrication-level drawing including chair support tags, remainder dimensions, tendon IDs, elongation markers, and anchor blocks.</li>
+    <li><strong>Design Drawing (Profile Points Only)</strong>: Streamlined consultant drawing with Kholy profile point blocks and high/low labels.</li>
+  </ul>
+
+  <h3>B. Sheet Layout Options</h3>
+  <ul>
+    <li><strong>Side-by-Side Dual Plan [Recommended]</strong>: Automatically offsets and places the Latitude drawing and Longitude drawing side-by-side on a single DWG layout for streamlined contractor printing.</li>
+    <li><strong>Combined Plan</strong>: Both Latitude and Longitude systems superimposed on a single floor plan.</li>
+    <li><strong>2 Separate Plans</strong>: Generates distinct independent files (e.g. <code>Model_Lat.dwg</code> and <code>Model_Long.dwg</code>).</li>
+  </ul>
+
+  <h2>7.3 Embedded Features</h2>
+  <ul>
+    <li><strong>AutoCAD Layer Architecture</strong>: All geometries are partitioned into dedicated layers (<code>PT-TENDON-LAT</code>, <code>PT-TENDON-LONG</code>, <code>PT-CHAIRS</code>, <code>PT-ANCHORS</code>, <code>PT-DIMS</code>) matching standard drafting protocols.</li>
+    <li><strong>Embedded Schedule Table</strong>: Optionally embeds the complete PT tendon schedule directly into model space.</li>
+  </ul>
+
+  <h2>7.4 Detailing Rules for Best Output in AutoCAD</h2>
+  <ol>
+    <li><strong>Recommended Sheet Layout</strong>: Always select <strong>Side-by-Side Dual Plan</strong>. This places the Latitude and Longitude drawings side-by-side with an automatic bounding offset, creating clean, professional drawings ready for plotting.</li>
+    <li><strong>Dimension Style Separation</strong>: Vortex PT generates separate dimension styles:
+      <ul>
+        <li><code>PT_LONGITUDINAL_DIMS</code>: Tailored for tendon span lengths and remainder segments.</li>
+        <li><code>PT_SPACING_DIMS</code>: Specially scaled for out-of-plan tendon spacing strings.</li>
+      </ul>
+    </li>
+    <li><strong>Chair Deduction Tuning</strong>: Verify high-point deduction (default: <code>10 mm</code>) and low-point deduction (default: <code>15 mm</code>) match site chair sizes. The minimum physical chair height is clamped to <code>20 mm</code> to prevent fabrication tickets for unbuildable chairs.</li>
+  </ol>
+</div>
+
+<!-- ==================== CHAPTER 8: FABRICATION SCHEDULES & TAKEOFFS ==================== -->
+<div class="page">
+  <h1><span class="sec-num">08</span> Fabrication Schedules & Takeoffs</h1>
+
+  <h2>8.1 Schedules Workspace</h2>
+  <p>
+    Click the <strong>"Schedules"</strong> icon in the left navigation rail to access interactive material cutting schedules and bar chair summaries.
+  </p>
+
+  <div class="figure-card">
+    <div class="figure-img-wrap">
+      <img src="assets/screenshots/shot_04_schedules.png" alt="Schedules Screen">
+    </div>
+    <div class="figure-caption">
+      <strong>Figure 8.1:</strong> Interactive Fabrication Schedules. Displays tendon cutting schedules, strand lengths, theoretical elongations, and the Slab Chair Heights Summary Table.
+    </div>
+  </div>
+
+  <h2>8.2 Schedules Provided</h2>
+  <ol>
+    <li><strong>Combined Cutting Schedule</strong>: Complete bill of materials listing Tendon Mark, Strand Count, Jacking Ends, Plan Length (m), Fabricated Cut Length (including stressing tail), Weight (kg), and Theoretical Elongation (mm).</li>
+    <li><strong>Directional Schedules (Latitude / Longitude)</strong>: Filtered schedules partitioned for specific installation crews.</li>
+    <li><strong>Slab Chair Heights Summary Table</strong>: Groups all chairs across the entire floor plate by fabricated height (e.g. 25 mm, 30 mm, ..., 200 mm) with exact counts for Latitude and Longitude.</li>
+  </ol>
+
+  <h2>8.3 Exporting to Microsoft Excel & CSV</h2>
+  <p>
+    Click the <strong>"Export Excel (.xlsx)"</strong> button or press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd>. Vortex PT generates a multi-tab workbook with pre-formatted engineering headers, mathematical column formulas, and print-ready page setups.
+  </p>
+</div>
+
+<!-- ==================== CHAPTER 9: LICENSING & ACTIVATION ==================== -->
+<div class="page">
+  <h1><span class="sec-num">09</span> Hardware-Locked Cloud Licensing</h1>
+
+  <h2>9.1 Zero-Friction Online Activation</h2>
+  <p>
+    Vortex PT features a next-generation cloud licensing engine powered by a high-availability cloud database (Supabase 24/7). Customers no longer need to exchange hardware Machine IDs manually.
+  </p>
+
+  <div class="figure-card">
+    <div class="figure-img-wrap">
+      <img src="assets/screenshots/shot_06_activation.png" alt="Activation Dialog">
+    </div>
+    <div class="figure-caption">
+      <strong>Figure 9.1:</strong> Instant Cloud Activation Dialog. Paste your license key and activate instantly without copying Machine IDs.
+    </div>
+  </div>
+
+  <h2>9.2 Activation & Workstation Binding Workflow</h2>
+  <ol>
+    <li>Upon launching the software, the Activation Dialog prompts for your license key.</li>
+    <li>Paste your issued license key (e.g. <code>VTX-CLOUD-XXXX-XXXX-XXXX</code>) into the input box and click <strong>"Activate"</strong>.</li>
+    <li>The application connects securely to the 24/7 cloud server, verifies your seat entitlement, and binds the license to your computer hardware.</li>
+    <li><strong>Permanent Hardware Locking</strong>: For security and anti-piracy, the license is strictly bound to that specific workstation. Users cannot transfer or move the license.</li>
+  </ol>
+
+  <h2>9.3 1-Click Remote Renewals (No New Keys)</h2>
+  <p>
+    When your license subscription is extended or renewed by the software author:
+  </p>
+  <ul>
+    <li><strong>Zero Re-keying</strong>: You do <strong>not</strong> need to enter a new license key.</li>
+    <li><strong>Instant Pickup</strong>: In <strong>Settings &rarr; Software License</strong>, click <strong>"Sync License"</strong>. The software contacts the cloud server and updates your expiration date and days remaining immediately.</li>
+    <li><strong>Background Auto-Sync</strong>: Vortex PT periodically syncs license status in the background during normal operation.</li>
+  </ul>
+
+  <h2>9.4 30-Day Offline Grace Period & Air-Gapped Fallback</h2>
+  <ul>
+    <li><strong>Site & Travel Freedom</strong>: Once activated, a cryptographically signed lease receipt is stored securely in Windows DPAPI storage. You can work completely offline for up to <strong>30 days</strong> without internet connectivity.</li>
+    <li><strong>100% Offline Air-Gapped Workstations</strong>: For secure defense or high-security facilities with zero internet access, administrators can issue an offline machine-bound <code>VTX2-...</code> key that activates completely offline.</li>
+  </ul>
+</div>
+
+<!-- ==================== CHAPTER 10: SHORTCUTS & ENGINEERING REFERENCE ==================== -->
+<div class="page">
+  <h1><span class="sec-num">10</span> Keyboard Shortcuts & Engineering Reference</h1>
+
+  <h2>10.1 Complete Shortcut Reference</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Shortcut</th>
+        <th>Function / Command</th>
+        <th>Context</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><kbd>Ctrl</kbd> + <kbd>O</kbd></td>
+        <td>Open RAM Concept (.cpt) or ADAPT (.adm / .inb) Model</td>
+        <td>Global</td>
+      </tr>
+      <tr>
+        <td><kbd>Ctrl</kbd> + <kbd>E</kbd></td>
+        <td>Navigate directly to Export View</td>
+        <td>Global</td>
+      </tr>
+      <tr>
+        <td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd></td>
+        <td>Quick Export Schedules to Excel (.xlsx)</td>
+        <td>Global / Schedules</td>
+      </tr>
+      <tr>
+        <td><kbd>Ctrl</kbd> + <kbd>F</kbd></td>
+        <td>Focus Tendon Quick Search Field</td>
+        <td>Model View</td>
+      </tr>
+      <tr>
+        <td><kbd>Ctrl</kbd> + <kbd>,</kbd></td>
+        <td>Open Settings Console</td>
+        <td>Global</td>
+      </tr>
+      <tr>
+        <td><kbd>Spacebar</kbd> / <kbd>F</kbd></td>
+        <td>Fit Entire Floor Plate to Viewport Extents</td>
+        <td>Model View</td>
+      </tr>
+      <tr>
+        <td><kbd>Esc</kbd></td>
+        <td>Clear Tendon Selection & Close Floating Panels</td>
+        <td>Model View</td>
+      </tr>
+      <tr>
+        <td><kbd>F5</kbd></td>
+        <td>Reload & Re-parse Current Model File</td>
+        <td>Global</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>10.2 Standard 0.5" (12.7 mm) Strand Technical Specifications</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Value (SI Metric)</th>
+        <th>Design Standard</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Nominal Strand Diameter</td>
+        <td>12.7 mm (0.50 inch)</td>
+        <td>ASTM A416 / ISO 6934</td>
+      </tr>
+      <tr>
+        <td>Nominal Cross-Sectional Area (Aps)</td>
+        <td>98.7 mm² (0.153 in²)</td>
+        <td>Grade 270 (1860 MPa) Low Relaxation</td>
+      </tr>
+      <tr>
+        <td>Strand Unit Weight</td>
+        <td>0.775 kg/m (0.521 lb/ft)</td>
+        <td>Standard 7-Wire High Tensile Strand</td>
+      </tr>
+      <tr>
+        <td>Modulus of Elasticity (Ep)</td>
+        <td>195,000 MPa (28,500 ksi)</td>
+        <td>Theoretical Elongation Calculations</td>
+      </tr>
+      <tr>
+        <td>Minimum Breaking Strength (Ppu)</td>
+        <td>183.7 kN (41.3 kips)</td>
+        <td>ASTM A416 Tensile Strength</td>
+      </tr>
+      <tr>
+        <td>Initial Jacking Force (0.80 fpu)</td>
+        <td>147.0 kN</td>
+        <td>Standard PTI Field Stressing</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-tip" style="background:#f0fdf4; border:1px solid #86efac;">
+    <div class="callout-icon">💬</div>
+    <div class="callout-body">
+      <div class="callout-title" style="color:#166534; font-size:11pt;">Direct WhatsApp Technical Support & Licensing Inquiries</div>
+      <p style="color:#15803d; margin:6px 0 8px 0; font-size:10pt;">
+        For software license activations, renewals, custom AutoCAD template integration, or direct engineering support, contact the developer directly via WhatsApp:
+      </p>
+      <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
+        <span style="font-family:'IBM Plex Mono', monospace; font-size:13pt; font-weight:700; color:#166534; background:#dcfce7; padding:4px 12px; border-radius:6px; border:1px solid #bbf7d0;">
+          +20 155 222 8306
+        </span>
+        <a href="https://wa.me/201552228306" target="_blank" style="display:inline-block; background:#16a34a; color:#ffffff; font-weight:600; padding:6px 14px; border-radius:6px; text-decoration:none; font-size:9.5pt;">
+          Open WhatsApp Chat &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

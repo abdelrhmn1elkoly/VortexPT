@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.4.9",
+  "release_date": "2026-11-02",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.4.9/VortexPT-Setup-1.4.9.exe",
+  "release_notes": "Vortex PT 1.4.9 Table Customization, Single-Side Tendon ID & Chair Table Separation:\n• Table Export Customizer: Toggle buttons beneath each column allow custom column visibility; unselected columns are hidden from display and excluded from Excel & CSV exports.\n• Single-Side Tendon ID Block Placement: ID blocks appear on exactly one side (Left for horizontal/Latitude cables, Above for vertical/Longitude cables), at live or dead end, oriented along tendon inclination.\n• 3-Strand vs 5-Strand Dead-End Chair Table Separation: Optional setting to separate dead-end chairs into distinct 3-strand and 5-strand summary tables across CAD drawings, Excel schedules, and the UI tables screen."
+}
