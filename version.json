@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.5.2",
+  "release_date": "2026-11-03",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.5.2/VortexPT-Setup-1.5.2.exe",
+  "release_notes": "Vortex PT 1.5.2 Formwork Block Encapsulation, WinUI 3 Column Toggles & Theme Palettes:\n• AutoCAD Formwork Block (STRUCTURAL_FORMWORK_PLAN): Background columns, slabs, drops, openings, beams, and walls are encapsulated in a single AutoCAD block on S-FORMWORK-BLOCK layer so draftsmen can window-select and copy tendons effortlessly.\n• WinUI 3 FluentToggleSwitches: Dedicated toggle strip directly above the table with blue pill switches and On/Off text matching Windows 11 Fluent design.\n• UI Table Column Display: All columns remain completely visible in the application data table (#all), while toggle switches cleanly govern CAD shop drawing and Excel exports.\n• Distinct Window Backdrop Themes: Simplified theme names (Mica, Mica Old, Acrylic, Dark Solid) with instant palette tint updates across all panels.\n• Monochrome White Icons: Minimalist, high-contrast vector silhouettes for Live Anchors, Dead Anchors, and Pan Boxes.\n• Zero-Flashing Silent Updates: Eliminated download repacking loop and added compatibility asset links to prevent 404s."
+}
