@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Minimalist White Pan Box Pocket Former -->
+  <!-- Slab outer edges -->
+  <line x1="4" y1="12" x2="14" y2="12" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="38" y1="12" x2="44" y2="12" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Recessed Pocket Notch / Cavity -->
+  <polyline points="14,12 14,36 38,36 38,12" fill="rgba(255,255,255,0.12)" stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Tendon through back wall -->
+  <line x1="4" y1="24" x2="14" y2="24" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Internal Stressing Jack Seated Inside Cavity -->
+  <polygon points="16,20 25,18 25,30 16,28" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Recess Entry Arrow Indicator -->
+  <polyline points="29,14 29,22 26,19 M 29,22 32,19" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
