@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.5.5",
+  "release_date": "2026-11-07",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.5.5/VortexPT-Setup-1.5.5.exe",
+  "release_notes": "Vortex PT 1.5.5 Dynamic Two-Live & Single-End Stressing Length Threshold Alerts:\n• Configurable Stressing Length Validation: Tendons shorter than the user-configured setting threshold with two live ends are flagged (warning against excessive seating loss).\n• Long Tendon Single-End Warning: Tendons exceeding or equal to the setting threshold with only a single live end are flagged to recommend two-live double-end stressing to prevent excessive friction loss.\n• Dynamic Settings Binding: Alerts dynamically re-calculate based on whatever threshold value the user enters in Settings (QA > Two-Live Tendons Length Threshold), with instant auto-commit and persistence."
+}
