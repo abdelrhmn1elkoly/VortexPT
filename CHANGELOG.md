@@ -9,6 +9,16 @@ All notable changes to the **Vortex PT** Post-Tensioning Shop Drawing & Analysis
 ### 🚀 Highlights: Dynamic Two-Live & Single-End Stressing Length Threshold Alerts
 
 ### Added & Improved
+- **Dynamic Two-Live & Single-End Stressing Validation**: Added dual-directional checks: flagging tendons under threshold with two live ends, and tendons over threshold with single live ends.
+- **Configurable QA Stressing Threshold**: Fully driven by user input in Settings, immediately updating model QA validation upon change.
+- **Git Binary Auto-Discovery**: Enhanced build and release tooling with Visual Studio Git path discovery.
+
+---
+## [1.5.5] - 2026-11-07
+
+### 🚀 Highlights: Dynamic Two-Live & Single-End Stressing Length Threshold Alerts
+
+### Added & Improved
 - **Configurable Stressing Length QA Validation**:
   - Two-live end and single-live end validation rules dynamically check against the user-configured setting threshold (`min_two_live_length_m`).
   - Tendons shorter than the threshold with two live ends flag an advisory warning (`TWO_LIVE_BELOW_MIN_LENGTH`) recommending single-end stressing.
