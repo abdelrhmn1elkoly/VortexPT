@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.5.6",
+  "release_date": "2026-11-17",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.5.6/VortexPT-Setup-1.5.6.exe",
+  "release_notes": "Vortex PT 1.5.6 Release:\n• Double Live-End Cutting Length: Tendons with 2 live stressing ends (LIVE -> LIVE) now correctly double the cutting length allowance (e.g., 2 x 0.30 m = 0.60 m) across all DXF tables, Excel schedules, CSV exports, and viewport summaries.\n• UI Stability & Feature Gating: Rebar Detailing View is safely isolated behind a development feature flag, preserving full core stability for this release.\n• 3D Clash Detection & Cover Verification: Automatic 3D duct penetration detection and local-datum concrete cover checks.\n• Performance & CAD Engine: Multi-core and GPU acceleration updates with rounded corner styling and improved cross-section framing."
+}

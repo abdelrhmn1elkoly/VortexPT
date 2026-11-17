@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<!-- Vortex PT — 3D marketing site (single file).
+     Theme: WinUI dark + logo gradients (cyan #00F0FF → indigo #6366F1) + accent #E25C37.
+     3D: Three.js tendon-drape tubes + bloom + particles, scroll & pointer driven (GSAP).
+     Cart: Wuilt public API, sessionid only — NEVER embed your admin X-API-KEY in this file. -->
+<html lang="en" dir="ltr" id="root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0d10">
+<title>Vortex PT | Post-Tension Shop Drawing Software</title>
+<meta name="description" content="Vortex PT — RAM Concept extraction, live CAD canvas, tendon profiles, DXF + Excel export. | برنامج لوحات الشوب درووينج للبوست تنشن">
+<style>
+/* ============================== TOKENS ============================== */
+:root{
+  --bg:#0b0d10; --bg2:#15181d; --card:rgba(24,27,33,.62);
+  --stroke:rgba(255,255,255,.09); --stroke-2:rgba(255,255,255,.18);
+  --accent:#E25C37; --cyan:#00F0FF; --sky:#38BDF8;
+  --indigo:#6366F1; --violet:#A78BFA; --mint:#6CCB5F;
+  --text:#eef2f7; --muted:#98a3b0;
+  --r:16px; --ease:cubic-bezier(.2,.8,.3,1);
+}
+@property --ang{syntax:'<angle>'; initial-value:0deg; inherits:false;}
+
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth; -webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--bg); color:var(--text); overflow-x:hidden;
+  font-family:"Segoe UI",Inter,system-ui,-apple-system,Tahoma,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  line-height:1.6;
+}
+::selection{background:rgba(0,240,255,.28); color:#fff;}
+::-webkit-scrollbar{width:10px;height:10px;}
+::-webkit-scrollbar-track{background:#0b0d10;}
+::-webkit-scrollbar-thumb{background:#252a31;border-radius:10px;border:2px solid #0b0d10;}
+::-webkit-scrollbar-thumb:hover{background:#39424d;}
+button,input,summary{font-family:inherit;}
+a{-webkit-tap-highlight-color:transparent;}
+
+/* ============================== LAYERS ============================== */
+#bg3d{position:fixed; inset:0; z-index:0; pointer-events:none; display:block;}
+#bgfade{
+  position:fixed; inset:0; z-index:1; pointer-events:none;
+  background:
+    radial-gradient(900px 620px at 50% -12%, rgba(0,240,255,.10), transparent 68%),
+    radial-gradient(760px 520px at 88% 14%, rgba(99,102,241,.11), transparent 68%),
+    radial-gradient(600px 420px at 6% 62%, rgba(226,92,55,.07), transparent 70%),
+    radial-gradient(ellipse at 50% 38%, transparent 28%, rgba(11,13,16,.55) 76%, rgba(11,13,16,.95) 100%);
+}
+#spotlight{
+  position:fixed; inset:0; z-index:1; pointer-events:none; opacity:0; transition:opacity .6s;
+  background:radial-gradient(560px circle at var(--sx,50%) var(--sy,20%), rgba(0,240,255,.075), transparent 62%);
+}
+main,nav,footer{position:relative; z-index:2;}
+
+#progress{
+  position:fixed; top:0; left:0; width:100%; height:2px; z-index:60;
+  background:linear-gradient(90deg,var(--cyan),var(--sky),var(--indigo),var(--accent));
+  transform:scaleX(0); transform-origin:0 50%;
+  box-shadow:0 0 14px rgba(0,240,255,.55);
+}
+.wrap{max-width:1120px; margin:0 auto; padding:0 22px;}
+
+/* ============================== NAV ============================== */
+nav{
+  position:sticky; top:0; z-index:50;
+  backdrop-filter:blur(18px) saturate(150%); -webkit-backdrop-filter:blur(18px) saturate(150%);
+  background:rgba(11,13,16,.55); border-bottom:1px solid transparent;
+  transition:background .4s, border-color .4s, box-shadow .4s;
+}
+nav.scrolled{background:rgba(11,13,16,.86); border-bottom-color:var(--stroke); box-shadow:0 14px 44px rgba(0,0,0,.55);}
+nav .wrap{display:flex; align-items:center; gap:12px; padding:11px 22px; transition:padding .4s var(--ease);}
+nav.scrolled .wrap{padding:7px 22px;}
+nav svg{height:36px; width:36px; flex:0 0 auto; filter:drop-shadow(0 0 12px rgba(0,240,255,.35)); transition:transform .5s var(--ease);}
+nav:hover svg{transform:rotate(-6deg) scale(1.06);}
+nav .brand{font-weight:800; letter-spacing:2.5px; font-size:1.02rem; white-space:nowrap;}
+nav .brand span{background:linear-gradient(90deg,var(--cyan),var(--indigo)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+nav .sp{flex:1;}
+nav a.link{
+  position:relative; color:var(--muted); text-decoration:none; margin:0 11px; padding:6px 2px;
+  font-size:.92rem; transition:color .25s;
+}
+nav a.link::after{
+  content:""; position:absolute; left:0; right:0; bottom:0; height:1.5px; border-radius:2px;
+  background:linear-gradient(90deg,var(--cyan),var(--indigo));
+  transform:scaleX(0); transform-origin:0 50%; transition:transform .35s var(--ease);
+}
+nav a.link:hover{color:var(--text);}
+nav a.link:hover::after{transform:scaleX(1);}
+.pillbtn{
+  background:rgba(255,255,255,.03); color:var(--text); border:1px solid var(--stroke);
+  border-radius:20px; padding:7px 17px; cursor:pointer; font-size:.84rem; font-weight:600;
+  transition:border-color .3s, background .3s, transform .25s, box-shadow .3s;
+}
+.pillbtn:hover{border-color:rgba(0,240,255,.6); background:rgba(0,240,255,.08); transform:translateY(-1px); box-shadow:0 8px 24px -10px rgba(0,240,255,.5);}
+
+/* ============================== HERO ============================== */
+.hero{min-height:92vh; min-height:100svh; display:flex; align-items:center; text-align:center; padding:70px 0 40px;}
+.hero .logo-big{width:min(190px,38vw); margin:0 auto 10px; display:block;
+  filter:drop-shadow(0 0 34px rgba(0,240,255,.42));
+  animation:floaty 6s ease-in-out infinite;}
+@keyframes floaty{50%{transform:translateY(-10px);}}
+.kicker{
+  display:inline-flex; align-items:center; gap:9px; font-size:.76rem; letter-spacing:3.4px; font-weight:700;
+  color:var(--cyan); border:1px solid rgba(0,240,255,.32); border-radius:20px;
+  padding:7px 20px; margin-bottom:20px; background:rgba(0,240,255,.05);
+  box-shadow:0 0 30px -10px rgba(0,240,255,.55), inset 0 0 22px -12px rgba(0,240,255,.6);
+}
+.kicker::before{
+  content:""; width:6px; height:6px; border-radius:50%; background:var(--cyan);
+  box-shadow:0 0 0 0 rgba(0,240,255,.7); animation:pulse 2s infinite;
+}
+@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(0,240,255,0);}100%{box-shadow:0 0 0 0 rgba(0,240,255,0);}}
+
+h1{font-size:clamp(2.05rem,5.6vw,3.9rem); line-height:1.14; margin:.25em 0; letter-spacing:-.02em; font-weight:800;}
+h1 .w{display:inline-block; overflow:hidden; vertical-align:bottom; padding-bottom:.14em; margin-bottom:-.14em;}
+h1 .w i{display:inline-block; font-style:normal; transform:translateY(118%);}
+h1 .grad{
+  display:inline-block;
+  background:linear-gradient(100deg,var(--cyan),var(--sky),var(--indigo),var(--violet),var(--cyan));
+  background-size:300% 100%;
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation:gradShift 9s ease-in-out infinite;
+}
+@keyframes gradShift{50%{background-position:100% 50%;}}
+
+.sub{color:var(--muted); font-size:clamp(1rem,2.1vw,1.17rem); max-width:700px; margin:0 auto; line-height:1.75;}
+.cta-row{display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:32px;}
+
+/* buttons */
+.btn{
+  position:relative; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  border:0; border-radius:12px; padding:15px 34px; font-size:1rem; font-weight:700; letter-spacing:.2px;
+  cursor:pointer; text-decoration:none; overflow:hidden;
+  transition:transform .3s var(--ease), box-shadow .35s, border-color .3s, background .3s;
+}
+.btn.hot{
+  background:linear-gradient(100deg,#ff7a45,var(--accent)); color:#fff;
+  box-shadow:0 12px 34px -10px rgba(226,92,55,.75), inset 0 1px 0 rgba(255,255,255,.28);
+}
+.btn.hot:hover{transform:translateY(-3px); box-shadow:0 22px 52px -12px rgba(226,92,55,.95), inset 0 1px 0 rgba(255,255,255,.35);}
+.btn.hot::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(110deg,transparent 22%,rgba(255,255,255,.5) 50%,transparent 78%);
+  transform:translateX(-140%); transition:transform .85s var(--ease);
+}
+.btn.hot:hover::after{transform:translateX(140%);}
+.btn.ghost{background:rgba(255,255,255,.02); color:var(--text); border:1px solid var(--stroke);}
+.btn.ghost:hover{border-color:rgba(0,240,255,.55); background:rgba(0,240,255,.06); transform:translateY(-3px); box-shadow:0 16px 40px -18px rgba(0,240,255,.7);}
+.btn:disabled{opacity:.5; cursor:wait; transform:none!important;}
+
+.stats{display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:46px;}
+.stats > div{
+  min-width:150px; padding:16px 22px; border-radius:14px;
+  background:rgba(255,255,255,.025); border:1px solid var(--stroke); backdrop-filter:blur(8px);
+  transition:border-color .35s, transform .35s var(--ease), background .35s;
+}
+.stats > div:hover{border-color:rgba(0,240,255,.35); transform:translateY(-4px); background:rgba(0,240,255,.045);}
+.stats b{
+  display:block; font-size:1.85rem; font-weight:800; letter-spacing:-.5px;
+  background:linear-gradient(120deg,var(--cyan),var(--sky),var(--indigo));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.stats span{color:var(--muted); font-size:.82rem; letter-spacing:.4px;}
+.scroll-hint{margin-top:52px; color:var(--muted); font-size:.7rem; letter-spacing:4px; font-weight:700;}
+.scroll-hint::after{
+  content:""; display:block; width:1px; height:44px; margin:12px auto 0;
+  background:linear-gradient(180deg,var(--cyan),transparent);
+  animation:bob 2.4s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{opacity:.25; transform:scaleY(.55); transform-origin:top;}50%{opacity:1; transform:scaleY(1); transform-origin:top;}}
+
+/* ============================== MARQUEE ============================== */
+.marquee{
+  overflow:hidden; border-top:1px solid var(--stroke); border-bottom:1px solid var(--stroke);
+  padding:16px 0; margin-top:56px; background:rgba(255,255,255,.012);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+}
+.marquee-track{display:flex; width:max-content; direction:ltr; animation:slide 38s linear infinite;}
+.marquee:hover .marquee-track{animation-play-state:paused;}
+.marquee-track > span{
+  position:relative; padding-right:48px; font-size:.78rem; letter-spacing:3.4px; font-weight:700;
+  color:var(--muted); white-space:nowrap;
+}
+.marquee-track > span::after{
+  content:""; position:absolute; right:19px; top:50%; width:6px; height:6px;
+  transform:translateY(-50%) rotate(45deg);
+  background:linear-gradient(135deg,var(--cyan),var(--indigo)); opacity:.8;
+}
+@keyframes slide{to{transform:translateX(-50%);}}
+
+/* ============================== SECTIONS ============================== */
+section{padding:96px 0 20px;}
+.sec-tag{
+  display:inline-flex; align-items:center; gap:12px;
+  color:var(--cyan); letter-spacing:3.4px; font-size:.74rem; font-weight:800;
+}
+.sec-tag::after{content:""; width:52px; height:1px; background:linear-gradient(90deg,var(--cyan),transparent);}
+h2{font-size:clamp(1.55rem,3.7vw,2.45rem); margin:.42em 0 .5em; letter-spacing:-.02em; font-weight:800;}
+.sec-sub{color:var(--muted); max-width:660px; line-height:1.75;}
+
+.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(258px,1fr)); gap:18px; margin-top:34px;}
+
+.card{
+  position:relative; background:var(--card); border:1px solid var(--stroke); border-radius:var(--r);
+  padding:26px; backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  transition:border-color .4s, box-shadow .45s, background .4s;
+  will-change:transform;
+}
+.card::before{
+  content:""; position:absolute; inset:0; border-radius:inherit; opacity:0; transition:opacity .4s;
+  background:radial-gradient(340px circle at var(--mx,50%) var(--my,50%), rgba(0,240,255,.11), transparent 62%);
+  pointer-events:none;
+}
+.card:hover::before{opacity:1;}
+.card:hover{
+  border-color:rgba(0,240,255,.38);
+  box-shadow:0 26px 64px -26px rgba(0,240,255,.42), 0 18px 42px rgba(0,0,0,.55);
+  background:rgba(28,32,39,.72);
+}
+.card .ico{
+  width:52px; height:52px; display:grid; place-items:center; border-radius:14px; font-size:1.45rem;
+  background:linear-gradient(140deg, rgba(0,240,255,.16), rgba(99,102,241,.16));
+  border:1px solid rgba(0,240,255,.22); margin-bottom:16px;
+  box-shadow:inset 0 0 22px -12px rgba(0,240,255,.9);
+  transition:transform .45s var(--ease), box-shadow .45s;
+}
+.card:hover .ico{transform:translateY(-3px) rotate(-4deg); box-shadow:inset 0 0 26px -8px rgba(0,240,255,.9), 0 12px 30px -14px rgba(0,240,255,.8);}
+.card h3{margin:.2em 0 .45em; font-size:1.06rem; letter-spacing:-.01em;}
+.card p{color:var(--muted); line-height:1.7; margin:0; font-size:.94rem;}
+
+/* ============================== APP MOCK ============================== */
+.mock{
+  position:relative; background:#0d1014; border:1px solid var(--stroke); border-radius:16px;
+  overflow:hidden; margin-top:36px;
+  box-shadow:0 40px 90px -40px rgba(0,240,255,.35), 0 30px 70px rgba(0,0,0,.7);
+}
+.mock::after{
+  content:""; position:absolute; inset:0; pointer-events:none; border-radius:inherit;
+  background:linear-gradient(180deg, rgba(0,240,255,.05), transparent 40%);
+}
+.mock .bar{display:flex; gap:7px; padding:12px 16px; background:#161a1f; align-items:center; border-bottom:1px solid var(--stroke);}
+.mock .bar i{width:11px; height:11px; border-radius:50%; display:block;}
+.mock-title{color:#7c8794; font-size:.78rem; margin-inline-start:10px; font-family:Consolas,monospace;}
+.mock-badge{
+  margin-inline-start:auto; font-size:.64rem; letter-spacing:2px; font-weight:800; color:var(--mint);
+  border:1px solid rgba(108,203,95,.35); border-radius:20px; padding:3px 10px; background:rgba(108,203,95,.08);
+}
+.mock svg{display:block; width:100%; height:auto;}
+.flow{stroke-dasharray:5 15; animation:flow 2.6s linear infinite;}
+@keyframes flow{to{stroke-dashoffset:-20;}}
+.mock-label{animation:labelPulse 3.4s ease-in-out infinite;}
+@keyframes labelPulse{50%{opacity:.55;}}
+
+/* ============================== STEPS ============================== */
+ol.steps{counter-reset:s; list-style:none; padding:0; margin:0; max-width:720px;}
+ol.steps li{
+  counter-increment:s; position:relative; padding:0 0 0 62px; margin:0 0 22px; line-height:1.75; color:var(--muted);
+}
+ol.steps li:last-child{margin-bottom:0;}
+ol.steps li::before{
+  content:counter(s); position:absolute; left:0; top:-2px; width:40px; height:40px; border-radius:12px;
+  display:grid; place-items:center; font-weight:800; font-size:1rem; color:#fff;
+  background:linear-gradient(140deg, rgba(0,240,255,.22), rgba(99,102,241,.22));
+  border:1px solid rgba(0,240,255,.3); box-shadow:inset 0 0 20px -10px rgba(0,240,255,.9);
+}
+ol.steps code{
+  background:#05070a; color:var(--mint); padding:2px 10px; border-radius:6px;
+  direction:ltr; display:inline-block; font-family:Consolas,monospace; font-size:.88em;
+  border:1px solid rgba(108,203,95,.22);
+}
+[dir="rtl"] ol.steps li{padding:0 62px 0 0;}
+[dir="rtl"] ol.steps li::before{left:auto; right:0;}
+
+/* ============================== PRICING ============================== */
+.price-card{text-align:center; padding:34px 26px;}
+.price-card .feat{text-align:start;}
+.price-card.hot{
+  border:1.5px solid transparent;
+  background:
+    linear-gradient(var(--bg2),var(--bg2)) padding-box,
+    conic-gradient(from var(--ang), var(--accent), #ffb27a, var(--cyan), var(--indigo), var(--accent)) border-box;
+  animation:spin 9s linear infinite;
+  box-shadow:0 30px 80px -34px rgba(226,92,55,.55);
+}
+@keyframes spin{to{--ang:360deg;}}
+.price-card.hot:hover{box-shadow:0 40px 100px -34px rgba(226,92,55,.8);}
+.flag{
+  position:absolute; top:-13px; inset-inline:0; margin:0 auto; width:max-content;
+  background:linear-gradient(100deg,#ff7a45,var(--accent)); color:#fff;
+  font-size:.68rem; font-weight:800; letter-spacing:1.6px; padding:5px 18px; border-radius:20px;
+  box-shadow:0 10px 26px -10px rgba(226,92,55,.9);
+}
+.amount{font-size:2.6rem; font-weight:800; margin:12px 0 2px; letter-spacing:-1.5px;}
+.amount small{font-size:.9rem; color:var(--muted); font-weight:400; letter-spacing:0;}
+.feat{list-style:none; padding:0; margin:18px 0 22px; color:var(--muted); line-height:2.1; font-size:.93rem;}
+.feat li::before{content:"✓ "; color:var(--mint); font-weight:800;}
+.price-card .btn{width:100%;}
+
+/* ============================== FAQ ============================== */
+details{
+  position:relative; background:var(--card); border:1px solid var(--stroke); border-radius:12px;
+  padding:16px 20px; margin:10px 0; max-width:820px; backdrop-filter:blur(10px);
+  transition:border-color .35s, background .35s, box-shadow .35s;
+}
+details:hover{border-color:rgba(0,240,255,.28);}
+details[open]{border-color:rgba(0,240,255,.36); background:rgba(28,32,39,.7); box-shadow:0 18px 44px -26px rgba(0,240,255,.6);}
+summary{cursor:pointer; font-weight:700; list-style:none; display:flex; align-items:center; gap:12px; font-size:.98rem;}
+summary::-webkit-details-marker{display:none;}
+summary::after{
+  content:"+"; margin-inline-start:auto; color:var(--cyan); font-size:1.45rem; font-weight:400;
+  line-height:1; transition:transform .35s var(--ease);
+}
+details[open] summary::after{transform:rotate(135deg);}
+details p{color:var(--muted); line-height:1.75; margin:12px 0 2px; font-size:.93rem; animation:fadeUp .4s var(--ease);}
+@keyframes fadeUp{from{opacity:0; transform:translateY(-6px);}}
+
+/* ============================== FOOTER ============================== */
+footer{border-top:1px solid var(--stroke); margin-top:90px; padding:34px 0 48px; color:var(--muted); font-size:.9rem; text-align:center;}
+footer .foot-cta{margin-bottom:16px;}
+footer .foot-note{opacity:.8;}
+
+/* ============================== MISC ============================== */
+#toast{
+  position:fixed; bottom:24px; left:50%; transform:translate(-50%,20px); z-index:70;
+  background:rgba(24,27,33,.96); border:1px solid var(--stroke-2); backdrop-filter:blur(14px);
+  padding:12px 24px; border-radius:11px; display:none; opacity:0;
+  box-shadow:0 20px 50px rgba(0,0,0,.7); font-size:.92rem; max-width:90vw;
+}
+#toast.show{display:block; animation:toastIn .35s var(--ease) forwards;}
+@keyframes toastIn{to{opacity:1; transform:translate(-50%,0);}}
+
+#toTop{
+  position:fixed; right:22px; bottom:22px; z-index:55; width:44px; height:44px; border-radius:50%;
+  display:grid; place-items:center; cursor:pointer; color:var(--text);
+  background:rgba(24,27,33,.8); border:1px solid var(--stroke); backdrop-filter:blur(12px);
+  opacity:0; pointer-events:none; transform:translateY(14px);
+  transition:opacity .4s, transform .4s var(--ease), border-color .3s;
+}
+#toTop.show{opacity:1; pointer-events:auto; transform:translateY(0);}
+#toTop:hover{border-color:rgba(0,240,255,.6); box-shadow:0 12px 34px -14px rgba(0,240,255,.85);}
+[dir="rtl"] #toTop{right:auto; left:22px;}
+
+.reveal{opacity:0;}
+.hero-fade{opacity:0;}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important; animation-iteration-count:1!important; transition-duration:.001ms!important;}
+  html{scroll-behavior:auto;}
+  .reveal,.hero-fade{opacity:1!important;}
+  .hero h1 .w i{transform:none!important;}
+}
+@media (max-width:760px){
+  nav a.link{display:none;}
+  section{padding:70px 0 10px;}
+  .hero{padding:50px 0 30px;}
+  .stats{gap:10px;}
+  .stats > div{min-width:0; flex:1 1 30%; padding:14px 10px;}
+  .stats b{font-size:1.4rem;}
+}
+</style>
+</head>
+<body id="top">
+
+<canvas id="bg3d"></canvas>
+<div id="bgfade"></div>
+<div id="spotlight"></div>
+<div id="progress"></div>
+
+<nav id="nav"><div class="wrap">
+  <svg viewBox="0 0 500 500" aria-hidden="true">
+    <defs>
+      <linearGradient id="nL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38BDF8"/><stop offset="1" stop-color="#0284C7"/></linearGradient>
+      <linearGradient id="nR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#93C5FD"/><stop offset=".6" stop-color="#818CF8"/><stop offset="1" stop-color="#6366F1"/></linearGradient>
+      <linearGradient id="nT" x1="0" y1=".5" x2="1" y2=".5"><stop offset="0" stop-color="#00F0FF"/><stop offset=".5" stop-color="#3B82F6"/><stop offset="1" stop-color="#818CF8"/></linearGradient>
+    </defs>
+    <path d="M185,115 C215,205 285,205 315,115" fill="none" stroke="#22D3EE" stroke-width="9" stroke-linecap="round"/>
+    <path d="M108,162 C165,305 335,305 392,162" fill="none" stroke="#A78BFA" stroke-width="12" stroke-linecap="round" opacity=".9"/>
+    <path d="M86,220 C130,375 370,375 414,220" fill="none" stroke="url(#nT)" stroke-width="17" stroke-linecap="round"/>
+    <circle cx="74" cy="214" r="22" fill="none" stroke="#00F0FF" stroke-width="11"/>
+    <circle cx="426" cy="214" r="22" fill="none" stroke="#38BDF8" stroke-width="11"/>
+    <line x1="125" y1="80" x2="250" y2="400" stroke="url(#nL)" stroke-width="48" stroke-linecap="round"/>
+    <line x1="375" y1="80" x2="250" y2="400" stroke="url(#nR)" stroke-width="48" stroke-linecap="round"/>
+    <circle cx="250" cy="400" r="24" fill="#818CF8"/><circle cx="250" cy="400" r="14" fill="#A5B4FC" opacity=".8"/>
+  </svg>
+  <div class="brand">VORTEX <span>PT</span></div>
+  <div class="sp"></div>
+  <a class="link" href="#features" data-en="Features" data-ar="المزايا">Features</a>
+  <a class="link" href="#pricing" data-en="Pricing" data-ar="الأسعار">Pricing</a>
+  <a class="link" href="#faq" data-en="FAQ" data-ar="أسئلة شائعة">FAQ</a>
+  <button class="pillbtn" onclick="toggleLang()" id="langBtn">عربي</button>
+</div></nav>
+
+<main><div class="wrap">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero"><div style="width:100%">
+    <svg class="logo-big" viewBox="0 0 500 500" aria-hidden="true">
+      <defs>
+        <linearGradient id="hL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38BDF8"/><stop offset="1" stop-color="#0284C7"/></linearGradient>
+        <linearGradient id="hR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#93C5FD"/><stop offset=".6" stop-color="#818CF8"/><stop offset="1" stop-color="#6366F1"/></linearGradient>
+        <linearGradient id="hT" x1="0" y1=".5" x2="1" y2=".5"><stop offset="0" stop-color="#00F0FF"/><stop offset=".5" stop-color="#3B82F6"/><stop offset="1" stop-color="#818CF8"/></linearGradient>
+      </defs>
+      <path d="M185,115 C215,205 285,205 315,115" fill="none" stroke="#22D3EE" stroke-width="9" stroke-linecap="round"/>
+      <path d="M108,162 C165,305 335,305 392,162" fill="none" stroke="#A78BFA" stroke-width="12" stroke-linecap="round" opacity=".9"/>
+      <path d="M86,220 C130,375 370,375 414,220" fill="none" stroke="url(#hT)" stroke-width="17" stroke-linecap="round"/>
+      <circle cx="74" cy="214" r="22" fill="none" stroke="#00F0FF" stroke-width="11"/>
+      <circle cx="426" cy="214" r="22" fill="none" stroke="#38BDF8" stroke-width="11"/>
+      <line x1="125" y1="80" x2="250" y2="400" stroke="url(#hL)" stroke-width="48" stroke-linecap="round"/>
+      <line x1="375" y1="80" x2="250" y2="400" stroke="url(#hR)" stroke-width="48" stroke-linecap="round"/>
+      <circle cx="250" cy="400" r="24" fill="#818CF8"/><circle cx="250" cy="400" r="14" fill="#A5B4FC" opacity=".8"/>
+    </svg>
+
+    <div class="kicker hero-fade" data-en="POST-TENSION SHOP DRAWINGS" data-ar="لوحات شوب درووينج للبوست تنشن">POST-TENSION SHOP DRAWINGS</div>
+
+    <h1>
+      <span class="split" data-en="From RAM Concept to site-ready drawings in " data-ar="من RAM Concept إلى لوحات جاهزة للموقع في ">From RAM Concept to site-ready drawings in </span><span class="grad" data-en="minutes." data-ar="دقائق.">minutes.</span>
+    </h1>
+
+    <p class="sub hero-fade" data-en="Vortex PT extracts your structural model, renders a live 2D CAD canvas with tendon drape profiles, and exports layered AutoCAD DXF + full Excel schedules. Offline, licensed per PC."
+       data-ar="يستخرج Vortex PT موديلك الإنشائي، ويعرض لوحة CAD حية ببروفايلات الكابلات، ويصدّر DXF للأوتوكاد وجداول Excel كاملة. بدون إنترنت، وترخيص لكل جهاز.">Vortex PT extracts your structural model, renders a live 2D CAD canvas with tendon drape profiles, and exports layered AutoCAD DXF + full Excel schedules. Offline, licensed per PC.</p>
+
+    <div class="cta-row hero-fade">
+      <a class="btn hot" href="#pricing" data-en="Get Licensed →" data-ar="اطلب الترخيص ←">Get Licensed →</a>
+      <a class="btn ghost" href="#how" data-en="How it works" data-ar="إزاي بيشتغل">How it works</a>
+    </div>
+
+    <div class="stats hero-fade">
+      <div><b><span data-count="12">0</span></b><span data-en="CAD layers" data-ar="طبقة CAD">CAD layers</span></div>
+      <div><b><span data-count="4">0</span></b><span data-en="Excel schedule sheets" data-ar="شيتات Excel">Excel schedule sheets</span></div>
+      <div><b><span data-count="100">0</span>%</b><span data-en="offline after activation" data-ar="يعمل بدون نت بعد التفعيل">offline after activation</span></div>
+    </div>
+
+    <div class="scroll-hint hero-fade" data-en="SCROLL" data-ar="مرر للأسفل">SCROLL</div>
+  </div></header>
+
+  <!-- ============ MARQUEE ============ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>RAM CONCEPT</span><span>ADAPT-BUILDER</span><span>DXF SHOP DRAWINGS</span><span>EXCEL + BBS</span><span>DRAPE PROFILES</span><span>CHAIR HEIGHTS</span><span>LIVE CAD CANVAS</span><span>OFFLINE LICENSING</span>
+      <span>RAM CONCEPT</span><span>ADAPT-BUILDER</span><span>DXF SHOP DRAWINGS</span><span>EXCEL + BBS</span><span>DRAPE PROFILES</span><span>CHAIR HEIGHTS</span><span>LIVE CAD CANVAS</span><span>OFFLINE LICENSING</span>
+    </div>
+  </div>
+
+  <!-- ============ FEATURES ============ -->
+  <section id="features">
+    <div class="sec-tag reveal">01 — CAPABILITIES</div>
+    <h2 class="reveal" data-en="Everything between model and site." data-ar="كل ما بين الموديل والموقع.">Everything between model and site.</h2>
+    <p class="sec-sub reveal" data-en="One desktop app covering the full post-tension detailing workflow."
+       data-ar="برنامج ديسكتوب واحد يغطي دورة البوست تنشن كاملة.">One desktop app covering the full post-tension detailing workflow.</p>
+
+    <div class="grid">
+      <div class="card reveal tilt"><div class="ico">🧩</div><h3 data-en="Direct model extraction" data-ar="استخراج مباشر">Direct model extraction</h3><p data-en="RAM Concept (.cpt) plus ADAPT-Builder via .inp — slabs, columns, walls, beams, tendons, rebar." data-ar="ملفات RAM Concept مباشرة وADAPT عن طريق .inp — بلاطات وأعمدة وحوائط وكمرات وكابلات وحديد.">RAM Concept (.cpt) plus ADAPT-Builder via .inp — slabs, columns, walls, beams, tendons, rebar.</p></div>
+      <div class="card reveal tilt"><div class="ico">🖥️</div><h3 data-en="Live CAD canvas" data-ar="لوحة CAD حية">Live CAD canvas</h3><p data-en="Pan, zoom, layer toggles. Click any tendon to inspect it and open its elevation profile." data-ar="تحريك وزووم وطبقات. اضغط أي كابل لفحصه وفتح بروفايله.">Pan, zoom, layer toggles. Click any tendon to inspect it and open its elevation profile.</p></div>
+      <div class="card reveal tilt"><div class="ico">〰️</div><h3 data-en="Drape profiler" data-ar="بروفايل الكابلات">Drape profiler</h3><p data-en="Parabolic drape curves, chair heights, live vs dead anchors and elongation computation." data-ar="منحنيات الكابلات وارتفاعات الكراسي وحساب الاستطالة والنهايات الحية والميتة.">Parabolic drape curves, chair heights, live vs dead anchors and elongation computation.</p></div>
+      <div class="card reveal tilt"><div class="ico">📐</div><h3 data-en="DXF shop drawings" data-ar="لوحات DXF">DXF shop drawings</h3><p data-en="Layered AutoCAD sheets with border, title block and an embedded tendon schedule table." data-ar="لوحات أوتوكاد بالطبقات مع الإطار وجدول الكابلات داخل اللوحة.">Layered AutoCAD sheets with border, title block and an embedded tendon schedule table.</p></div>
+      <div class="card reveal tilt"><div class="ico">📊</div><h3 data-en="Excel + BBS" data-ar="Excel وBBS">Excel + BBS</h3><p data-en="Takeoff summary, PT schedule, chair heights detail and full rebar bending schedules + CSV." data-ar="ملخص الحصر وجداول الكابلات والكراسي وجداول ثني الحديد كاملة + CSV.">Takeoff summary, PT schedule, chair heights detail and full rebar bending schedules + CSV.</p></div>
+      <div class="card reveal tilt"><div class="ico">🔒</div><h3 data-en="Per-PC licensing" data-ar="ترخيص لكل جهاز">Per-PC licensing</h3><p data-en="Machine-locked keys, offline activation, expiry reminders, free updates in-period." data-ar="مفاتيح مرتبطة بالجهاز وتفعيل بدون نت وتذكير بالانتهاء وتحديثات مجانية.">Machine-locked keys, offline activation, expiry reminders, free updates in-period.</p></div>
+    </div>
+
+    <!-- stylized app preview -->
+    <div class="mock reveal">
+      <div class="bar">
+        <i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i>
+        <span class="mock-title">Vortex PT — ROOF FLOOR.dxf</span>
+        <span class="mock-badge">LIVE</span>
+      </div>
+      <svg viewBox="0 0 900 380" role="img" aria-label="Vortex PT CAD canvas preview">
+        <defs>
+          <pattern id="gridp" width="30" height="30" patternUnits="userSpaceOnUse">
+            <path d="M30 0 H0 V30" fill="none" stroke="#1c2733" stroke-width="1"/>
+          </pattern>
+          <linearGradient id="slabg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#0f1720"/><stop offset="1" stop-color="#0c1218"/>
+          </linearGradient>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="2.6" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <rect x="0" y="0" width="900" height="380" fill="#0a0e13"/>
+        <rect x="0" y="0" width="900" height="380" fill="url(#gridp)" opacity=".55"/>
+
+        <!-- side panel -->
+        <rect x="0" y="0" width="150" height="380" fill="#0d1218" opacity=".92"/>
+        <line x1="150" y1="0" x2="150" y2="380" stroke="#243039"/>
+        <text x="18" y="34" fill="#5c6b7a" font-size="11" font-family="Consolas,monospace" letter-spacing="2">LAYERS</text>
+        <g font-family="Consolas,monospace" font-size="11.5">
+          <circle cx="24" cy="62" r="4" fill="#10B981"/><text x="40" y="66" fill="#8fa0b0">TENDONS</text>
+          <circle cx="24" cy="88" r="4" fill="#FBBF24"/><text x="40" y="92" fill="#8fa0b0">COLUMNS</text>
+          <circle cx="24" cy="114" r="4" fill="#F87171"/><text x="40" y="118" fill="#8fa0b0">ANCHORS</text>
+          <circle cx="24" cy="140" r="4" fill="#38BDF8"/><text x="40" y="144" fill="#8fa0b0">REBAR</text>
+          <circle cx="24" cy="166" r="4" fill="#6366F1"/><text x="40" y="170" fill="#8fa0b0">BOUNDARY</text>
+          <circle cx="24" cy="192" r="4" fill="#94A3B8"/><text x="40" y="196" fill="#8fa0b0">DIMENSIONS</text>
+        </g>
+        <rect x="16" y="216" width="118" height="1" fill="#1e2831"/>
+        <text x="18" y="244" fill="#5c6b7a" font-size="11" font-family="Consolas,monospace" letter-spacing="2">SCALE 1:50</text>
+
+        <!-- slab -->
+        <rect x="185" y="70" width="640" height="230" fill="url(#slabg)" stroke="#46586a" stroke-width="2"/>
+        <rect x="185" y="70" width="640" height="230" fill="none" stroke="#0e1620" stroke-width="1"/>
+
+        <!-- columns -->
+        <g fill="#FBBF24" opacity=".92">
+          <rect x="255" y="112" width="30" height="30" rx="3"/>
+          <rect x="725" y="112" width="30" height="30" rx="3"/>
+          <rect x="255" y="228" width="30" height="30" rx="3"/>
+          <rect x="725" y="228" width="30" height="30" rx="3"/>
+        </g>
+
+        <!-- opening -->
+        <rect x="440" y="160" width="130" height="60" fill="none" stroke="#F87171" stroke-width="2" stroke-dasharray="7 5"/>
+
+        <!-- tendons -->
+        <g filter="url(#glow)" fill="none" stroke-linecap="round">
+          <path d="M185,215 C385,132 585,296 825,180" stroke="#10B981" stroke-width="3.4" opacity=".95"/>
+          <path d="M185,182 C385,268 585,120 825,214" stroke="#06B6D4" stroke-width="3.4" opacity=".95"/>
+          <path d="M185,250 C385,196 585,250 825,244" stroke="#6366F1" stroke-width="3" opacity=".8"/>
+        </g>
+        <!-- flow overlay -->
+        <g fill="none" stroke-linecap="round" opacity=".85">
+          <path class="flow" d="M185,215 C385,132 585,296 825,180" stroke="#7CFFD8" stroke-width="1.5"/>
+          <path class="flow" d="M185,182 C385,268 585,120 825,214" stroke="#8FF0FF" stroke-width="1.5" style="animation-delay:-1.2s"/>
+        </g>
+
+        <!-- anchors -->
+        <g fill="none" stroke="#F87171" stroke-width="3">
+          <circle cx="185" cy="215" r="7"/><circle cx="825" cy="180" r="7"/>
+          <circle cx="185" cy="182" r="7"/><circle cx="825" cy="214" r="7"/>
+        </g>
+
+        <!-- callout -->
+        <g class="mock-label">
+          <rect x="360" y="26" width="290" height="30" rx="7" fill="#0f1a17" stroke="#1f4a3c"/>
+          <text x="375" y="46" fill="#6CCB5F" font-size="14.5" font-family="Consolas,monospace">TL-04 · 4×12.7mm · L=38.2m</text>
+        </g>
+        <line x1="505" y1="56" x2="505" y2="128" stroke="#2a5a4a" stroke-dasharray="4 4"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ HOW ============ -->
+  <section id="how">
+    <div class="sec-tag reveal">02 — GET STARTED</div>
+    <h2 class="reveal" data-en="Licensed in three steps." data-ar="الترخيص في ٣ خطوات.">Licensed in three steps.</h2>
+    <div class="card reveal">
+      <ol class="steps">
+        <li data-en="Pay below — you get an order confirmation instantly." data-ar="ادفع بالأسفل — توصلك رسالة تأكيد الطلب فورًا.">Pay below — you get an order confirmation instantly.</li>
+        <li><span data-en="Install Vortex PT, click Open Model — copy the " data-ar="ثبّت البرنامج واضغط Open Model — انسخ ">Install Vortex PT, click Open Model — copy the </span><code>Machine ID</code><span data-en=" from the Activation window and WhatsApp it to us with your name." data-ar=" من نافذة التفعيل وابعته واتساب مع اسمك."> from the Activation window and WhatsApp it to us with your name.</span></li>
+        <li data-en="We reply with your key — paste, Activate, done. Offline forever after." data-ar="هنبعتلك المفتاح — الصقه وفعّل، خلاص. بدون نت للأبد.">We reply with your key — paste, Activate, done. Offline forever after.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ PRICING ============ -->
+  <section id="pricing">
+    <div class="sec-tag reveal">03 — PRICING</div>
+    <h2 class="reveal" data-en="One license. One PC. No subscription traps." data-ar="ترخيص واحد. جهاز واحد. بدون مفاجآت.">One license. One PC. No subscription traps.</h2>
+    <div class="grid">
+      <div class="card price-card reveal tilt">
+        <h3 data-en="Monthly" data-ar="شهري">Monthly</h3>
+        <div class="amount">$25<small data-en=" / 30 days" data-ar=" / ٣٠ يوم"> / 30 days</small></div>
+        <ul class="feat">
+          <li data-en="Full features" data-ar="كل المزايا">Full features</li>
+          <li data-en="1 PC" data-ar="جهاز واحد">1 PC</li>
+          <li data-en="Free updates" data-ar="تحديثات مجانية">Free updates</li>
+        </ul>
+        <button class="btn ghost" data-en="Buy Monthly" data-ar="اشترِ الشهري" onclick="buyNow('monthly',this)">Buy Monthly</button>
+      </div>
+
+      <div class="card price-card hot reveal tilt">
+        <div class="flag" data-en="MOST POPULAR" data-ar="الأكثر طلبًا">MOST POPULAR</div>
+        <h3 data-en="Yearly" data-ar="سنوي">Yearly</h3>
+        <div class="amount">$250<small data-en=" / 12 months" data-ar=" / ١٢ شهر"> / 12 months</small></div>
+        <ul class="feat">
+          <li data-en="Full features" data-ar="كل المزايا">Full features</li>
+          <li data-en="1 PC" data-ar="جهاز واحد">1 PC</li>
+          <li data-en="Priority WhatsApp support" data-ar="دعم واتساب ذو أولوية">Priority WhatsApp support</li>
+        </ul>
+        <button class="btn hot" data-en="Buy Yearly" data-ar="اشترِ السنوي" onclick="buyNow('yearly',this)">Buy Yearly</button>
+      </div>
+
+      <div class="card price-card reveal tilt">
+        <h3 data-en="Lifetime" data-ar="دائم">Lifetime</h3>
+        <div class="amount">$1000<small data-en=" pay once" data-ar=" دفعة واحدة"> pay once</small></div>
+        <ul class="feat">
+          <li data-en="Full features" data-ar="كل المزايا">Full features</li>
+          <li data-en="1 PC, forever" data-ar="جهاز واحد للأبد">1 PC, forever</li>
+          <li data-en="Free updates in-period" data-ar="تحديثات مجانية">Free updates in-period</li>
+        </ul>
+        <button class="btn ghost" data-en="Buy Lifetime" data-ar="اشترِ الدائم" onclick="buyNow('lifetime',this)">Buy Lifetime</button>
+      </div>
+    </div>
+    <p class="sec-sub reveal" style="margin-top:26px" data-en="Replacing your PC? Message us to transfer your license. Company multi-seat deals available on WhatsApp."
+       data-ar="غيّرت جهازك؟ ابعتلنا لنقل الترخيص. عروض الشركات متاحة على واتساب.">Replacing your PC? Message us to transfer your license. Company multi-seat deals available on WhatsApp.</p>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section id="faq">
+    <div class="sec-tag reveal">04 — FAQ</div>
+    <h2 class="reveal" data-en="Questions, answered." data-ar="أسئلة وأجوبة.">Questions, answered.</h2>
+
+    <details class="reveal"><summary data-en="Does it need internet?" data-ar="هل يحتاج إنترنت؟">Does it need internet?</summary><p data-en="Only to download the installer. Activation and daily work are 100% offline." data-ar="فقط لتحميل البرنامج. التفعيل والشغل اليومي بدون إنترنت تمامًا.">Only to download the installer. Activation and daily work are 100% offline.</p></details>
+
+    <details class="reveal"><summary data-en="Which files does it open?" data-ar="بيفتح ملفات إيه؟">Which files does it open?</summary><p data-en="RAM Concept (.cpt) directly, plus ADAPT-Builder via .inp export." data-ar="ملفات RAM Concept مباشرة، وADAPT عن طريق تصدير .inp.">RAM Concept (.cpt) directly, plus ADAPT-Builder via .inp export.</p></details>
+
+    <details class="reveal"><summary data-en="What exactly do I export?" data-ar="التصدير بيطلع إيه بالظبط؟">What exactly do I export?</summary><p data-en="Layered AutoCAD DXF with title block + schedule table, and multi-sheet Excel (takeoff, PT schedule, chairs, rebar BBS) plus CSVs." data-ar="لوحة DXF بالطبقات مع الجداول، وExcel متعدد الشيتات (حصر وكابلات وكراسي وBBS) وCSV.">Layered AutoCAD DXF with title block + schedule table, and multi-sheet Excel (takeoff, PT schedule, chairs, rebar BBS) plus CSVs.</p></details>
+
+    <details class="reveal"><summary data-en="How do updates work?" data-ar="التحديثات إزاي؟">How do updates work?</summary><p data-en="Settings → Check for Updates inside the app. Install over the old version; your license stays active." data-ar="من الإعدادات داخل البرنامج. ثبّت فوق القديمة وترخيصك يفضل شغال.">Settings → Check for Updates inside the app. Install over the old version; your license stays active.</p></details>
+
+    <details class="reveal"><summary data-en="Refund policy?" data-ar="سياسة الاسترداد؟">Refund policy?</summary><p data-en="Start with the free 7-day trial — full features, so you buy with confidence. Paid keys are non-refundable after delivery." data-ar="ابدأ بالتجربة المجانية (كاملة المزايا). المفاتيح المدفوعة غير قابلة للاسترداد بعد التسليم.">Start with the free 7-day trial — full features, so you buy with confidence. Paid keys are non-refundable after delivery.</p></details>
+  </section>
+
+</div></main>
+
+<footer><div class="wrap">
+  <div class="foot-cta">
+    <a class="btn ghost" href="https://wa.me/__WHATSAPP_NUMBER__?text=Vortex%20PT" data-en="Chat on WhatsApp" data-ar="كلمنا واتساب">Chat on WhatsApp</a>
+  </div>
+  <div class="foot-note" data-en="© 2026 Vortex PT — Post-tension detailing, done right." data-ar="© 2026 Vortex PT — تفاصيل البوست تنشن كما يجب.">© 2026 Vortex PT — Post-tension detailing, done right.</div>
+</div></footer>
+
+<div id="toast"></div>
+<button id="toTop" aria-label="Back to top" onclick="scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script type="importmap">
+{"imports":{
+  "three":"https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+/* =====================================================================
+   VORTEX PT — 3D tendon field
+   ===================================================================== */
+const canvas   = document.getElementById('bg3d');
+const REDUCED  = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SMALL    = matchMedia('(max-width: 820px)').matches;
+const BG       = 0x0b0d10;
+
+const renderer = new THREE.WebGLRenderer({
+  canvas, antialias: !SMALL, powerPreference: 'high-performance'
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, SMALL ? 1.5 : 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.setClearColor(BG, 1);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(BG);
+scene.fog = new THREE.FogExp2(BG, 0.0255);
+
+const camera = new THREE.PerspectiveCamera(52, innerWidth / innerHeight, 0.1, 200);
+camera.position.set(0, 1.4, 14);
+
+/* ---- lights ---- */
+scene.add(new THREE.HemisphereLight(0x88bbff, 0x0b0d10, 1.15));
+const lights = [
+  [0x00F0FF, 260, 70, -9,  7,   9],
+  [0x6366F1, 260, 70, 11, -5,   7],
+  [0xE25C37, 170, 60,  0,  9, -12]
+];
+for (const [c, i, d, x, y, z] of lights) {
+  const l = new THREE.PointLight(c, i, d);
+  l.position.set(x, y, z);
+  scene.add(l);
+}
+
+/* ---- world ---- */
+const world = new THREE.Group();
+scene.add(world);
+
+const PALETTE = [0x00F0FF, 0x38BDF8, 0x818CF8, 0x6366F1, 0xA78BFA, 0x22D3EE];
+const tendons = [];
+
+function makeTendon(y, w, sag, color, radius, zOff, phase) {
+  const pts = [];
+  const SEG = 48;
+  for (let i = 0; i <= SEG; i++) {
+    const t = i / SEG;
+    const x = (t - 0.5) * w;
+    pts.push(new THREE.Vector3(x, y - Math.sin(t * Math.PI) * sag, (t - 0.5) * 2 + zOff));
+  }
+  const curve = new THREE.CatmullRomCurve3(pts);
+  const geo   = new THREE.TubeGeometry(curve, 96, radius, 10, false);
+  const base  = new THREE.Color(color);
+  const mat   = new THREE.MeshStandardMaterial({
+    color: base.clone().multiplyScalar(0.28),
+    emissive: base,
+    emissiveIntensity: 0.85,
+    roughness: 0.35,
+    metalness: 0.25,
+    transparent: true,
+    opacity: 0.96
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  world.add(mesh);
+
+  // anchor plates at both ends
+  const ringGeo = new THREE.TorusGeometry(radius * 4.2, radius * 1.15, 10, 34);
+  const ringMat = new THREE.MeshStandardMaterial({
+    color: base.clone().multiplyScalar(0.5),
+    emissive: base,
+    emissiveIntensity: 1.25,
+    roughness: 0.3, metalness: 0.5
+  });
+  const p0 = curve.getPoint(0), p1 = curve.getPoint(1);
+  const r0 = new THREE.Mesh(ringGeo, ringMat); r0.position.copy(p0);
+  const r1 = new THREE.Mesh(ringGeo, ringMat); r1.position.copy(p1);
+  r0.rotation.y = Math.PI / 2; r1.rotation.y = Math.PI / 2;
+  world.add(r0, r1);
+
+  tendons.push({ mesh, base: 0.85, phase, r0, r1, s0: p0.y, s1: p1.y });
+}
+
+for (let i = 0; i < 8; i++) {
+  const y     = 5.2 - i * 1.55;
+  const w     = 17 + i * 1.15;
+  const sag   = 1.0 + i * 0.2;
+  const color = PALETTE[i % PALETTE.length];
+  const tube  = 0.048 + i * 0.007;
+  const zOff  = (i % 2 ? 1 : -1) * (0.4 + i * 0.12);
+  makeTendon(y, w, sag, color, tube, zOff, i * 0.9);
+}
+
+/* ---- floating dust ---- */
+const COUNT = SMALL ? 260 : 900;
+const pos = new Float32Array(COUNT * 3);
+const col = new Float32Array(COUNT * 3);
+const tmpC = new THREE.Color();
+for (let i = 0; i < COUNT; i++) {
+  pos[i * 3]     = (Math.random() - 0.5) * 42;
+  pos[i * 3 + 1] = (Math.random() - 0.5) * 22;
+  pos[i * 3 + 2] = (Math.random() - 0.5) * 20;
+  tmpC.setHex(PALETTE[(Math.random() * PALETTE.length) | 0]);
+  col[i * 3] = tmpC.r; col[i * 3 + 1] = tmpC.g; col[i * 3 + 2] = tmpC.b;
+}
+const pGeo = new THREE.BufferGeometry();
+pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+pGeo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+const dust = new THREE.Points(pGeo, new THREE.PointsMaterial({
+  size: 0.06, vertexColors: true, transparent: true, opacity: 0.85,
+  blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true
+}));
+world.add(dust);
+
+/* ---- perspective grid floor ---- */
+const grid = new THREE.GridHelper(90, 45, 0x1d3040, 0x131e27);
+grid.position.y = -9.5;
+grid.material.transparent = true;
+grid.material.opacity = 0.6;
+world.add(grid);
+
+/* =====================================================================
+   Post-processing bloom (progressive enhancement)
+   ===================================================================== */
+let composer = null;
+if (!SMALL && !REDUCED) {
+  try {
+    const [{ EffectComposer }, { RenderPass }, { UnrealBloomPass }, { OutputPass }] = await Promise.all([
+      import('three/addons/postprocessing/EffectComposer.js'),
+      import('three/addons/postprocessing/RenderPass.js'),
+      import('three/addons/postprocessing/UnrealBloomPass.js'),
+      import('three/addons/postprocessing/OutputPass.js')
+    ]);
+    composer = new EffectComposer(renderer);
+    composer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+    composer.setSize(innerWidth, innerHeight);
+    composer.addPass(new RenderPass(scene, camera));
+    composer.addPass(new UnrealBloomPass(
+      new THREE.Vector2(innerWidth, innerHeight), 0.9, 0.72, 0.55
+    ));
+    composer.addPass(new OutputPass());
+  } catch (e) {
+    composer = null; // graceful fallback: plain render
+  }
+}
+
+/* =====================================================================
+   Interaction state
+   ===================================================================== */
+const scrollState = { p: 0 };
+const ptr = { x: 0, y: 0, tx: 0, ty: 0 };
+
+addEventListener('pointermove', e => {
+  ptr.tx = (e.clientX / innerWidth  - 0.5) * 2;
+  ptr.ty = (e.clientY / innerHeight - 0.5) * 2;
+  const sp = document.getElementById('spotlight');
+  sp.style.setProperty('--sx', e.clientX + 'px');
+  sp.style.setProperty('--sy', e.clientY + 'px');
+  sp.style.opacity = '1';
+}, { passive: true });
+
+function resize() {
+  const w = innerWidth, h = innerHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+  if (composer) composer.setSize(w, h);
+}
+addEventListener('resize', resize);
+
+/* =====================================================================
+   Render loop
+   ===================================================================== */
+const clock = new THREE.Clock();
+let running = true;
+document.addEventListener('visibilitychange', () => { running = !document.hidden; });
+
+function tick() {
+  requestAnimationFrame(tick);
+  if (!running) return;
+
+  const t = clock.getElapsedTime();
+  const p = scrollState.p;
+
+  ptr.x += (ptr.tx - ptr.x) * 0.045;
+  ptr.y += (ptr.ty - ptr.y) * 0.045;
+
+  // world motion
+  world.rotation.y = -p * 1.15 + Math.sin(t * 0.12) * 0.06 + ptr.x * 0.30;
+  world.rotation.x = Math.sin(t * 0.17) * 0.035 - p * 0.10 + ptr.y * 0.10;
+  world.position.y = Math.sin(t * 0.35) * 0.12 + p * 1.0;
+
+  // camera dolly
+  camera.position.z = 14 - p * 5.0;
+  camera.position.y = 1.4 + p * 3.4 - ptr.y * 0.55;
+  camera.position.x = ptr.x * 1.15;
+  camera.lookAt(0, 0.6 - p * 0.9, 0);
+
+  // tendon shimmer
+  for (let i = 0; i < tendons.length; i++) {
+    const o = tendons[i];
+    o.mesh.material.emissiveIntensity = o.base + Math.sin(t * 1.05 + o.phase) * 0.30;
+    const dy = Math.sin(t * 0.55 + o.phase) * 0.075;
+    o.mesh.position.y = dy;
+    o.r0.position.y = o.s0 + dy;
+    o.r1.position.y = o.s1 + dy;
+    o.r0.rotation.z = t * 0.25 + o.phase;
+    o.r1.rotation.z = -t * 0.25 + o.phase;
+  }
+
+  // dust drift
+  dust.rotation.y = t * 0.018;
+  dust.rotation.x = Math.sin(t * 0.05) * 0.05;
+  grid.position.y = -9.5 + Math.sin(t * 0.3) * 0.15;
+
+  if (composer) composer.render();
+  else renderer.render(scene, camera);
+}
+tick();
+
+/* =====================================================================
+   Scroll choreography (GSAP)
+   ===================================================================== */
+if (window.gsap && window.ScrollTrigger) {
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.to(scrollState, {
+    p: 1, ease: 'none',
+    scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 1.1 }
+  });
+
+  ScrollTrigger.batch('.reveal', {
+    start: 'top 88%',
+    onEnter: batch => gsap.fromTo(batch,
+      { opacity: 0, y: 36 },
+      { opacity: 1, y: 0, duration: 0.95, stagger: 0.09, ease: 'power3.out', overwrite: true })
+  });
+} else {
+  document.querySelectorAll('.reveal, .hero-fade').forEach(el => el.style.opacity = 1);
+  document.querySelectorAll('.hero h1 .w i').forEach(el => el.style.transform = 'none');
+}
+
+/* =====================================================================
+   Hero intro timeline + word split
+   ===================================================================== */
+function splitWords(el) {
+  const txt = el.textContent.trim();
+  if (!txt) return [];
+  el.innerHTML = txt.split(/\s+/)
+    .map(w => `<span class="w"><i>${w}</i></span>`).join(' ');
+  return Array.from(el.querySelectorAll('.w i'));
+}
+
+if (window.gsap && !REDUCED) {
+  const words = [];
+  document.querySelectorAll('.hero h1 .split').forEach(el => words.push(...splitWords(el)));
+
+  const tl = gsap.timeline({ defaults: { ease: 'power3.out' }, delay: 0.15 });
+  tl.to('.hero .logo-big', { opacity: 1, duration: 0.01 })
+    .from('.hero .logo-big', { opacity: 0, scale: 0.82, duration: 1.1, ease: 'back.out(1.6)' })
+    .to('.hero .kicker', { opacity: 1, duration: 0.6 }, '-=0.7')
+    .to(words, { y: 0, duration: 0.9, stagger: 0.045 }, '-=0.45')
+    .to('.hero h1 .grad', { opacity: 1, y: 0, duration: 0.9 }, '-=0.6')
+    .to('.hero .sub', { opacity: 1, y: 0, duration: 0.8 }, '-=0.6')
+    .to('.hero .cta-row', { opacity: 1, y: 0, duration: 0.8 }, '-=0.65')
+    .to('.hero .stats', { opacity: 1, y: 0, duration: 0.8 }, '-=0.6')
+    .to('.hero .scroll-hint', { opacity: 1, duration: 0.8 }, '-=0.5');
+
+  // "grad" starts translated so it can slide in
+  gsap.set('.hero h1 .grad', { y: 22 });
+
+  // counters
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const end = parseFloat(el.dataset.count);
+    const obj = { v: 0 };
+    tl.to(obj, {
+      v: end, duration: 1.5, ease: 'power2.out',
+      onUpdate: () => { el.textContent = Math.round(obj.v); }
+    }, '-=1.1');
+  });
+} else {
+  document.querySelectorAll('.hero-fade').forEach(el => el.style.opacity = 1);
+  document.querySelectorAll('[data-count]').forEach(el => el.textContent = el.dataset.count);
+}
+
+/* =====================================================================
+   Card 3D tilt (GSAP-driven so it never fights the reveal tween)
+   ===================================================================== */
+if (window.gsap && !REDUCED && matchMedia('(hover:hover)').matches) {
+  document.querySelectorAll('.tilt').forEach(card => {
+    let qx, qy;
+    const ensure = () => {
+      if (qx) return;
+      gsap.set(card, { transformPerspective: 950, transformOrigin: 'center' });
+      qx = gsap.quickTo(card, 'rotationX', { duration: 0.5, ease: 'power3' });
+      qy = gsap.quickTo(card, 'rotationY', { duration: 0.5, ease: 'power3' });
+    };
+    card.addEventListener('pointermove', e => {
+      ensure();
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width  - 0.5;
+      const y = (e.clientY - r.top)  / r.height - 0.5;
+      qx(-y * 8);
+      qy(x * 10);
+      card.style.setProperty('--mx', ((e.clientX - r.left) / r.width  * 100) + '%');
+      card.style.setProperty('--my', ((e.clientY - r.top)  / r.height * 100) + '%');
+    });
+    card.addEventListener('pointerleave', () => {
+      ensure(); qx(0); qy(0);
+    });
+  });
+}
+
+/* =====================================================================
+   Chrome: progress bar, nav state, back-to-top
+   ===================================================================== */
+const progressEl = document.getElementById('progress');
+const navEl      = document.getElementById('nav');
+const toTopEl    = document.getElementById('toTop');
+let rafPending = false;
+
+function onScroll() {
+  if (rafPending) return;
+  rafPending = true;
+  requestAnimationFrame(() => {
+    rafPending = false;
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - doc.clientHeight;
+    const p = max > 0 ? doc.scrollTop / max : 0;
+    progressEl.style.transform = `scaleX(${p})`;
+    navEl.classList.toggle('scrolled', doc.scrollTop > 24);
+    toTopEl.classList.toggle('show', doc.scrollTop > 700);
+  });
+}
+addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+</script>
+
+<script>
+/* ================= CONFIG ================= */
+const CONFIG = {
+  storeId: "Store_cm9gv3s9503el01iqgo4j4l47",
+  storeDomain: "cm9gv3s9503em01iqbe480a2y.wuiltstore.com",
+  locale: "en",
+  endpoint: "https://graphql.wuilt.com/",
+  variants: {
+    monthly:  "ProductVariant_cmufhp4d8023k01uw5cfg0g14",
+    yearly:   "ProductVariant_cmufhp4oq023o01uwhcff2wot",
+    lifetime: "ProductVariant_cmufhp56x01x201tc7c4ugbpw"
+  }
+};
+
+/* Wuilt Buy Now: replace cart with the tier, then Wuilt checkout */
+function toast(m){
+  const t = document.getElementById('toast');
+  t.textContent = m;
+  t.style.display = 'block';
+  t.classList.remove('show');
+  void t.offsetWidth;               /* restart animation */
+  t.classList.add('show');
+  clearTimeout(t._h);
+  t._h = setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.style.display = 'none', 350); }, 4200);
+}
+
+function sid(){
+  let s = localStorage.getItem('sessionId');
+  if (!s) {
+    s = 'Session_' + (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random());
+    localStorage.setItem('sessionId', s);
+  }
+  return s;
+}
+
+async function buyNow(tier, btn){
+  btn.disabled = true;
+  const label = btn.textContent;
+  try {
+    btn.textContent = '…';
+    const r = await fetch(CONFIG.endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'sessionid': sid() },
+      body: JSON.stringify({
+        query: `mutation B($storeId:ID!,$item:SimpleItemInput!){customerActions(storeId:$storeId){cart{replaceCartItemsWithSimpleItem(item:$item){id}}}}`,
+        variables: { storeId: CONFIG.storeId, item: { variantId: CONFIG.variants[tier], quantity: 1 } }
+      })
+    });
+    const j = await r.json();
+    if (j.errors) throw new Error(j.errors[0].message);
+    location.href = `https://${CONFIG.storeDomain}/${CONFIG.locale}/checkout/${j.data.customerActions.cart.replaceCartItemsWithSimpleItem.id}`;
+  } catch (e) {
+    toast('Checkout error: ' + e.message);
+    btn.textContent = label;
+    btn.disabled = false;
+  }
+}
+
+function toggleLang(){
+  const root = document.getElementById('root');
+  const toAr = root.lang !== 'ar';
+  root.lang = toAr ? 'ar' : 'en';
+  root.dir  = toAr ? 'rtl' : 'ltr';
+  document.getElementById('langBtn').textContent = toAr ? 'English' : 'عربي';
+  document.querySelectorAll('[data-en]').forEach(el => {
+    el.textContent = toAr ? el.dataset.ar : el.dataset.en;
+  });
+  /* re-arm the word-split if GSAP is present */
+  if (window.gsap && window.ScrollTrigger) ScrollTrigger.refresh();
+}
+</script>
+</body>
+</html>
