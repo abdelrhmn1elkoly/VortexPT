@@ -9,6 +9,17 @@ All notable changes to the **Vortex PT** Post-Tensioning Shop Drawing & Analysis
 ### 🚀 Highlights: 3D Tendon Clash Detection & Local-Datum Cover Verification
 
 ### Added & Improved
+- **3D Duct-to-Duct Clearance Engine (`core/clash_detection.py`)**: Detects 2D polyline crossings, infers dynamic duct envelopes, and classifies 3D vertical clearances into `3D_DUCT_PENETRATION` (critical) and `DUCT_CONTACT_LAYERED` (info).
+- **Chair Proximity & Support Horse Checks**: Flags intermediate upper chairs within 80 mm perpendicular distance of lower crossing ducts (`CHAIR_DUCT_PROXIMITY`) and recognizes shared high-point chairs over column supports (`SHARED_SUPPORT_HORSE` within 200 mm).
+- **Transverse CAD Chair De-Clashing**: Updated DXF chair clash checks (`_is_chair_clashing`) with transverse chair-to-chair exclusion (`< 450 mm`).
+- **False-Alarm-Free Cover Validation**: Uses true local member datums (`drop panels`, `sunken slabs`, `up-panels`) and effective profile elevation (`max(elev, chair_h)`) in `core/validation.py` and `core/models.py`.
+
+---
+## [1.5.6] - 2026-11-12
+
+### 🚀 Highlights: 3D Tendon Clash Detection & Local-Datum Cover Verification
+
+### Added & Improved
 - **3D Duct-to-Duct Clearance Engine (`core/clash_detection.py`)**:
   - Evaluates 2D polyline crossings (`intersect_segments`) and continuous absolute CGS elevations across Latitude, Longitude, and inclined/beam tendons using dynamic duct dimensions (monostrand 13 mm, 3-strand 20 mm, 4/5-strand 22 mm, beam 85 mm) with AABB spatial pruning for fast execution on large models.
   - Classifies 3D vertical clearances into `3D_DUCT_PENETRATION` (critical when $\Delta Z_{\text{clear}} < -5\text{ mm}$) and `DUCT_CONTACT_LAYERED` (advisory when $-5\text{ mm} \le \Delta Z_{\text{clear}} < 0\text{ mm}$).
