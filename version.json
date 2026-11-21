@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.5.7",
+  "release_date": "2026-11-21",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.5.7/VortexPT-Setup-1.5.7.exe",
+  "release_notes": "Vortex PT 1.5.7 Release:\n• Minimum Reinforcement (Min RFT) CAD Detailing Engine with AutoCAD dynamic blocks (L-BAR, S-BAR, U-BAR, KHOLY OPENING BARS, KHOLY RFT MESH).\n• Merged Rebar Mats for adjacent twin columns with perimeter beam hook anchoring.\n• Live AutoCAD Field formulas and dynamic property evaluations preserved without static degradation.\n• Precise opening trimmer sizing with Distance1 (height) and Distance2 (width) dynamic parameters.\n• Exact mesh callouts: Bottom Mesh T10-250 & Top Mesh T10-300 with configurable slab threshold.\n• Automatic slab boundary dimension containment and semi-cantilever corner leg rules."
+}
