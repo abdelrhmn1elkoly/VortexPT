@@ -9,6 +9,19 @@ All notable changes to the **Vortex PT** Post-Tensioning Shop Drawing & Analysis
 ### 🚀 Highlights: AutoCAD Engine Compatibility & Shop Drawing Detailing
 
 ### Added & Improved
+- **AutoCAD Discovery Engine**: Detects all AutoCAD versions (2012 to 2028+) via Windows Registry and all disk drives.
+- **Universal DWG Conversion**: Eliminates `.dxf` fallback on Windows 10 and older AutoCAD versions with robust `accoreconsole` and `acad.exe` batch support.
+- **Template Blocks Synchronization**: Immediately reflects edits made to AutoCAD block drawings even when open in AutoCAD.
+- **Slab Chair Heights Summary Table**: Honors `split_schedules_by_rows = False` to output a unified single table.
+- **Duct Grout Volume Calculation**: Formatted in Liters and cubic meters (`X.X L (Y.YYY m³)`), with complete totals in summary.
+- **Drop Panel Dimension Line Alignment**: Dimension lines align flush with drop panel boundaries and center on columns.
+
+---
+## [1.5.8] - 2026-11-23
+
+### 🚀 Highlights: AutoCAD Engine Compatibility & Shop Drawing Detailing
+
+### Added & Improved
 - **Universal AutoCAD Discovery & Headless DWG Conversion Engine (`core/autocad_discovery.py`, `export/dwg_exporter.py`)**:
   - Dynamically scans Windows Registry (`HKLM`, `HKCU`, `WOW6432Node`) across all installed AutoCAD editions (AutoCAD 2012 through 2028+, Architecture, Civil 3D, MEP, Mechanical, LT) and secondary drives (`C:`, `D:`, `E:`).
   - Employs universal native format defaults in AutoCAD script generation, eliminating invalid option errors on older AutoCAD versions (e.g. 2013-2017) and preventing unwanted `.dxf` fallback on Windows 10.
