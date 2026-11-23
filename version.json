@@ -1,0 +1,6 @@
+{
+  "latest_version": "1.5.8",
+  "release_date": "2026-11-23",
+  "download_url": "https://github.com/abdelrhmn1elkoly/VortexPT/releases/download/v1.5.8/VortexPT-Setup-1.5.8.exe",
+  "release_notes": "Vortex PT 1.5.8 Release:\n• Slab Chair Heights Summary Table: Fixed table splitting to strictly honor the split-by-rows configuration (generates a unified single table when disabled).\n• Grout Volume Calculation: Displayed in Liters with cubic meters in parentheses across schedules, CAD drawings, and Excel exports, with total volume row and summary.\n• Rebar Dimension Alignment: Column rebar dimension lines strictly aligned flush with drop panel boundaries and centered on columns.\n• Clash Detection Tuning: Dynamic duct height and layered contact classification improvements."
+}
